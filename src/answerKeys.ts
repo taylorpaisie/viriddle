@@ -1,7 +1,50 @@
 // PROTOTYPE ONLY. Production: move this module and validation to a server endpoint.
 // Public evidence stays in cases.ts; the browser necessarily contains these demo keys.
-export const answerKeys:Record<string,{source:number;tree:[number,number][];explanation:string}>={
-october:{source:1,tree:[[1,2],[2,3],[2,4],[3,5]],explanation:'Rowan’s outside exposure precedes October 8 onset. The October 9 contact fits Blair’s October 11 onset; Blair’s October 12 contacts fit Casey and Devon; Casey’s October 14 contact fits Ellis. Finley’s genetically distinct infection is a separate introduction.'},
+export const answerKeys:Record<string,{source:number;tree:[number,number][];explanation:string;reveal?:{title:string;text:string}[]}>={
+october:{
+  "source": 1,
+  "tree": [
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      3,
+      5
+    ]
+  ],
+  "explanation": "Rowan is the intended source of the connected cluster. The story runs from a planning meeting to a workshop, then a library cleanup—not one shared festival exposure. Blair passed the infection onward in the simulation, but was not where this chain began. Finley’s earlier illness belongs to a separate introduction.",
+  "reveal": [
+    {
+      "title": "Start outside the festival",
+      "text": "Rowan attended the October 5 gathering, then developed symptoms October 8. That three-day gap fits the incubation window. The outside record supports an introduction; it does not prove exactly where infection occurred."
+    },
+    {
+      "title": "October 9 · Rowan → Blair",
+      "text": "The 40-minute office meeting happened after Rowan’s symptoms began. Blair’s October 11 onset is two days later, inside the 1–4 day window. This is the first simulated link."
+    },
+    {
+      "title": "October 12 · Blair → Casey and Devon",
+      "text": "Blair was symptomatic by October 11. The workshop and microphone setup created two contact opportunities October 12. Casey’s onset one day later and Devon’s two days later both fit. Many contacts make Blair an amplifier, not necessarily the source."
+    },
+    {
+      "title": "October 14 · Casey → Ellis",
+      "text": "Casey’s symptoms began October 13, before the storeroom cleanup. Ellis became ill two days after that encounter. Ellis’s canceled workshop shift helps explain why a later link is needed."
+    },
+    {
+      "title": "The tempting wrong turn · Finley",
+      "text": "Finley was sick first and the posters linked their name to the festival. But a poster is not a patient contact. Their separate exposure, canceled shift, and distinct pathogen lineage support a different chain here. The five related sequences support a cluster; they do not prove these individual arrows."
+    }
+  ]
+},
 harbor:{source:0,tree:[[0,1],[1,2],[1,3],[2,4]],explanation:'Mira’s outside exposure and October 3 onset precede the October 4 contact with Theo. Theo’s October 7 contacts account for Sage and Luca; Sage’s October 10 contact accounts for Quinn. Jules has a distinct lineage.'},
 glasshouse:{source:2,tree:[[2,0],[0,1],[0,3],[1,4]],explanation:'Niko’s October 15 onset precedes contact with Arden on October 16. Arden’s October 19 contacts account for Remy and Wren, and Remy’s October 22 contact accounts for Kit. Avery is genetically distinct.'}};
 

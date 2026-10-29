@@ -1,4 +1,4 @@
 export type Patient={name:string;onset:number;role:string;interview:string};
-export type Case={id:string;title:string;place:string;month:string;brief:string;pathogen:string;incubation:string;patients:Patient[];contacts:[number,number,number][];genomics:string[];interviewNote:string;nameMap?:Record<string,string>};
+export type Case={id:string;title:string;place:string;month:string;brief:string;pathogen:string;incubation:string;patients:Patient[];contacts:[number,number,number][];contactDetails?:string[];bookingDetails?:Record<number,string>;genomics:string[];interviewNote:string;nameMap?:Record<string,string>};
 export type Run={started:boolean;unlocked:string[];selected:number|null;deadlineAt?:number;durationMs?:number;relaxed?:boolean;result?:{correct:boolean;score:number;date:string;timedOut?:boolean;elapsedSeconds?:number;basePoints?:number;speedBonus?:number;evidenceCost?:number;scoringVersion?:2;evidenceTotal?:number}};
-export type Solution={source:number;tree:[number,number][];explanation:string};
+export type Solution={source:number;tree:[number,number][];explanation:string;reveal?:{title:string;text:string}[]};

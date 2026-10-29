@@ -94,3 +94,6 @@ A free, collapsible evidence field guide is available in the evidence room, tuto
 ## Refined Lab presentation
 
 OUTBREAK pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the four-minute timer, evidence prices, and the 18-name pool are unchanged.
+
+### Reference mystery: The October Cluster
+The first demo is a richer festival investigation with a 59-word briefing and about 535 words across story and optional evidence. Six first-person accounts, named room bookings, corroborated encounters, and a five-part post-answer debrief support a 3–4 minute session. The four-minute clock, evidence prices, patient rotation, source and transmission tree remain unchanged. Contact detail fields are stripped from connected public fixtures; the expanded reveal is part of the private solution. Existing published server fixtures are not overwritten.

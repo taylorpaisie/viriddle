@@ -2,7 +2,7 @@ import type { Case } from './cases.ts';
 
 // These corroborating fictional records are public clues, not answer keys.
 const externalRecords:Record<string,Record<number,string>>={
- october:{0:'Separate event on October 3.',1:'Outside-group gathering on October 5.'},
+ october:{0:'Illustration meetup, October 3: registration confirmed; another attendee later reported illness.',1:'Regional organizers’ gathering, October 5: attendance confirmed; an illness notice was sent afterward.'},
  harbor:{0:'Outside-group trip on September 30.',5:'Independent travel before October 2.'},
  glasshouse:{2:'Outside-group meeting on October 12.',5:'Independent travel before October 14.'},
  rehearsal:{3:'Touring production on November 3.',5:'Independent travel before November 5.'},
@@ -18,6 +18,6 @@ export const exposureWindows=(c:Case)=>c.patients.map(p=>({name:p.name,start:day
 export const roomBookings=(c:Case)=>{
  const days=new Map<number,Set<number>>();
  for(const [a,b,day] of c.contacts){if(!days.has(day))days.set(day,new Set());days.get(day)!.add(a);days.get(day)!.add(b)}
- return [...days].sort(([a],[b])=>a-b).map(([day,people])=>({date:dayLabel(c,day),bookedFor:people.size}));
+ return [...days].sort(([a],[b])=>a-b).map(([day,people])=>({date:dayLabel(c,day),bookedFor:people.size,description:c.bookingDetails?.[day]}));
 };
 export const outsideExposureChecks=(c:Case)=>c.patients.map((p,i)=>({name:p.name,confirmed:externalRecords[c.id]?.[i]!==undefined,details:externalRecords[c.id]?.[i]??'No corroborated outside-group record in this limited check.'}));

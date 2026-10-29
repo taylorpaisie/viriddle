@@ -1,14 +1,93 @@
 import {friendNames} from './catalog.ts';
-export type Patient={name:string;onset:number;role:string;interview:string};
-export type Case={id:string;title:string;place:string;month:string;brief:string;pathogen:string;incubation:string;patients:Patient[];contacts:[number,number,number][];genomics:string[];interviewNote:string;nameMap?:Record<string,string>};
+import type {Case} from './model';
+export type {Case,Patient} from './model';
 export const cases:Case[]=[{
-id:'october',title:'The October Cluster',place:'NORTHBANK COMMUNITY CENTER',month:'October',pathogen:'Fictional respiratory virus',incubation:'1–4 days',brief:'Six people. A shared community center. One deceptive timeline. Identify the source of the connected five-person cluster; one patient belongs to a separate introduction.',interviewNote:'In this simulation, infectiousness begins at symptom onset. There is no presymptomatic transmission.',patients:[
-{name:'Finley',onset:7,role:'Visiting illustrator',interview:'Attended a different event on October 3. No reported contact with the other five patients.'},
-{name:'Rowan',onset:8,role:'Community coordinator',interview:'Returned from an outside-group gathering October 5. Symptoms began October 8. Met Blair October 9.'},
-{name:'Blair',onset:11,role:'Workshop instructor',interview:'Worked with Rowan October 9. Led a workshop with Casey and Devon October 12.'},
-{name:'Casey',onset:13,role:'Volunteer librarian',interview:'Attended Blair’s October 12 workshop. Met Ellis October 14.'},
-{name:'Devon',onset:14,role:'Sound technician',interview:'Helped Blair set up on October 12. No other recorded group exposures.'},
-{name:'Ellis',onset:16,role:'Student volunteer',interview:'Worked a library shift alongside Casey October 14.'}],contacts:[[1,2,9],[2,3,12],[2,4,12],[3,5,14]],genomics:['Finley: lineage B · 27–29 SNPs from the other five.','Rowan, Blair, Casey, Devon and Ellis: lineage A · pairwise distances 0–2 SNPs.','Rowan–Blair: 0 · Blair–Casey: 1 · Blair–Devon: 1 · Casey–Ellis: 1 SNP.']},
+
+  "id": "october",
+  "title": "The October Cluster",
+  "place": "NORTHBANK COMMUNITY CENTER",
+  "month": "October",
+  "pathogen": "Fictional respiratory virus",
+  "incubation": "1–4 days",
+  "brief": "Rain has pushed Northbank’s autumn festival indoors. Between poster deliveries, a repair workshop, and a library cleanup, six people on the volunteer register report the same illness. The first sick volunteer seems an obvious lead—but a shared event name is not a shared exposure. Trace the source of the connected five-person cluster. One infection belongs to a separate chain.",
+  "interviewNote": "For this fictional case, incubation is 1–4 days and infectiousness begins at symptom onset. Use only the supplied records; not everyone on the register met.",
+  "patients": [
+    {
+      "name": "Finley",
+      "onset": 7,
+      "role": "Festival illustrator",
+      "interview": "I painted the posters at home and left them in the outdoor collection box October 6. By October 7 I was ill, so I canceled my festival shift. Everyone keeps mentioning my name because it is on the posters. I attended a separate illustration meetup October 3."
+    },
+    {
+      "name": "Rowan",
+      "onset": 8,
+      "role": "Festival coordinator",
+      "interview": "I went to a regional organizers’ gathering October 5. My throat hurt October 8; I blamed the long days. On October 9, Blair and I spent 40 minutes moving the workshop indoors and redrawing the seating plan in the small office. Finley’s posters were already in the collection box."
+    },
+    {
+      "name": "Blair",
+      "onset": 11,
+      "role": "Repair workshop leader",
+      "interview": "Rowan and I finalized the indoor plan October 9. My cough started October 11. I still ran the October 12 repair session: Casey sat beside me sorting books, and Devon spent setup with me testing the microphone. Being in the middle of everyone’s plans apparently makes me look suspicious."
+    },
+    {
+      "name": "Casey",
+      "onset": 13,
+      "role": "Volunteer librarian",
+      "interview": "I helped Blair at the October 12 workshop. The next morning I felt feverish. On October 14, Ellis and I spent half an hour in the library storeroom putting the borrowed chairs away. I had not worked with Ellis earlier that week."
+    },
+    {
+      "name": "Devon",
+      "onset": 14,
+      "role": "Sound technician",
+      "interview": "The microphone kept cutting out October 12, so Blair and I troubleshot it together before the workshop. I left before the library cleanup. Symptoms began October 14. Finley’s artwork was everywhere, but I never actually met the artist."
+    },
+    {
+      "name": "Ellis",
+      "onset": 16,
+      "role": "Student volunteer",
+      "interview": "My October 12 shift was canceled when the festival moved indoors. I only came back October 14, when Casey helped me stack chairs in the storeroom. Casey sounded unwell. I developed symptoms October 16; I had assumed all six of us caught it at the workshop."
+    }
+  ],
+  "contacts": [
+    [
+      1,
+      2,
+      9
+    ],
+    [
+      2,
+      3,
+      12
+    ],
+    [
+      2,
+      4,
+      12
+    ],
+    [
+      3,
+      5,
+      14
+    ]
+  ],
+  "contactDetails": [
+    "Office planning · 40 minutes together; confirmed by both accounts and a revised seating plan.",
+    "Repair workshop · adjacent book-sorting seats; corroborated by the session register.",
+    "Microphone setup · a close conversation during troubleshooting; confirmed by both accounts.",
+    "Library storeroom · 30 minutes returning chairs; corroborated by the checkout log."
+  ],
+  "bookingDetails": {
+    "9": "Small office · indoor festival planning.",
+    "12": "Main hall · repair workshop and microphone setup.",
+    "14": "Library storeroom · return of borrowed chairs."
+  },
+  "genomics": [
+    "Five samples—Rowan, Blair, Casey, Devon, Ellis—are lineage A, separated by 0–2 single-letter genetic differences (SNPs).",
+    "Finley’s sample is lineage B, 27–29 SNPs from those five. The lab treats it as distinct in this simulation.",
+    "Rowan–Blair: 0 SNPs. Blair–Casey: 1. Blair–Devon: 1. Casey–Ellis: 1. Small distances do not identify a direct donor or direction."
+  ]
+},
 {id:'harbor',title:'The Harbor Gathering',place:'EAST HARBOR FIELD STATION',month:'October',pathogen:'Fictional respiratory virus',incubation:'1–4 days',brief:'A field-station reunion leaves six people ill. Trace the connected five-person cluster and distinguish it from an unrelated travel infection.',interviewNote:'Infectiousness starts at symptom onset. All listed dates fall in October.',patients:[
 {name:'Mira',onset:3,role:'Marine biologist',interview:'Fell ill after an outside-group trip September 30. Shared a lab with Theo October 4.'},
 {name:'Theo',onset:6,role:'Field researcher',interview:'Worked with Mira October 4 and met Sage and Luca October 7.'},
@@ -517,6 +596,8 @@ export const withFriendNames = (base:Case,offset:number):Case => {
   const c={...base,nameMap};
   return {...c,brief:formatCaseText(c,base.brief),interviewNote:formatCaseText(c,base.interviewNote),
     patients:base.patients.map(p=>({...p,name:nameMap[p.name],interview:formatCaseText(c,p.interview)})),
+    contactDetails:base.contactDetails?.map(g=>formatCaseText(c,g)),
+    bookingDetails:base.bookingDetails?Object.fromEntries(Object.entries(base.bookingDetails).map(([day,text])=>[day,formatCaseText(c,text)])):undefined,
     genomics:base.genomics.map(g=>formatCaseText(c,g))};
 };
 export const sampleCase = (index:number) => withFriendNames(cases[index],index*2);

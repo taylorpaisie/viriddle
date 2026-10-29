@@ -87,3 +87,15 @@ assert.deepEqual(upgradeDeadline(upgraded.deadlineAt,upgraded.durationMs,101000)
 assert.deepEqual(upgradeDeadline(100000,150000,100000),{deadlineAt:100000,durationMs:150000});
 assert.equal(calculateScore({correct:true,evidenceCost:22,deadlineAt:150000,now:30000,durationMs:150000}).score,68);
 console.log('PASS: one-time local timer extension, no revival/reset, and legacy 150-second score compatibility.');
+
+// The reference mystery adds story without changing the answer or exceeding a short session.
+const october=sampleCase(0);
+assert.deepEqual(october.contacts,[[1,2,9],[2,3,12],[2,4,12],[3,5,14]]);
+assert.equal(october.contactDetails?.length,october.contacts.length);
+assert.equal(answerKeys.october.reveal?.length,5);
+for(const p of october.patients){const n=p.interview.split(/\s+/).length;assert.ok(n>=30&&n<=60,'Brief, distinct interview accounts');}
+const reading=[october.brief,october.interviewNote,...october.patients.map(p=>p.interview),...october.contactDetails!,...october.genomics,...roomBookings(october).map(r=>r.description??''),...outsideExposureChecks(october).map(r=>r.details)].join(' ').split(/\s+/).length;
+assert.ok(reading<=550,'Story and evidence fit the 3–4 minute target');
+for(const step of answerKeys.october.reveal!){const text=formatCaseText(october,step.title+' '+step.text);for(const old of cases[0].patients.map(p=>p.name))assert.ok(!new RegExp('\\b'+old+'\\b').test(text),'Reveal uses rotated names');}
+assert.equal(CASE_TIME_MS,240000,'Four-minute cap retained');
+console.log(`PASS: reference mystery has ${reading} story/evidence words, dated encounters, rotated reveal names, and unchanged four-minute cap.`);

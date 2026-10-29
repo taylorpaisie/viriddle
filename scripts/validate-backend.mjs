@@ -1,5 +1,6 @@
 import {PGlite} from '@electric-sql/pglite';
 import fs from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
 import assert from 'node:assert/strict';
 const db=new PGlite();
 await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key,is_anonymous boolean default false);create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;grant usage on schema auth to authenticated,anon;grant execute on function auth.uid() to authenticated,anon;`);
@@ -37,4 +38,16 @@ await db.exec(`insert into auth.users(id) select ('10000000-0000-4000-8000-'||lp
 await user(u);board=await call('outbreak_leaderboard');assert.equal(board.rows.length,25);assert.equal(board.mine.position,31);board=await call('outbreak_leaderboard',"'all',25");assert.equal(board.rows.length,6);
 await db.exec('reset role');await db.exec('set role anon');await assert.rejects(()=>call('outbreak_daily'));await assert.rejects(()=>q('select private.expire_attempts()'));
 console.log('PASS: real PostgreSQL migration, RLS isolation, sealed evidence/solutions, unique starts, idempotent purchases/submissions, timeouts, wrong answers, profiles, tutorial persistence, opt-in leaderboards, and anonymous exclusion.');
+// Generated story fixtures must keep purchased evidence and the expanded reveal private.
+await db.exec('reset role');
+const fixture=spawnSync(process.execPath,['--experimental-strip-types','scripts/generate-case-sql.ts','2026-10-20','9'],{encoding:'utf8'});
+assert.equal(fixture.status,0,fixture.stderr);await db.exec(fixture.stdout);
+const narrative=(await q("select c.public_data,s.reports,s.solution from public.daily_cases c join private.case_secrets s on s.case_id=c.id where c.public_data->>'id'='october' limit 1"))[0];
+assert.ok(narrative);assert.equal(narrative.public_data.contactDetails,undefined);assert.equal(narrative.public_data.bookingDetails,undefined);
+assert.equal(narrative.public_data.nameMap,undefined);assert.deepEqual(narrative.public_data.contacts,[]);assert.deepEqual(narrative.public_data.genomics,[]);
+assert.ok(narrative.public_data.patients.every(p=>p.interview===''));
+assert.ok(narrative.reports.contacts.rows[0].text.includes('40 minutes'));
+assert.equal(narrative.solution.reveal.length,5);assert.ok(narrative.solution.reveal[1].title.includes(narrative.public_data.patients[1].name));
+assert.ok(!JSON.stringify(narrative.public_data).includes('I painted the posters at home'));
+console.log('PASS: generated narrative fixtures seal detailed encounters, interviews, and the name-mapped reconstruction.');
 await db.close();

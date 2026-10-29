@@ -110,3 +110,14 @@ button, summary, [role="button"] { touch-action: manipulation; }
 @media (max-height: 500px) and (max-width: 950px) {
   .modal { max-height: calc(100dvh - 16px); }
 }
+
+/* Narrative evidence stays scannable without widening phone layouts. */
+.encounter-detail { display:block; margin-top:7px; font:inherit; font-size:14px; line-height:1.7; color:var(--text-secondary); }
+.case-debrief { margin:26px 0; padding-top:24px; border-top:1px solid var(--border); }
+.case-debrief ol { list-style:none; padding:0; margin:20px 0 0; counter-reset:story; }
+.case-debrief li { position:relative; padding:0 0 22px 35px; border-left:1px solid var(--border); margin-left:10px; counter-increment:story; }
+.case-debrief li:last-child { padding-bottom:0; border-left-color:transparent; }
+.case-debrief li:before { content:counter(story); position:absolute; left:-12px; top:0; display:grid; place-items:center; width:24px; height:24px; border-radius:50%; color:var(--secondary); background:var(--surface); border:1px solid var(--control-border); font-size:12px; }
+.case-debrief h3 { font-size:17px; line-height:1.5; letter-spacing:0; margin-bottom:8px; }
+.case-debrief p { font-size:15px; line-height:1.8; color:var(--text-secondary); }
+@media(max-width:700px){ .case-debrief li { padding-left:25px; } .case-debrief h3 { font-size:17px; } .case-debrief p { font-size:16px; } }
