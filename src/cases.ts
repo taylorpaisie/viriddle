@@ -483,7 +483,7 @@ cases.push(...[
       "Sequence similarities alone cannot identify who infected whom. Use onset dates and reported encounters to test possible directions."
     ]
   }
-]);
+] as Case[]);
 export const evidence=[
  {id:'bookings',title:'Room Booking Logs',cost:4,description:'Check event dates and booking sizes.',icon:'records'},
  {id:'windows',title:'Incubation Analysis',cost:6,description:'Calculate each patient’s possible exposure window.',icon:'window'},

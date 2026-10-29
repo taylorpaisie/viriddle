@@ -75,3 +75,8 @@ const early=exposureWindows(sampleCase(1)).find(w=>w.name===sampleCase(1).patien
 assert.equal(early.start,'Sep 28');assert.equal(early.end,'Oct 1');
 assert.equal(calculateScore({correct:true,evidenceCost:64,deadlineAt:200000,now:170000}).score,0);
 console.log('PASS: six uniquely priced evidence tools, public clue records, renamed patients, cross-month windows, and nonnegative exhausted scores.');
+
+const {utcDate}=await import('../src/publicCase.ts');
+assert.equal(utcDate(new Date('2026-10-30T00:00:00Z')),'2026-10-30');
+assert.equal(utcDate(new Date('2026-10-29T23:59:59Z')),'2026-10-29');
+console.log('PASS: new UTC daily reset changes at exactly 00:00 UTC.');
