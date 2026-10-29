@@ -25,9 +25,9 @@ Vite prints the local development URL. The production output is `dist/`.
 - Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Lucy, Brittany, Nídia, Luis, Selim, Nate, Cherie, and Bob. Six appear in each daily case; examples use different combinations.
 - Deterministic daily scheduling using the America/New_York calendar date.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
-- Start at 100 points. Interviews cost 10, contact tracing 12, and sequencing 18.
+- Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 3 seconds. Interviews cost 10, contact tracing 12, and sequencing 18.
 - A 2½-minute daily response window, amber warning at one minute, and pink warning at 30 seconds.
-- Confirmed correct answers earn remaining points; incorrect answers or expired windows earn zero.
+- Incorrect answers and expired windows earn zero. Untimed practice uses 100 base points minus evidence costs, without a speed bonus. Results and shared cards show the time and earned bonus. Completed historical scores are preserved.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
 - Browser-local completion records, scores, streaks, statistics, and spoiler-free sharing.
 - Mobile Patients / Evidence / Solve navigation with a persistent clock, score, and next action.

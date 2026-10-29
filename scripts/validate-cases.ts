@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { cases, caseFor, nyDate, friendNames, sampleCase, formatCaseText } from '../src/cases.ts';
 import { answerKeys } from '../src/answerKeys.ts';
-import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText } from '../src/gameRules.ts';
+import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText, calculateScore } from '../src/gameRules.ts';
 assert.equal(cases.length,9);
 assert.equal(new Set(cases.map(c=>c.id)).size,cases.length);
 for(const c of cases){
@@ -48,3 +48,15 @@ for(const name of ['Lucy','Nate','Cherie','Bob','Nídia'])assert.ok(friendNames.
 const shown=new Set(Array.from({length:cases.length},(_,i)=>sampleCase(i).patients).flat().map(p=>p.name));
 for(const name of friendNames)assert.ok(shown.has(name),name+' appears in examples');
 console.log('PASS: 12-name roster, added friends, removed name, and complete example coverage.');
+
+const start=2000000, end=start+CASE_TIME_MS;
+const points=(seconds:number,cost=0,correct=true,relaxed=false)=>calculateScore({correct,evidenceCost:cost,deadlineAt:end,now:start+seconds*1000,relaxed});
+assert.equal(points(0).score,100);assert.equal(points(3).score,99);assert.equal(points(30,22).score,68);
+assert.equal(points(75,22).score,53);assert.equal(points(149,40).score,11);assert.equal(points(150).score,0);
+assert.equal(points(151).score,0);assert.equal(points(10,22,false).score,0);assert.equal(points(100,22,true,true).score,78);
+assert.equal(points(100,22,true,true).speedBonus,0);assert.equal(points(0,22).evidenceCost,22);
+assert.equal(points(2.999).score,100);assert.equal(points(3).score,99);assert.equal(points(3.001).score,99);
+for(let sec=1;sec<150;sec++)assert.ok(points(sec).score<=points(sec-1).score);
+const breakdown=points(30,22);assert.equal(breakdown.basePoints+breakdown.speedBonus-breakdown.evidenceCost,breakdown.score);
+assert.equal(calculateScore({correct:true,evidenceCost:0,now:start}).score,0);
+console.log('PASS: faster correct answers earn more, evidence costs stay fixed, exact time boundaries, zero for failures, untimed practice, and score breakdown.');
