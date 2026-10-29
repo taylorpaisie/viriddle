@@ -91,6 +91,6 @@ The palette and visual states are centralized in `src/neon-lab.css`. Existing la
 
 A free, collapsible evidence field guide is available in the evidence room, tutorial, and Rules & Scoring. It explains every tool, SNP distances, incubation-window checks, separate introductions, and the limits of contact and genomic evidence, using a generic worked example without daily spoilers. Opening the guide does not purchase evidence or change the score.
 
-## Playful Lab presentation
+## Refined Lab presentation
 
-OUTBREAK keeps the NEON LAB pink/cyan palette with a friendlier daily-puzzle identity: expressive vector microbes, pill buttons, rounded clue and patient cards, and lighter interface copy. `src/PlayfulLab.tsx` contains original decorative SVG artwork and the microbe wordmark; `src/playful-lab.css` owns these presentation overrides. Hero artwork is labeled decorative and contains no actual case clues. Gameplay rules, evidence costs, the four-minute timer, and the rotating name pool are unchanged. Decorative motion stops after two cycles and honors reduced-motion preferences.
+OUTBREAK pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the four-minute timer, evidence prices, and the 18-name pool are unchanged.
