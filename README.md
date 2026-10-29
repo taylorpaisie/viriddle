@@ -26,12 +26,12 @@ Vite prints the local development URL. The production output is `dist/`.
 - Deterministic daily scheduling using the America/New_York calendar date.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
 - Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 3 seconds. Six evidence options: room booking logs (4), incubation analysis (6), interviews (10), contact tracing (12), outside-exposure checks (14), and sequencing (18). Costs stack and scores cannot fall below zero.
-- A 2½-minute daily response window, amber warning at one minute, and pink warning at 30 seconds.
+- A 2½-minute daily response window, yellow warning at one minute, and coral warning at 30 seconds.
 - Incorrect answers and expired windows earn zero. Untimed practice uses 100 base points minus evidence costs, without a speed bonus. Results and shared cards show the time and earned bonus. Completed historical scores are preserved.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
 - Browser-local completion records, scores, streaks, statistics, and spoiler-free sharing.
 - Mobile Patients / Evidence / Solve navigation with a persistent clock, score, and next action.
-- Readable 16px clue text, charcoal surfaces, Signal Orange accents with cyan evidence highlights, and an About page with creator credits.
+- Readable 16px clue text, midnight navy surfaces, NEON LAB electric pink actions with neon cyan evidence highlights, and an About page with creator credits.
 
 ## Case data and scientific scope
 
@@ -64,3 +64,7 @@ The Sites deployment is separate and is updated through Sites, not by this GitHu
 - Add a larger audited case bank and a case-generation pipeline.
 - Implement server-side answer and deadline validation.
 - Choose a permanent domain and consolidate production hosting.
+
+## NEON LAB theme
+
+The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. Gameplay, case data, timer, scoring, and persisted results are unchanged.
