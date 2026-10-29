@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import { cases, caseFor, nyDate } from '../src/cases.ts';
+import { answerKeys } from '../src/answerKeys.ts';
+import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText } from '../src/gameRules.ts';
+assert.equal(cases.length,9);
+assert.equal(new Set(cases.map(c=>c.id)).size,cases.length);
+for(const c of cases){
+ const key=answerKeys[c.id];assert.ok(key,c.id+' answer key');assert.equal(c.patients.length,6);assert.equal(key.tree.length,4);
+ const group=new Set<number>();const indegree=new Map<number,number>();
+ for(const [a,b] of key.tree){
+  const contact=c.contacts.find(([x,y])=>(x===a&&y===b)||(x===b&&y===a));
+  assert.ok(contact,c.id+' transmission requires a documented contact');
+  assert.ok(contact[2]>=c.patients[a].onset,c.id+' source must be infectious');
+  const lag=c.patients[b].onset-contact[2];assert.ok(lag>=1&&lag<=4,c.id+' incubation must fit');
+  group.add(a);group.add(b);indegree.set(b,(indegree.get(b)||0)+1);
+ }
+ assert.equal(group.size,5);assert.ok(group.has(key.source));assert.equal(indegree.get(key.source)||0,0);
+ for(const p of group)if(p!==key.source)assert.equal(indegree.get(p),1,c.id+' one parent per simulated infection');
+ const reached=new Set([key.source]);for(let i=0;i<5;i++)for(const [a,b] of key.tree)if(reached.has(a))reached.add(b);
+ assert.equal(reached.size,5,c.id+' source reaches every cluster member');
+ for(const [a,b,d] of c.contacts){assert.ok(a!==b);assert.ok(c.patients[a]&&c.patients[b]);assert.ok(d>=1&&d<=31)}
+}
+// Existing cases do not change when the expanded rotation starts.
+assert.equal(caseFor('2026-10-28').id,'glasshouse');assert.equal(caseFor('2026-10-29').id,'october');
+assert.equal(caseFor('2026-10-30').id,'rehearsal');assert.equal(caseFor('2026-11-04').id,'riverside');
+assert.equal(caseFor('2026-11-08').id,caseFor('2026-10-30').id);
+assert.equal(nyDate(new Date('2026-10-30T03:59:59Z')),'2026-10-29');assert.equal(nyDate(new Date('2026-10-30T04:00:00Z')),'2026-10-30');
+const deadline=1000000;
+assert.equal(CASE_TIME_MS,300000);assert.equal(remainingMs(deadline,deadline+1),0);assert.equal(remainingMs(deadline,deadline-300000),300000);
+assert.equal(clockText(300000),'05:00');assert.equal(clockText(59999),'01:00');assert.equal(clockText(1),'00:01');assert.equal(clockText(0),'00:00');
+assert.equal(elapsedSeconds(deadline,deadline-CASE_TIME_MS),0);assert.equal(elapsedSeconds(deadline,deadline-1000),299);assert.equal(elapsedSeconds(deadline,deadline+10000),300);
+console.log('PASS: 9 case trees, contact/incubation constraints, historical scheduling, New York midnight, and deadline boundaries.');
