@@ -26,9 +26,9 @@ assert.equal(caseFor('2026-10-30').id,'rehearsal');assert.equal(caseFor('2026-11
 assert.equal(caseFor('2026-11-08').id,caseFor('2026-10-30').id);
 assert.equal(nyDate(new Date('2026-10-30T03:59:59Z')),'2026-10-29');assert.equal(nyDate(new Date('2026-10-30T04:00:00Z')),'2026-10-30');
 const deadline=1000000;
-assert.equal(CASE_TIME_MS,300000);assert.equal(remainingMs(deadline,deadline+1),0);assert.equal(remainingMs(deadline,deadline-300000),300000);
-assert.equal(clockText(300000),'05:00');assert.equal(clockText(59999),'01:00');assert.equal(clockText(1),'00:01');assert.equal(clockText(0),'00:00');
-assert.equal(elapsedSeconds(deadline,deadline-CASE_TIME_MS),0);assert.equal(elapsedSeconds(deadline,deadline-1000),299);assert.equal(elapsedSeconds(deadline,deadline+10000),300);
+assert.equal(CASE_TIME_MS,150000);assert.equal(remainingMs(deadline,deadline+1),0);assert.equal(remainingMs(deadline,deadline-150000),150000);
+assert.equal(clockText(150000),'02:30');assert.equal(clockText(59999),'01:00');assert.equal(clockText(1),'00:01');assert.equal(clockText(0),'00:00');
+assert.equal(elapsedSeconds(deadline,deadline-CASE_TIME_MS),0);assert.equal(elapsedSeconds(deadline,deadline-1000),149);assert.equal(elapsedSeconds(deadline,deadline+10000),150);
 console.log('PASS: 9 case trees, contact/incubation constraints, historical scheduling, New York midnight, and deadline boundaries.');
 
 for(let day=0;day<9;day++){
@@ -41,3 +41,10 @@ assert.deepEqual(caseFor('2026-10-30').patients,caseFor('2026-10-30').patients);
 assert.notDeepEqual(caseFor('2026-10-30').patients.map(p=>p.name),caseFor('2026-10-31').patients.map(p=>p.name));
 assert.ok(Array.from({length:9},(_,i)=>sampleCase(i).patients).flat().some(p=>p.name==='Nídia'));
 console.log('PASS: rotating friend names, unique patient labels, consistent explanation names, and Unicode accent.');
+
+assert.equal(friendNames.length,12);
+assert.ok(!friendNames.includes('Sergei'));
+for(const name of ['Lucy','Nate','Cherie','Bob','Nídia'])assert.ok(friendNames.includes(name));
+const shown=new Set(Array.from({length:cases.length},(_,i)=>sampleCase(i).patients).flat().map(p=>p.name));
+for(const name of friendNames)assert.ok(shown.has(name),name+' appears in examples');
+console.log('PASS: 12-name roster, added friends, removed name, and complete example coverage.');

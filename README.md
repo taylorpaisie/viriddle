@@ -22,11 +22,11 @@ Vite prints the local development URL. The production output is `dist/`.
 ## Features
 
 - Nine handcrafted cases with linear chains, branching events, shared contacts, and unrelated introductions.
-- Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Sergei, Brittany, Nídia, Luis, and Selim. Six appear in each daily case; examples use different combinations.
+- Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Lucy, Brittany, Nídia, Luis, Selim, Nate, Cherie, and Bob. Six appear in each daily case; examples use different combinations.
 - Deterministic daily scheduling using the America/New_York calendar date.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
 - Start at 100 points. Interviews cost 10, contact tracing 12, and sequencing 18.
-- A five-minute daily response window, amber warning at one minute, and pink warning at 30 seconds.
+- A 2½-minute daily response window, amber warning at one minute, and pink warning at 30 seconds.
 - Confirmed correct answers earn remaining points; incorrect answers or expired windows earn zero.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
 - Browser-local completion records, scores, streaks, statistics, and spoiler-free sharing.

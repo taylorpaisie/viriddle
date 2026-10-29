@@ -496,7 +496,7 @@ const scheduledCase=(date:string)=>{
 };
 
 // Fictional characters named as a friendly nod to the creator’s science circle.
-export const friendNames = ['Darren','Carla','Melanie','Andrea','Sergei','Brittany','Nídia','Luis','Selim'];
+export const friendNames = ['Darren','Carla','Melanie','Andrea','Lucy','Brittany','Nídia','Luis','Selim','Nate','Cherie','Bob'];
 const escapeName = (name:string) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export const formatCaseText = (c:Case,text:string) => {
   if(!c.nameMap)return text;

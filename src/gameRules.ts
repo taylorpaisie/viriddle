@@ -1,4 +1,4 @@
-export const CASE_TIME_MS = 5 * 60 * 1000;
+export const CASE_TIME_MS = 150 * 1000;
 export const remainingMs = (deadlineAt:number, now:number) => Math.max(0, deadlineAt-now);
 export const elapsedSeconds = (deadlineAt:number, now:number) => Math.max(0, Math.min(CASE_TIME_MS/1000, Math.ceil((now-(deadlineAt-CASE_TIME_MS))/1000)));
 export const clockText = (ms:number) => {
