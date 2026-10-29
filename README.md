@@ -31,7 +31,7 @@ Vite prints the local development URL. The production output is `dist/`.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
 - Browser-local completion records, scores, streaks, statistics, and spoiler-free sharing.
 - Mobile Patients / Evidence / Solve navigation with a persistent clock, score, and next action.
-- Readable 16px clue text, charcoal surfaces, restrained lavender accents, and an About page with creator credits.
+- Readable 16px clue text, charcoal surfaces, Signal Orange accents with cyan evidence highlights, and an About page with creator credits.
 
 ## Case data and scientific scope
 
