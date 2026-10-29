@@ -1,5 +1,6 @@
+import { roomBookings, exposureWindows, outsideExposureChecks } from '../src/evidenceDetails.ts';
 import assert from 'node:assert/strict';
-import { cases, caseFor, nyDate, friendNames, sampleCase, formatCaseText } from '../src/cases.ts';
+import { cases, caseFor, nyDate, friendNames, sampleCase, formatCaseText, evidence } from '../src/cases.ts';
 import { answerKeys } from '../src/answerKeys.ts';
 import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText, calculateScore } from '../src/gameRules.ts';
 assert.equal(cases.length,9);
@@ -60,3 +61,17 @@ for(let sec=1;sec<150;sec++)assert.ok(points(sec).score<=points(sec-1).score);
 const breakdown=points(30,22);assert.equal(breakdown.basePoints+breakdown.speedBonus-breakdown.evidenceCost,breakdown.score);
 assert.equal(calculateScore({correct:true,evidenceCost:0,now:start}).score,0);
 console.log('PASS: faster correct answers earn more, evidence costs stay fixed, exact time boundaries, zero for failures, untimed practice, and score breakdown.');
+
+assert.equal(evidence.length,6);assert.equal(new Set(evidence.map(e=>e.id)).size,6);
+assert.deepEqual(evidence.map(e=>e.cost),[4,6,10,12,14,18]);
+for(let i=0;i<cases.length;i++){
+ const c=sampleCase(i),windows=exposureWindows(c),outside=outsideExposureChecks(c),rooms=roomBookings(c);
+ assert.equal(windows.length,c.patients.length);assert.deepEqual(windows.map(w=>w.name),c.patients.map(p=>p.name));
+ assert.equal(outside.filter(r=>r.confirmed).length,2,c.id+' two corroborating outside records');
+ assert.ok(outside[answerKeys[c.id].source].confirmed,c.id+' simulated source has outside record');
+ assert.ok(rooms.length>0);for(const r of rooms)assert.ok(r.bookedFor>=2&&r.bookedFor<=6);
+}
+const early=exposureWindows(sampleCase(1)).find(w=>w.name===sampleCase(1).patients[5].name)!;
+assert.equal(early.start,'Sep 28');assert.equal(early.end,'Oct 1');
+assert.equal(calculateScore({correct:true,evidenceCost:64,deadlineAt:200000,now:170000}).score,0);
+console.log('PASS: six uniquely priced evidence tools, public clue records, renamed patients, cross-month windows, and nonnegative exhausted scores.');

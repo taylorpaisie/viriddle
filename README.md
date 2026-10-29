@@ -25,7 +25,7 @@ Vite prints the local development URL. The production output is `dist/`.
 - Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Lucy, Brittany, Nídia, Luis, Selim, Nate, Cherie, and Bob. Six appear in each daily case; examples use different combinations.
 - Deterministic daily scheduling using the America/New_York calendar date.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
-- Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 3 seconds. Interviews cost 10, contact tracing 12, and sequencing 18.
+- Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 3 seconds. Six evidence options: room booking logs (4), incubation analysis (6), interviews (10), contact tracing (12), outside-exposure checks (14), and sequencing (18). Costs stack and scores cannot fall below zero.
 - A 2½-minute daily response window, amber warning at one minute, and pink warning at 30 seconds.
 - Incorrect answers and expired windows earn zero. Untimed practice uses 100 base points minus evidence costs, without a speed bonus. Results and shared cards show the time and earned bonus. Completed historical scores are preserved.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
@@ -35,7 +35,7 @@ Vite prints the local development URL. The production output is `dist/`.
 
 ## Case data and scientific scope
 
-`src/cases.ts` contains public case evidence; `src/answerKeys.ts` contains the prototype answer keys and simulated trees. `src/gameRules.ts` contains reusable clock calculations. `scripts/validate-cases.ts` checks every simulated tree, incubation window, historical schedule, and timer boundary.
+`src/cases.ts` contains public case evidence; `src/answerKeys.ts` contains the prototype answer keys and simulated trees. `src/evidenceDetails.ts` contains public corroborating records and computed exposure-window/booking summaries; it does not import answer keys. `src/gameRules.ts` contains clock and scoring calculations. `scripts/validate-cases.ts` checks every simulated tree, incubation window, historical schedule, and timer boundary.
 
 Dates before October 30, 2026 retain the original three-case rotation, preserving existing daily results. From October 30, the expanded nine-case rotation begins with The Midnight Rehearsal. All nine cases are immediately available in the demo laboratory.
 
