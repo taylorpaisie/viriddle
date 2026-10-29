@@ -68,7 +68,7 @@ For staging fixtures only:
 npm run --silent cases:sql -- 2026-10-29 30 > staging.private.sql
 ```
 
-Run the resulting SQL through the project SQL editor or your trusted database connection. It preserves the existing date-to-template schedule and rotating 12-name pool. It refuses to overwrite existing dates. The generated file contains answers; `.gitignore` excludes `*.private.sql`. Never put it in `public/`, `dist/`, or frontend assets.
+Run the resulting SQL through the project SQL editor or your trusted database connection. It preserves the existing date-to-template schedule and rotating 18-name pool. It refuses to overwrite existing dates. The generated file contains answers; `.gitignore` excludes `*.private.sql`. Never put it in `public/`, `dist/`, or frontend assets.
 
 **Competitive launch requires fresh private cases.** The nine existing example templates and their answers are already public and repeat on a known schedule. Removing them from the connected JS bundle cannot make that published knowledge secret. Use the fixture generator to test the integration, then author fresh daily records through a private backend pipeline, following the same `public.daily_cases` + `private.case_secrets` structure. You can retain the name rotation, scientific rules, timing, prices, and scoring. Do not claim the sample rotation provides a cheat-resistant competition.
 

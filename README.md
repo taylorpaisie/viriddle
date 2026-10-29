@@ -40,7 +40,7 @@ Vite prints the local development URL. The production output is `dist/`.
 ## Features
 
 - Nine handcrafted cases with linear chains, branching events, shared contacts, and unrelated introductions.
-- Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Lucy, Brittany, Nídia, Luis, Selim, Nate, Cherie, and Bob. Six appear in each daily case; examples use different combinations.
+- Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Lucy, Brittany, Nídia, Luis, Selim, Nate, Cherie, Bob, Bret, Luke, Joicy, Ben, Anthony, and Hamilton. Six appear in each daily case; examples use different combinations.
 - Deterministic daily scheduling with midnight UTC reset; original case-to-date and name rotation rules are retained.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
 - Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 3 seconds. Six evidence options: room booking logs (4), incubation analysis (6), interviews (10), contact tracing (12), outside-exposure checks (14), and sequencing (18). Costs stack and scores cannot fall below zero.
@@ -86,3 +86,7 @@ The Sites deployment is separate and is updated through Sites, not by this GitHu
 ## NEON LAB theme
 
 The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. The NEON LAB redesign preserves the 150-second timer, evidence prices, and time-based scoring. The accounts expansion changes the shared reset to midnight UTC and adds optional server-validated play.
+
+## Reading the evidence
+
+A free, collapsible evidence field guide is available in the evidence room, tutorial, and Rules & Scoring. It explains every tool, SNP distances, incubation-window checks, separate introductions, and the limits of contact and genomic evidence, using a generic worked example without daily spoilers. Opening the guide does not purchase evidence or change the score.

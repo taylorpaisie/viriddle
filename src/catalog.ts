@@ -7,4 +7,4 @@ export const evidence=[
  {id:'genomics',title:'Genomic Sequencing',cost:18,description:'Compare the pathogen’s fingerprints.',icon:'dna'}
 ] as const;
 
-export const friendNames=['Darren','Carla','Melanie','Andrea','Lucy','Brittany','Nídia','Luis','Selim','Nate','Cherie','Bob'];
+export const friendNames=['Darren','Carla','Melanie','Andrea','Lucy','Brittany','Nídia','Luis','Selim','Nate','Cherie','Bob','Bret','Luke','Joicy','Ben','Anthony','Hamilton'];

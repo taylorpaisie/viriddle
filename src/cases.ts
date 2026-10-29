@@ -1,3 +1,4 @@
+import {friendNames} from './catalog.ts';
 export type Patient={name:string;onset:number;role:string;interview:string};
 export type Case={id:string;title:string;place:string;month:string;brief:string;pathogen:string;incubation:string;patients:Patient[];contacts:[number,number,number][];genomics:string[];interviewNote:string;nameMap?:Record<string,string>};
 export const cases:Case[]=[{
@@ -503,7 +504,7 @@ const scheduledCase=(date:string)=>{
 };
 
 // Fictional characters named as a friendly nod to the creator’s science circle.
-export const friendNames = ['Darren','Carla','Melanie','Andrea','Lucy','Brittany','Nídia','Luis','Selim','Nate','Cherie','Bob'];
+export {friendNames} from './catalog.ts';
 const escapeName = (name:string) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export const formatCaseText = (c:Case,text:string) => {
   if(!c.nameMap)return text;
@@ -518,5 +519,5 @@ export const withFriendNames = (base:Case,offset:number):Case => {
     patients:base.patients.map(p=>({...p,name:nameMap[p.name],interview:formatCaseText(c,p.interview)})),
     genomics:base.genomics.map(g=>formatCaseText(c,g))};
 };
-export const sampleCase = (index:number) => withFriendNames(cases[index],index);
+export const sampleCase = (index:number) => withFriendNames(cases[index],index*2);
 export const caseFor = (date:string) => withFriendNames(scheduledCase(date),dayNumber(date));
