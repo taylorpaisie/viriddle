@@ -1,8 +1,8 @@
-# Viriddle / OUTBREAK
+# Virriddle
 
 Created by **Taylor Paisie**, a data analyst and bioinformatics researcher.
 
-A daily epidemiological detective game: investigate six fictional patients, purchase evidence, and identify the source of a five-person transmission cluster. The current game interface is branded OUTBREAK.
+A daily epidemiological detective game: investigate six fictional patients, purchase evidence, and identify the source of a five-person transmission cluster. The game interface and shared results are branded Virriddle.
 
 [Play on Sites](https://outbreak-daily-detective.tinylion32770.chatgpt.site)
 
@@ -93,7 +93,9 @@ A free, collapsible evidence field guide is available in the evidence room, tuto
 
 ## Refined Lab presentation
 
-OUTBREAK pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the four-minute timer, evidence prices, and the 18-name pool are unchanged.
+Virriddle pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the four-minute timer, evidence prices, and the 18-name pool are unchanged.
 
 ### Reference mystery: The Mothman Meltdown
 The first demo turns the October Cluster into a chaotic cryptid-festival mystery, with a short briefing and no more than 550 words across story and optional evidence. Six first-person accounts, named room bookings, corroborated encounters, and a five-part post-answer debrief support a 3–4 minute session. The four-minute clock, evidence prices, patient rotation, source and transmission tree remain unchanged. Contact detail fields are stripped from connected public fixtures; the expanded reveal is part of the private solution. Existing published server fixtures are not overwritten.
+
+The Virriddle display-name update retains the existing repository and site URLs, database function names, and browser storage keys so saved progress and integrations continue to work.
