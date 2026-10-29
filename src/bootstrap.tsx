@@ -5,4 +5,5 @@ import {PlayerProvider} from './player';
 import './style.css';
 import './neon-lab.css';
 import './community.css';
+import './playful-lab.css';
 createRoot(document.getElementById('root')!).render(<PlayerProvider><App/></PlayerProvider>);
