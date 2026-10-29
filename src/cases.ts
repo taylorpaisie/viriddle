@@ -1,5 +1,5 @@
 export type Patient={name:string;onset:number;role:string;interview:string};
-export type Case={id:string;title:string;place:string;month:string;brief:string;pathogen:string;incubation:string;patients:Patient[];contacts:[number,number,number][];genomics:string[];interviewNote:string};
+export type Case={id:string;title:string;place:string;month:string;brief:string;pathogen:string;incubation:string;patients:Patient[];contacts:[number,number,number][];genomics:string[];interviewNote:string;nameMap?:Record<string,string>};
 export const cases:Case[]=[{
 id:'october',title:'The October Cluster',place:'NORTHBANK COMMUNITY CENTER',month:'October',pathogen:'Fictional respiratory virus',incubation:'1–4 days',brief:'Six people. A shared community center. One deceptive timeline. Identify the source of the connected five-person cluster; one patient belongs to a separate introduction.',interviewNote:'In this simulation, infectiousness begins at symptom onset. There is no presymptomatic transmission.',patients:[
 {name:'Finley',onset:7,role:'Visiting illustrator',interview:'Attended a different event on October 3. No reported contact with the other five patients.'},
@@ -489,8 +489,27 @@ export const nyDate=(d=new Date())=>new Intl.DateTimeFormat('en-CA',{timeZone:'A
 export const dayNumber=(date:string)=>Math.floor((Date.parse(date+'T12:00:00Z')-Date.parse('2026-10-02T12:00:00Z'))/86400000);
 // Keep the original schedule through October 29 so existing results remain valid.
 export const EXPANDED_SCHEDULE_START = '2026-10-30';
-export const caseFor=(date:string)=>{
+const scheduledCase=(date:string)=>{
   if(date < EXPANDED_SCHEDULE_START) return cases[((dayNumber(date)%3)+3)%3];
   const days = dayNumber(date)-dayNumber(EXPANDED_SCHEDULE_START);
   return cases[(days+3)%cases.length];
 };
+
+// Fictional characters named as a friendly nod to the creator’s science circle.
+export const friendNames = ['Darren','Carla','Melanie','Andrea','Sergei','Brittany','Nídia','Luis','Selim'];
+const escapeName = (name:string) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+export const formatCaseText = (c:Case,text:string) => {
+  if(!c.nameMap)return text;
+  const pattern=new RegExp('\\b('+Object.keys(c.nameMap).map(escapeName).join('|')+')\\b','g');
+  return text.replace(pattern, name => c.nameMap![name]);
+};
+export const withFriendNames = (base:Case,offset:number):Case => {
+  const start=((offset%friendNames.length)+friendNames.length)%friendNames.length;
+  const nameMap=Object.fromEntries(base.patients.map((p,i)=>[p.name,friendNames[(start+i)%friendNames.length]]));
+  const c={...base,nameMap};
+  return {...c,brief:formatCaseText(c,base.brief),interviewNote:formatCaseText(c,base.interviewNote),
+    patients:base.patients.map(p=>({...p,name:nameMap[p.name],interview:formatCaseText(c,p.interview)})),
+    genomics:base.genomics.map(g=>formatCaseText(c,g))};
+};
+export const sampleCase = (index:number) => withFriendNames(cases[index],index);
+export const caseFor = (date:string) => withFriendNames(scheduledCase(date),dayNumber(date));

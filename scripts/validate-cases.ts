@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { cases, caseFor, nyDate } from '../src/cases.ts';
+import { cases, caseFor, nyDate, friendNames, sampleCase, formatCaseText } from '../src/cases.ts';
 import { answerKeys } from '../src/answerKeys.ts';
 import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText } from '../src/gameRules.ts';
 assert.equal(cases.length,9);
@@ -30,3 +30,14 @@ assert.equal(CASE_TIME_MS,300000);assert.equal(remainingMs(deadline,deadline+1),
 assert.equal(clockText(300000),'05:00');assert.equal(clockText(59999),'01:00');assert.equal(clockText(1),'00:01');assert.equal(clockText(0),'00:00');
 assert.equal(elapsedSeconds(deadline,deadline-CASE_TIME_MS),0);assert.equal(elapsedSeconds(deadline,deadline-1000),299);assert.equal(elapsedSeconds(deadline,deadline+10000),300);
 console.log('PASS: 9 case trees, contact/incubation constraints, historical scheduling, New York midnight, and deadline boundaries.');
+
+for(let day=0;day<9;day++){
+ const c=sampleCase(day);assert.equal(new Set(c.patients.map(p=>p.name)).size,6);
+ for(const p of c.patients)assert.ok(friendNames.includes(p.name));
+ const explanation=formatCaseText(c,answerKeys[c.id].explanation);
+ for(const old of cases[day].patients.map(p=>p.name))assert.ok(!new RegExp('\\b'+old+'\\b').test(explanation));
+}
+assert.deepEqual(caseFor('2026-10-30').patients,caseFor('2026-10-30').patients);
+assert.notDeepEqual(caseFor('2026-10-30').patients.map(p=>p.name),caseFor('2026-10-31').patients.map(p=>p.name));
+assert.ok(Array.from({length:9},(_,i)=>sampleCase(i).patients).flat().some(p=>p.name==='Nídia'));
+console.log('PASS: rotating friend names, unique patient labels, consistent explanation names, and Unicode accent.');

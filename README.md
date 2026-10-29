@@ -22,6 +22,7 @@ Vite prints the local development URL. The production output is `dist/`.
 ## Features
 
 - Nine handcrafted cases with linear chains, branching events, shared contacts, and unrelated introductions.
+- Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Sergei, Brittany, Nídia, Luis, and Selim. Six appear in each daily case; examples use different combinations.
 - Deterministic daily scheduling using the America/New_York calendar date.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
 - Start at 100 points. Interviews cost 10, contact tracing 12, and sequencing 18.
@@ -30,7 +31,7 @@ Vite prints the local development URL. The production output is `dist/`.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
 - Browser-local completion records, scores, streaks, statistics, and spoiler-free sharing.
 - Mobile Patients / Evidence / Solve navigation with a persistent clock, score, and next action.
-- High-contrast Ultraviolet styling and an About page with creator credits.
+- Readable 16px clue text, charcoal surfaces, restrained lavender accents, and an About page with creator credits.
 
 ## Case data and scientific scope
 
