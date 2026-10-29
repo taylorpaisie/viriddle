@@ -11,8 +11,8 @@ try{
  assert.ok(!js.includes('Returned from an outside-group gathering October 5.'),'Sealed offline interview leaked');
  assert.ok(!js.includes('Finley: lineage B'),'Sealed offline lab data leaked');
  for(const key of Object.values(answerKeys))for(const step of key.reveal??[])assert.ok(!js.includes(step.text),'Offline reconstruction leaked');
- assert.ok(!js.includes('I painted the posters at home'),'New sealed interview leaked');
- assert.ok(!js.includes('Office planning · 40 minutes together'),'New sealed encounter leaked');
+ assert.ok(!js.includes('They are twelve dollars each.'),'New sealed interview leaked');
+ assert.ok(!js.includes('Office crisis meeting · 40 minutes together'),'New sealed encounter leaked');
  assert.ok(!js.includes('The Midnight Rehearsal'),'Offline case library leaked');
  console.log('PASS: connected production bundle excludes offline case library, sealed evidence, and all offline answer explanations.');
 }finally{await rm(dir,{recursive:true,force:true})}

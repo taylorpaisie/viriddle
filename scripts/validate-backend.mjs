@@ -48,6 +48,6 @@ assert.equal(narrative.public_data.nameMap,undefined);assert.deepEqual(narrative
 assert.ok(narrative.public_data.patients.every(p=>p.interview===''));
 assert.ok(narrative.reports.contacts.rows[0].text.includes('40 minutes'));
 assert.equal(narrative.solution.reveal.length,5);assert.ok(narrative.solution.reveal[1].title.includes(narrative.public_data.patients[1].name));
-assert.ok(!JSON.stringify(narrative.public_data).includes('I painted the posters at home'));
+assert.ok(!JSON.stringify(narrative.public_data).includes('They are twelve dollars each.'));
 console.log('PASS: generated narrative fixtures seal detailed encounters, interviews, and the name-mapped reconstruction.');
 await db.close();

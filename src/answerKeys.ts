@@ -21,27 +21,27 @@ october:{
       5
     ]
   ],
-  "explanation": "Rowan is the intended source of the connected cluster. The story runs from a planning meeting to a workshop, then a library cleanup—not one shared festival exposure. Blair passed the infection onward in the simulation, but was not where this chain began. Finley’s earlier illness belongs to a separate introduction.",
+  "explanation": "Rowan is the intended source of the connected cluster. The simulated chain follows an office crisis, a mascot repair clinic, and a trophy-discovering cleanup. Blair is the busy amplifier, not the starting point. Finley’s earlier illness belongs to a separate introduction. The curse remains outside the laboratory’s jurisdiction.",
   "reveal": [
     {
-      "title": "Start outside the festival",
-      "text": "Rowan attended the October 5 gathering, then developed symptoms October 8. That three-day gap fits the incubation window. The outside record supports an introduction; it does not prove exactly where infection occurred."
+      "title": "The opening act happened elsewhere",
+      "text": "Rowan attended the October 5 organizers’ gathering and became symptomatic October 8: a plausible three-day incubation. The outside record supports an introduction. It does not establish precisely where infection occurred, however confidently the group chat identifies a curse."
     },
     {
       "title": "October 9 · Rowan → Blair",
-      "text": "The 40-minute office meeting happened after Rowan’s symptoms began. Blair’s October 11 onset is two days later, inside the 1–4 day window. This is the first simulated link."
+      "text": "Rain forced Rowan and Blair into a 40-minute office planning session October 9. Rowan was already symptomatic; Blair’s October 11 onset followed two days later. The inflatable Mothman explains the meeting. It does not explain the infection by itself."
     },
     {
       "title": "October 12 · Blair → Casey and Devon",
-      "text": "Blair was symptomatic by October 11. The workshop and microphone setup created two contact opportunities October 12. Casey’s onset one day later and Devon’s two days later both fit. Many contacts make Blair an amplifier, not necessarily the source."
+      "text": "Blair was symptomatic before the October 12 clinic. Casey’s adjacent prop-sorting and Devon’s microphone troubleshooting supply two contact opportunities. Their onsets one and two days later fit. A busy contact hub can spread a cluster without having started it. Renting theatrical fog is not source evidence."
     },
     {
       "title": "October 14 · Casey → Ellis",
-      "text": "Casey’s symptoms began October 13, before the storeroom cleanup. Ellis became ill two days after that encounter. Ellis’s canceled workshop shift helps explain why a later link is needed."
+      "text": "Casey was symptomatic before the October 14 storeroom cleanup. Ellis became ill two days afterward. Crucially, Ellis never attended the repair clinic. The trophy discovery makes a good anecdote; the dated encounter makes a plausible link."
     },
     {
       "title": "The tempting wrong turn · Finley",
-      "text": "Finley was sick first and the posters linked their name to the festival. But a poster is not a patient contact. Their separate exposure, canceled shift, and distinct pathogen lineage support a different chain here. The five related sequences support a cluster; they do not prove these individual arrows."
+      "text": "Finley was sick first, but delivered posters without meeting anyone and canceled the shift. Their separate exposure and distinct lineage support another introduction. The five related sequences support this fictional cluster, not proof of individual arrows. The posters and trophy are officially released without charge."
     }
   ]
 },

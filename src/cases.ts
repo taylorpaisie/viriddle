@@ -2,51 +2,50 @@ import {friendNames} from './catalog.ts';
 import type {Case} from './model';
 export type {Case,Patient} from './model';
 export const cases:Case[]=[{
-
   "id": "october",
-  "title": "The October Cluster",
+  "title": "The Mothman Meltdown",
   "place": "NORTHBANK COMMUNITY CENTER",
   "month": "October",
   "pathogen": "Fictional respiratory virus",
   "incubation": "1–4 days",
-  "brief": "Rain has pushed Northbank’s autumn festival indoors. Between poster deliveries, a repair workshop, and a library cleanup, six people on the volunteer register report the same illness. The first sick volunteer seems an obvious lead—but a shared event name is not a shared exposure. Trace the source of the connected five-person cluster. One infection belongs to a separate chain.",
+  "brief": "Northbank’s Mothman Appreciation Week has a missing trophy, an unauthorized fog machine, and an inflatable mascot declared “structurally emotional.” Now six volunteers are sick. The group chat says curse. The lab says fictional respiratory virus. Find the source of the connected five-person cluster; one infection belongs to a separate chain.",
   "interviewNote": "For this fictional case, incubation is 1–4 days and infectiousness begins at symptom onset. Use only the supplied records; not everyone on the register met.",
   "patients": [
     {
       "name": "Finley",
       "onset": 7,
-      "role": "Festival illustrator",
-      "interview": "I painted the posters at home and left them in the outdoor collection box October 6. By October 7 I was ill, so I canceled my festival shift. Everyone keeps mentioning my name because it is on the posters. I attended a separate illustration meetup October 3."
+      "role": "Cryptid poster artist",
+      "interview": "I drew the “LET MOTHMAN READ” posters at home. October 6, I dropped them in the outdoor collection box without seeing anyone. Sick October 7; canceled my shift. I did attend a separate illustration meetup October 3. The group chat thinks my posters are cursed. They are twelve dollars each."
     },
     {
       "name": "Rowan",
       "onset": 8,
-      "role": "Festival coordinator",
-      "interview": "I went to a regional organizers’ gathering October 5. My throat hurt October 8; I blamed the long days. On October 9, Blair and I spent 40 minutes moving the workshop indoors and redrawing the seating plan in the small office. Finley’s posters were already in the collection box."
+      "role": "Reluctant festival boss",
+      "interview": "I attended a regional organizers’ gathering October 5. Sore throat October 8. On October 9, Blair and I spent 40 minutes in the office redrawing the indoor plan: rain had displaced a nine-foot Mothman. I thought my throat hurt from arguing about the mascot’s emotional needs."
     },
     {
       "name": "Blair",
       "onset": 11,
-      "role": "Repair workshop leader",
-      "interview": "Rowan and I finalized the indoor plan October 9. My cough started October 11. I still ran the October 12 repair session: Casey sat beside me sorting books, and Devon spent setup with me testing the microphone. Being in the middle of everyone’s plans apparently makes me look suspicious."
+      "role": "Emergency mascot surgeon",
+      "interview": "Rowan and I replanned everything October 9. My cough began October 11. On October 12, I ran the repair clinic: Casey sat beside me sorting props; Devon and I tested the microphone beforehand. “Surgeon” is generous. I own a stapler and a deeply unhelpful biology degree."
     },
     {
       "name": "Casey",
       "onset": 13,
-      "role": "Volunteer librarian",
-      "interview": "I helped Blair at the October 12 workshop. The next morning I felt feverish. On October 14, Ellis and I spent half an hour in the library storeroom putting the borrowed chairs away. I had not worked with Ellis earlier that week."
+      "role": "Keeper of the trophy",
+      "interview": "I sorted props beside Blair October 12. Fever October 13. On October 14, Ellis and I spent 30 minutes returning chairs in the library storeroom. We found the missing Golden Moth trophy inside a mascot head. I had not worked with Ellis earlier. Please distinguish my fever from my professional outrage."
     },
     {
       "name": "Devon",
       "onset": 14,
-      "role": "Sound technician",
-      "interview": "The microphone kept cutting out October 12, so Blair and I troubleshot it together before the workshop. I left before the library cleanup. Symptoms began October 14. Finley’s artwork was everywhere, but I never actually met the artist."
+      "role": "Fog machine defendant",
+      "interview": "Blair and I troubleshot the microphone together October 12, talking at close range because the amplifier screamed whenever someone said “Mothman.” I left before cleanup. Symptoms began October 14. I never met Finley. Yes, I rented the fog machine. No, that does not make me the pathogen."
     },
     {
       "name": "Ellis",
       "onset": 16,
-      "role": "Student volunteer",
-      "interview": "My October 12 shift was canceled when the festival moved indoors. I only came back October 14, when Casey helped me stack chairs in the storeroom. Casey sounded unwell. I developed symptoms October 16; I had assumed all six of us caught it at the workshop."
+      "role": "Volunteer, allegedly",
+      "interview": "My October 12 shift was canceled. I only returned October 14, stacking chairs with Casey in the storeroom. Casey sounded unwell. We found the trophy; I took a victory selfie alone. Symptoms October 16. I told everyone I caught it at the repair clinic. Awkward detail: I was never there."
     }
   ],
   "contacts": [
@@ -72,15 +71,15 @@ export const cases:Case[]=[{
     ]
   ],
   "contactDetails": [
-    "Office planning · 40 minutes together; confirmed by both accounts and a revised seating plan.",
-    "Repair workshop · adjacent book-sorting seats; corroborated by the session register.",
-    "Microphone setup · a close conversation during troubleshooting; confirmed by both accounts.",
-    "Library storeroom · 30 minutes returning chairs; corroborated by the checkout log."
+    "Office crisis meeting · 40 minutes together; accounts and revised plan agree.",
+    "Mascot repair clinic · neighboring prop-sorting seats; both names on register.",
+    "Microphone setup · close conversation confirmed by both accounts. Fog rental does not prove transmission.",
+    "Library storeroom · 30-minute chair return; checkout log corroborates contact. Trophy recovery was incidental."
   ],
   "bookingDetails": {
-    "9": "Small office · indoor festival planning.",
-    "12": "Main hall · repair workshop and microphone setup.",
-    "14": "Library storeroom · return of borrowed chairs."
+    "9": "Small office · emergency indoor Mothman planning.",
+    "12": "Main hall · mascot repairs and microphone setup.",
+    "14": "Library storeroom · chair return; not a séance."
   },
   "genomics": [
     "Five samples—Rowan, Blair, Casey, Devon, Ellis—are lineage A, separated by 0–2 single-letter genetic differences (SNPs).",
