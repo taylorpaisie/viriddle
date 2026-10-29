@@ -6,7 +6,7 @@ The deployed site intentionally remains in local mode until both public Supabase
 
 Create a Supabase development project, then a production project when the checks below pass. Keep database passwords, service-role/secret keys, and Google client secrets out of this repository, GitHub Pages, and all `VITE_` variables.
 
-In the Supabase SQL editor, apply `supabase/migrations/202610290001_outbreak.sql`. Alternatively, link the project using the Supabase CLI and run `supabase db push`. Keep only `public` in the exposed Data API schemas; **never expose `private`**. RLS is enabled on every public player/case/attempt/event table. Browser roles have SELECT-only access scoped by RLS; writes and secret reads go through carefully scoped database functions.
+In the Supabase SQL editor, apply `supabase/migrations/202610290001_outbreak.sql`, then `supabase/migrations/202610290002_four_minute_window.sql`. The second migration gives new official attempts four minutes; older official attempts retain their original duration and recorded scores. Alternatively, link the project using the Supabase CLI and run `supabase db push`. Keep only `public` in the exposed Data API schemas; **never expose `private`**. RLS is enabled on every public player/case/attempt/event table. Browser roles have SELECT-only access scoped by RLS; writes and secret reads go through carefully scoped database functions.
 
 The trusted backend is transactional PostgreSQL RPC (`SECURITY DEFINER` functions with an empty search path), an equivalent to an Edge Function for these operations. It validates the authenticated UUID, case date, start time, purchases, selection, submission, and score. It never accepts a client score, deadline, elapsed time, price, result, or player ID.
 
@@ -74,11 +74,11 @@ Run the resulting SQL through the project SQL editor or your trusted database co
 
 An official safe `public_data` object follows `src/model.ts`’s `Case` shape with `patients[].interview=''`, `contacts=[]`, `genomics=[]`, and no nameMap/answer. Private `reports` keys are the six evidence IDs; each has `title`, `rows:[{label,text}]`, and optional `note`. Interviews additionally have `interviews:string[]`; contacts have `contacts:[number,number,number][]`; genomics has `genomics:string[]`. Private `solution` is `{source:number,tree:[number,number][],explanation:string}` with display names already substituted.
 
-Past-case replay becomes available 150 seconds after the UTC date ends, protecting attempts started just before midnight. It returns the reconstruction for noncompetitive local practice and writes no official attempts. Connected mode uses this archive and the separate tutorial practice case; the original nine instant demos remain available in unconfigured local mode. Current/future daily solutions cannot be obtained through the replay endpoint.
+Past-case replay becomes available 240 seconds after the UTC date ends, protecting attempts started just before midnight. It returns the reconstruction for noncompetitive local practice and writes no official attempts. Connected mode uses this archive and the separate tutorial practice case; the original nine instant demos remain available in unconfigured local mode. Current/future daily solutions cannot be obtained through the replay endpoint.
 
 ## 6. Expired and interrupted attempts
 
-Enable `pg_cron` in Database > Extensions, then run `supabase/cron.sql` once. The job finalizes stale attempts every minute and prunes old rate-limit buckets. An attempt is always scored expired at its **150-second deadline**, regardless of when the cron job runs. It becomes score 0, elapsed 150, and status `timed_out`.
+Enable `pg_cron` in Database > Extensions, then run `supabase/cron.sql` once. The job finalizes stale attempts every minute and prunes old rate-limit buckets. A new attempt is always scored expired at its **240-second deadline**, regardless of when the cron job runs. It becomes score 0, elapsed 240, and status `timed_out`.
 
 An in-flight investigation remains resumable across a midnight refresh, then the next daily case can be opened when that attempt closes. Resume, action, and profile RPCs also finalize the player’s expired attempts immediately, so refreshing, closing a tab, or disabling JavaScript cannot restart or extend the timer. Clock display estimates use the server clock; final timing is determined inside the server transaction. If a request arrives after the deadline, it earns zero even if the client was showing time remaining. Allow a little margin when you confirm.
 
@@ -129,7 +129,7 @@ Use a staging project and two browser profiles to verify:
 - Reload an active attempt; start/deadline and purchased reports remain unchanged.
 - Purchase each category twice (also concurrent tabs); one charge and one purchase event.
 - Submit twice/concurrently; one final result. Manipulating local storage/clock cannot change the server result.
-- Close for over 150 seconds and resume; score 0. Confirm exactly at/after the boundary; score 0.
+- Close for over 240 seconds and resume; score 0. Confirm exactly at/after the boundary; score 0.
 - Finish tutorial, sign out/in, and verify the completion marker follows the player. Training must create no daily attempt.
 - Link a fresh Google identity to a guest; UUID and history stay the same.
 - Link an already-used Google identity; no silent merge, no overwritten history.

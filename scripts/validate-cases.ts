@@ -2,7 +2,7 @@ import { roomBookings, exposureWindows, outsideExposureChecks } from '../src/evi
 import assert from 'node:assert/strict';
 import { cases, caseFor, nyDate, friendNames, sampleCase, formatCaseText, evidence } from '../src/cases.ts';
 import { answerKeys } from '../src/answerKeys.ts';
-import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText, calculateScore } from '../src/gameRules.ts';
+import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText, calculateScore, upgradeDeadline } from '../src/gameRules.ts';
 assert.equal(cases.length,9);
 assert.equal(new Set(cases.map(c=>c.id)).size,cases.length);
 for(const c of cases){
@@ -27,9 +27,9 @@ assert.equal(caseFor('2026-10-30').id,'rehearsal');assert.equal(caseFor('2026-11
 assert.equal(caseFor('2026-11-08').id,caseFor('2026-10-30').id);
 assert.equal(nyDate(new Date('2026-10-30T03:59:59Z')),'2026-10-29');assert.equal(nyDate(new Date('2026-10-30T04:00:00Z')),'2026-10-30');
 const deadline=1000000;
-assert.equal(CASE_TIME_MS,150000);assert.equal(remainingMs(deadline,deadline+1),0);assert.equal(remainingMs(deadline,deadline-150000),150000);
-assert.equal(clockText(150000),'02:30');assert.equal(clockText(59999),'01:00');assert.equal(clockText(1),'00:01');assert.equal(clockText(0),'00:00');
-assert.equal(elapsedSeconds(deadline,deadline-CASE_TIME_MS),0);assert.equal(elapsedSeconds(deadline,deadline-1000),149);assert.equal(elapsedSeconds(deadline,deadline+10000),150);
+assert.equal(CASE_TIME_MS,240000);assert.equal(remainingMs(deadline,deadline+1),0);assert.equal(remainingMs(deadline,deadline-240000),240000);
+assert.equal(clockText(240000),'04:00');assert.equal(clockText(59999),'01:00');assert.equal(clockText(1),'00:01');assert.equal(clockText(0),'00:00');
+assert.equal(elapsedSeconds(deadline,deadline-CASE_TIME_MS),0);assert.equal(elapsedSeconds(deadline,deadline-1000),239);assert.equal(elapsedSeconds(deadline,deadline+10000),240);
 console.log('PASS: 9 case trees, contact/incubation constraints, historical scheduling, New York midnight, and deadline boundaries.');
 
 for(let day=0;day<9;day++){
@@ -52,12 +52,12 @@ console.log('PASS: 18-name roster, added friends, removed name, and complete exa
 
 const start=2000000, end=start+CASE_TIME_MS;
 const points=(seconds:number,cost=0,correct=true,relaxed=false)=>calculateScore({correct,evidenceCost:cost,deadlineAt:end,now:start+seconds*1000,relaxed});
-assert.equal(points(0).score,100);assert.equal(points(3).score,99);assert.equal(points(30,22).score,68);
-assert.equal(points(75,22).score,53);assert.equal(points(149,40).score,11);assert.equal(points(150).score,0);
-assert.equal(points(151).score,0);assert.equal(points(10,22,false).score,0);assert.equal(points(100,22,true,true).score,78);
+assert.equal(points(0).score,100);assert.equal(points(4.8).score,99);assert.equal(points(30,22).score,72);
+assert.equal(points(120,22).score,53);assert.equal(points(239,40).score,11);assert.equal(points(240).score,0);
+assert.equal(points(241).score,0);assert.equal(points(10,22,false).score,0);assert.equal(points(100,22,true,true).score,78);
 assert.equal(points(100,22,true,true).speedBonus,0);assert.equal(points(0,22).evidenceCost,22);
-assert.equal(points(2.999).score,100);assert.equal(points(3).score,99);assert.equal(points(3.001).score,99);
-for(let sec=1;sec<150;sec++)assert.ok(points(sec).score<=points(sec-1).score);
+assert.equal(points(4.799).score,100);assert.equal(points(4.8).score,99);assert.equal(points(4.801).score,99);
+for(let sec=1;sec<240;sec++)assert.ok(points(sec).score<=points(sec-1).score);
 const breakdown=points(30,22);assert.equal(breakdown.basePoints+breakdown.speedBonus-breakdown.evidenceCost,breakdown.score);
 assert.equal(calculateScore({correct:true,evidenceCost:0,now:start}).score,0);
 console.log('PASS: faster correct answers earn more, evidence costs stay fixed, exact time boundaries, zero for failures, untimed practice, and score breakdown.');
@@ -80,3 +80,10 @@ const {utcDate}=await import('../src/publicCase.ts');
 assert.equal(utcDate(new Date('2026-10-30T00:00:00Z')),'2026-10-30');
 assert.equal(utcDate(new Date('2026-10-29T23:59:59Z')),'2026-10-29');
 console.log('PASS: new UTC daily reset changes at exactly 00:00 UTC.');
+
+const upgraded=upgradeDeadline(200000,150000,100000);
+assert.deepEqual(upgraded,{deadlineAt:290000,durationMs:240000});
+assert.deepEqual(upgradeDeadline(upgraded.deadlineAt,upgraded.durationMs,101000),upgraded);
+assert.deepEqual(upgradeDeadline(100000,150000,100000),{deadlineAt:100000,durationMs:150000});
+assert.equal(calculateScore({correct:true,evidenceCost:22,deadlineAt:150000,now:30000,durationMs:150000}).score,68);
+console.log('PASS: one-time local timer extension, no revival/reset, and legacy 150-second score compatibility.');

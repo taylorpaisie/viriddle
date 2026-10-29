@@ -12,7 +12,7 @@ The seven-step interactive training lab, score simulator, profile interface, ran
 
 [Exact Supabase, Google OAuth, redirects, database, and hosting setup](docs/ACCOUNTS_SETUP.md).
 
-- Database schema and RLS: `supabase/migrations/202610290001_outbreak.sql`.
+- Database schema and RLS: `supabase/migrations/202610290001_outbreak.sql`; four-minute upgrade: `supabase/migrations/202610290002_four_minute_window.sql`.
 - Transactional server scoring and event ledger: the same migration’s restricted RPCs.
 - Stale-attempt cleanup job: `supabase/cron.sql`.
 - Public environment example: `.env.example`.
@@ -43,8 +43,8 @@ Vite prints the local development URL. The production output is `dist/`.
 - Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Lucy, Brittany, Nídia, Luis, Selim, Nate, Cherie, Bob, Bret, Luke, Joicy, Ben, Anthony, and Hamilton. Six appear in each daily case; examples use different combinations.
 - Deterministic daily scheduling with midnight UTC reset; original case-to-date and name rotation rules are retained.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
-- Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 3 seconds. Six evidence options: room booking logs (4), incubation analysis (6), interviews (10), contact tracing (12), outside-exposure checks (14), and sequencing (18). Costs stack and scores cannot fall below zero.
-- A 2½-minute daily response window, yellow warning at one minute, and coral warning at 30 seconds.
+- Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 4.8 seconds. Six evidence options: room booking logs (4), incubation analysis (6), interviews (10), contact tracing (12), outside-exposure checks (14), and sequencing (18). Costs stack and scores cannot fall below zero.
+- A 4-minute daily response window, yellow warning at one minute, and coral warning at 30 seconds.
 - Incorrect answers and expired windows earn zero. Untimed practice uses 100 base points minus evidence costs, without a speed bonus. Results and shared cards show the time and earned bonus. Completed historical scores are preserved.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
 - Browser-local completion records, scores, streaks, statistics, and spoiler-free sharing.
@@ -85,7 +85,7 @@ The Sites deployment is separate and is updated through Sites, not by this GitHu
 
 ## NEON LAB theme
 
-The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. The NEON LAB redesign preserves the 150-second timer, evidence prices, and time-based scoring. The accounts expansion changes the shared reset to midnight UTC and adds optional server-validated play.
+The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. The NEON LAB redesign preserves the 240-second timer, evidence prices, and time-based scoring. The accounts expansion changes the shared reset to midnight UTC and adds optional server-validated play.
 
 ## Reading the evidence
 
