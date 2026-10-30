@@ -185,3 +185,10 @@ for(const c of simpleExamples){
  assert.ok(!c.brief.includes(key.explanation));
 }
 console.log('PASS: thirteen practice examples always include Darren; three simple three-patient mysteries have distinct source positions and valid transmission windows.');
+
+const {practiceCatalog}=await import('../src/practiceCatalog.ts');
+for(const item of practiceCatalog){const c=practiceFixtures.find(c=>c.id===item.id)!;assert.ok(c);assert.equal(item.title,c.title);}
+assert.equal(simpleExamples.filter(c=>c.pathogen.includes('bacterium')).length,1);
+assert.equal(simpleExamples.filter(c=>c.pathogen.includes('virus')).length,2);
+for(const c of simpleExamples){assert.ok(c.pathogen.includes('fictional'));assert.ok(c.interviewNote.includes('invented pathogen'));}
+console.log('PASS: easy cases include fictional viral and bacterial outbreaks, explicit teaching assumptions and consistent public catalog titles.');
