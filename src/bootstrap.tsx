@@ -17,3 +17,6 @@ import './case-closed.css';
 import './game-lobby.css';
 
 import './friends.css';
+
+
+import './casefile.css';
