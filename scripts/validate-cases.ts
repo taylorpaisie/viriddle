@@ -177,6 +177,10 @@ const {practiceFixtures}=await import('../src/practiceFixtures.ts');
 const {simpleExamples,simpleSolutions}=await import('../src/simpleExamples.ts');
 assert.equal(practiceFixtures.length,13);
 for(const c of practiceFixtures){assert.equal(c.patients.filter(p=>p.name==='Darren').length,1);assert.equal(new Set(c.patients.map(p=>p.name)).size,c.patients.length);}
+const anyaPractice=simpleExamples.find(c=>c.id==='duck-press')!;
+assert.deepEqual(anyaPractice.patients.map(p=>p.name),['Darren','Carla','Anya']);
+assert.ok(!JSON.stringify([anyaPractice,simpleSolutions[anyaPractice.id],evidenceReports(anyaPractice)]).includes('Lucy'),'Anya replaces Lucy throughout this practice case');
+assert.ok(simpleExamples.filter(c=>c.id!=='duck-press').every(c=>c.patients.some(p=>p.name==='Lucy')),'Lucy stays in the other practice cases');
 assert.equal(simpleExamples.length,3);assert.equal(new Set(simpleExamples.map(c=>simpleSolutions[c.id].source)).size,3);
 for(const c of simpleExamples){
  assert.equal(c.patients.length,3);const key=simpleSolutions[c.id];assert.equal(key.tree.length,2);
@@ -210,3 +214,4 @@ console.log('PASS: grounded fictional comedy, legacy flavor replacement, idempot
 
 assert.ok(shared.startsWith('Viriddle #'));
 console.log('PASS: corrected Viriddle share branding; legacy storage and result payload formats unchanged.');
+
