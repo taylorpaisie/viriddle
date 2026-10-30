@@ -157,3 +157,11 @@ The mobile-first Casefile entrance keeps the neon pink/cyan palette, adds a dail
 
 The public game name is **Viriddle**. Header/mobile/share wordmarks and social previews use corrected vector artwork with the existing globe motif. Page metadata, result scorecards, invitation copy and tutorial text use the corrected spelling. Repository/site URLs, player/database identities, result-link encoding and browser storage keys remain unchanged for compatibility.
 
+
+## Navigation and clue reading
+
+Phones have persistent Today / Practice / Friends / More destinations outside investigations. Inside a case, a dedicated four-step dock (Patients / Clues / Board / Answer) keeps the timer, potential score and next action within reach. Desktop uses the same destinations and numbered investigation steps. More uses the existing accessible dialog and supports Escape and focus restoration. Case rules and score arithmetic can be expanded without taking over the investigation screen.
+
+The clue lab separates its shop from My reports. A newly purchased report opens only after the unlocked evidence state confirms the purchase; reopening reports is free. Only purchased categories enter the report picker, including in local mode where authoring fixtures contain locked data. Pins still feed the existing notebook. Answer submission still goes through the original confirmation action. An in-memory Resume/Review banner on Home returns to the currently loaded case without fetching another or restarting its clock. Reload behavior and server attempt limits remain unchanged.
+
+Practice initially shows the three short cases; All practice cases keeps the full library available. These are presentation changes shared by local and connected apps, with no database, case scheduling, timer, scoring, price, authentication, sharing, league, or theme-preference changes. `npm run test:navigation` covers clue gating, report switching, free reopening, pin/board routes, run-state isolation, answer confirmation controls, global destinations and menu dismissal; it runs with `npm test`.

@@ -11,3 +11,6 @@ dist/
 supabase/.temp/
 
 .league-test-*/
+
+
+.navigation-test-*/
