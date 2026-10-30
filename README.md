@@ -121,3 +121,9 @@ The supplied primary horizontal PNG is used in the desktop header; a responsive 
 ### Case-closed experience
 
 The results screen now leads with a verdict, the unchanged awarded score and a spoiler-free sharing card. Sharing includes the correct site URL, works through native sharing or clipboard, and offers selectable text if clipboard access is unavailable. Three guided deduction steps use only the completed case's returned solution; the full reconstruction and scientific caveats remain available in an accessible disclosure. The return panel shows the UTC countdown, current participation streak and practice navigation. Practice is clearly labeled. Existing scores, timers, evidence costs, authentication and daily selection are unchanged. No feedback/analytics collection was added.
+
+### Shareable result links
+
+“Copy result” copies the spoiler-free scorecard plus its link; “Copy result link” copies just the URL. Native sharing sends the message and URL separately. Links open a read-only, no-login shared-card landing page with a play button. The fragment contains only allowlisted score fields, case number/date, elapsed time and mode; no patient identities, answer key, account ID or notebook text. Shared cards are player-supplied previews, not server-verified records, and never write to official scores, streaks or leaderboards. Invalid links show a recoverable message. Existing Google callbacks and the normal game route remain intact.
+
+Mobile result sharing prioritizes the native share sheet, 52px primary actions and 48px copy targets. The large duplicate score is hidden on phones, while the scorecard and breakdown remain readable. Copy-result and copy-link actions stay side by side on common phone widths, with a stacked fallback on very narrow displays. Shared links use a compact mobile landing page and a clear play button; no login is needed to view a card.

@@ -145,3 +145,15 @@ assert.throws(()=>shareResult({run:{started:true,unlocked:[],selected:null},numb
 for(let i=0;i<cases.length;i++){const c=sampleCase(i),steps=deductionSteps(c,answerKeys[c.id]);assert.equal(steps.length,3);assert.ok(steps.every(s=>s.title&&s.text));}
 assert.ok(deductionSteps(hospital,answerKeys[hospital.id])[2].text.includes('unresolved'));
 console.log('PASS: spoiler-free share text, game links, practice labels, zero/timeout scores, finalized-result guard, and three deductions for every case.');
+
+const {sharedScore,resultLink,readResultLink}=await import('../src/shareLink.ts');
+const card=sharedScore(closedRun,'029',4,'daily');
+const receipt=resultLink('https://taylorpaisie.github.io/viriddle/?code=old#old',card);
+assert.ok(receipt.startsWith('https://taylorpaisie.github.io/viriddle/#result='));assert.ok(!receipt.includes('code='));
+assert.deepEqual(readResultLink(new URL(receipt).hash),card);
+assert.equal(readResultLink('#access_token=untouched'),null);assert.equal(readResultLink('#result=bad!'),null);assert.equal(readResultLink('#result='+'x'.repeat(701)),null);
+for(const bad of [{...card,score:101},{...card,correct:false,score:50},{...card,used:7},{...card,number:'<script>'},{...card,date:'2026-02-30'},{...card,mode:'ranked-admin'}])assert.equal(readResultLink(new URL(resultLink(shareUrl,bad)).hash),null);
+const extra=readResultLink(new URL(resultLink(shareUrl,{...card,patient:'DO_NOT_RETAIN',user_id:'PRIVATE'} as any)).hash)!;
+assert.equal('patient' in extra,false);assert.equal('user_id' in extra,false);
+assert.equal(sharedScore(closedRun,'LAB-01',4,'sample').mode,'practice');
+console.log('PASS: read-only result link round trips, base paths, callback stripping, payload limits, invalid-link rejection and allowlisted fields.');
