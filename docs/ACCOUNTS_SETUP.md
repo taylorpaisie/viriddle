@@ -1,4 +1,4 @@
-# Enable OUTBREAK accounts and official daily play
+# Virriddle accounts and daily play
 
 The deployed site intentionally remains in local mode until both public Supabase build variables are set. Google, cloud saves, and live leaderboards are **not configured or verified** by this code change. The UI states that clearly. No credentials have been created or supplied.
 
@@ -150,3 +150,11 @@ The database serializes mutations with row locks, has uniqueness constraints, an
 - https://supabase.com/docs/guides/auth/redirect-urls
 - https://supabase.com/docs/guides/database/postgres/row-level-security
 - https://supabase.com/docs/guides/database/functions
+
+## Connected deployment preparation
+
+Supabase project `jlvjascwjghyxnljwflx` in organization `cwqkboyjarrovwbnfjaw` has both migrations applied. The primary Site URL and exact Sites/GitHub Pages return URLs are configured. Anonymous sign-ins and manual identity linking were enabled with explicit owner approval and a guest profile request was verified. Google now shows ENABLED.
+
+`config/public-services.ts` contains only the public project URL and publishable browser key. Both static deployments use this as their default at build time, so they do not depend on separately maintained GitHub Actions Variables. A paired VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY overrides it; VITE_PLAY_MODE=local explicitly selects the offline app. No Google secret or service-role key is committed.
+
+Activation is staged pending owner approval to upload the existing sample cases dated October 29–November 12, 2026 into this project. The database still has no cases; do not deploy the connected build while that is unresolved. The sample answers are already public, so this is prototype server-validated play rather than a cheat-resistant launch. Older browser-local scores remain on the device and are not imported into verified records.
