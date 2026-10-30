@@ -1,8 +1,8 @@
-# Virriddle
+# Viriddle
 
 Created by **Taylor Paisie**, a data analyst and bioinformatics researcher.
 
-A daily epidemiological detective game: investigate six fictional patients, purchase evidence, and identify the source of a five-person transmission cluster. The game interface and shared results are branded Virriddle.
+A daily epidemiological detective game: investigate six fictional patients, purchase evidence, and identify the source of a five-person transmission cluster. The game interface and shared results are branded Viriddle.
 
 [Play on Sites](https://outbreak-daily-detective.tinylion32770.chatgpt.site)
 
@@ -93,12 +93,12 @@ A free, collapsible evidence field guide is available in the evidence room, tuto
 
 ## Refined Lab presentation
 
-Virriddle pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the five-minute timer, evidence prices, and the 18-name pool are unchanged.
+Viriddle pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the five-minute timer, evidence prices, and the 18-name pool are unchanged.
 
 ### Reference mystery: The Mothman Meltdown
 The first demo turns the October Cluster into a chaotic cryptid-festival mystery, with a short briefing and no more than 550 words across story and optional evidence. Six first-person accounts, named room bookings, corroborated encounters, and a five-part post-answer debrief support a 3–4 minute session. The five-minute clock, evidence prices, patient rotation, source and transmission tree remain unchanged. Contact detail fields are stripped from connected public fixtures; the expanded reveal is part of the private solution. Existing published server fixtures are not overwritten.
 
-The Virriddle display-name update retains the existing repository and site URLs, database function names, and browser storage keys so saved progress and integrations continue to work.
+The Viriddle display-name update retains the existing repository and site URLs, database function names, and browser storage keys so saved progress and integrations continue to work.
 
 ### Connected build configuration
 `config/public-services.ts` supplies the public Supabase URL and publishable key for both static deployments. Environment overrides must be supplied as a pair. Use `VITE_PLAY_MODE=local npm run dev` for the offline sample library. The connected build excludes offline case evidence and answer keys. Google sign-in is active. Fifteen approved sample cases are loaded through November 12, 2026; new case data must be published before that schedule ends. See docs/ACCOUNTS_SETUP.md.
@@ -147,3 +147,8 @@ Friend leagues now accept browser-backed guest sessions. Open a valid invitation
 ### Casefile layout
 
 The mobile-first Casefile entrance keeps the neon pink/cyan palette, adds a daily numbered dossier with one primary open action, and moves illustrative clues into an optional spoiler-free preview. The shared finish carries folder-style edges through briefings, patients, evidence and results. No timing, scoring, evidence prices, authentication or league rules change. Local phone QA is available at `tests/casefile-phone-preview.html` (run with `VITE_PLAY_MODE=local`; `?width=320` tests the narrow layout).
+
+
+### Viriddle spelling correction
+
+The public game name is **Viriddle**. Header/mobile/share wordmarks and social previews use corrected vector artwork with the existing globe motif. Page metadata, result scorecards, invitation copy and tutorial text use the corrected spelling. Repository/site URLs, player/database identities, result-link encoding and browser storage keys remain unchanged for compatibility.

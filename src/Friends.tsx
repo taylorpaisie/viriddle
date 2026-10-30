@@ -8,7 +8,7 @@ export type LeagueRow={player_id:string;display_name:string;is_me:boolean;points
 export type Member={player_id:string;display_name:string;is_me:boolean;is_owner:boolean;join_date:string};
 export type Standings={id:string;name:string;is_owner:boolean;scope:string;start_date:string;end_date:string;today:string;today_unlocked:boolean;counted_through:string;rows:LeagueRow[];members:Member[];invite_expires_at:string|null};
 type Api=(name:string,args?:Record<string,unknown>)=>Promise<any>;
-const privacy='Joining shares your Virriddle display name and eligible official daily scores with league members. Public leaderboard participation remains a separate opt-in.';
+const privacy='Joining shares your Viriddle display name and eligible official daily scores with league members. Public leaderboard participation remains a separate opt-in.';
 const statusText:Record<string,string>={finished:'Finished',investigating:'Investigating',not_started:'Not played yet'};
 function utcDate(date:string){return new Date(date+'T12:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});}
 export function FriendsPage({route,navigate,onPlay}:{route:LeagueRoute;navigate:(r:LeagueRoute)=>void;onPlay:()=>void}){
@@ -50,7 +50,7 @@ export function LeagueWorkspace({route,navigate,onPlay,linked,sessionReady=linke
  async function mutation(action:string,member?:Member){await checked('outbreak_league_manage',{p_action:action,p_group:route.group,...(member?{p_member:member.player_id}:{})});if(!alive.current)return;setConfirm(null);setInvite(null);setNotice(action==='remove'?'Member removed.':action==='delete'?'League deleted.':'You left the league.');setRevision(n=>n+1);if(action!=='remove')navigate({});}
  async function revoke(){await checked('outbreak_league_invite',{p_group:route.group,p_action:'revoke'});if(!alive.current)return;setInvite(null);setConfirm(null);setNotice('Invitation revoked. Old links can no longer be used.');setRevision(n=>n+1);}
  async function copy(){if(!invite)return;try{await navigator.clipboard.writeText(invite.url);setNotice('Invitation copied. Paste it into your private chat.');setFallback(false)}catch{setFallback(true);setNotice('Select and copy the invitation below.');}}
- async function share(){if(!invite)return;try{if(navigator.share){await navigator.share({title:'Join '+(view?.name??'my Virriddle league'),text:'Compare our daily Virriddle investigations in a private league.',url:invite.url});return;}}catch(e){if((e as Error).name==='AbortError')return;}await copy();}
+ async function share(){if(!invite)return;try{if(navigator.share){await navigator.share({title:'Join '+(view?.name??'my Viriddle league'),text:'Compare our daily Viriddle investigations in a private league.',url:invite.url});return;}}catch(e){if((e as Error).name==='AbortError')return;}await copy();}
  function back(){clearLeagueInvite(leagueSessionStorage());setError('');setNotice('');navigate({});}
  const inviteRoute=!!route.invite||route.invalidInvite;
  return <section className="friends-page community-page"><div className="friends-heading"><div><div className="eyebrow">PRIVATE FRIEND LEAGUES</div><h1>Same mystery.<br/><span className="teal">Your people.</span></h1></div><button className="secondary" onClick={onPlay}>Play today <ArrowRight size={18}/></button></div>
@@ -63,4 +63,5 @@ export function LeagueWorkspace({route,navigate,onPlay,linked,sessionReady=linke
  {confirm&&<Dialog title="Confirm league action" onClose={()=>!working&&setConfirm(null)}><>{error&&<p role="alert" className="error-message">{error}</p>}</><h2>{confirm.action==='generate'?'Replace the invitation?':confirm.action==='revoke'?'Revoke the invitation?':confirm.action==='remove'?'Remove '+confirm.member?.display_name+'?':confirm.action==='delete'?'Delete this league?':'Leave this league?'}</h2><p>{confirm.action==='delete'?'This deletes the league and all its memberships. Official daily results stay in each player’s own record.':confirm.action==='generate'||confirm.action==='revoke'?'Anyone using an older invitation will need a new link. Existing memberships are unaffected.':confirm.action==='remove'?'This member loses access. Revoke or regenerate the invitation too if you do not want them to rejoin using the current link.':'Your official results stay in your own record. Rejoining uses a new UTC join date.'}</p><button className="primary" disabled={working} onClick={()=>act(()=>confirm.action==='generate'?generate():confirm.action==='revoke'?revoke():mutation(confirm.action,confirm.member))}>{working?'Saving…':'Confirm'}</button><button className="text-button" disabled={working} onClick={()=>setConfirm(null)}>Cancel</button></Dialog>}
  </section>;
 }
+
 
