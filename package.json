@@ -5,14 +5,15 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite --host 0.0.0.0",
-    "test": "npm run typecheck && npm run test:cases && npm run test:backend && npm run test:leagues && npm run test:league-ui",
+    "test": "npm run typecheck && npm run test:theme && npm run test:cases && npm run test:backend && npm run test:leagues && npm run test:league-ui",
     "test:backend": "node scripts/validate-backend.mjs",
     "cases:sql": "node --experimental-strip-types scripts/generate-case-sql.ts",
     "typecheck": "tsc --noEmit",
     "test:cases": "node --experimental-strip-types scripts/validate-cases.ts",
     "test:connected": "node scripts/check-connected-build.mjs",
     "test:leagues": "node scripts/validate-leagues.mjs",
-    "test:league-ui": "node scripts/validate-league-ui.mjs"
+    "test:league-ui": "node scripts/validate-league-ui.mjs",
+    "test:theme": "node scripts/validate-theme.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0",

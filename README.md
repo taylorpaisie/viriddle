@@ -87,6 +87,10 @@ The Sites deployment is separate and is updated through Sites, not by this GitHu
 
 The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. The NEON LAB redesign preserves the 300-second timer, evidence prices, and time-based scoring. The accounts expansion changes the shared reset to midnight UTC and adds optional server-validated play.
 
+### Light and dark appearance
+
+The sun/moon button in the header switches the entire site, including investigations, Friends and shared results. New visitors follow their device preference; choosing either mode saves `viriddle-theme-v1` in browser-local storage, independently of account identity and game progress. Other tabs synchronize the choice. The small initializer in `index.html` applies it before rendering to avoid a flash of the wrong theme. If storage is blocked, switching still works for the current page. `src/themes.css` defines light-mode colors and shared surface tokens; the original dark neon palette remains in `src/neon-lab.css`. Light mode uses darker pink/cyan ink for WCAG AA text contrast. `npm run test:theme` covers initialization, persistence, system preferences, cross-tab updates, blocked storage, progress isolation and palette contrast, and runs with `npm test`.
+
 ## Reading the evidence
 
 A free, collapsible evidence field guide is available in the evidence room, tutorial, and Rules & Scoring. It explains every tool, SNP distances, incubation-window checks, separate introductions, and the limits of contact and genomic evidence, using a generic worked example without daily spoilers. Opening the guide does not purchase evidence or change the score.
@@ -152,3 +156,4 @@ The mobile-first Casefile entrance keeps the neon pink/cyan palette, adds a dail
 ### Viriddle spelling correction
 
 The public game name is **Viriddle**. Header/mobile/share wordmarks and social previews use corrected vector artwork with the existing globe motif. Page metadata, result scorecards, invitation copy and tutorial text use the corrected spelling. Repository/site URLs, player/database identities, result-link encoding and browser storage keys remain unchanged for compatibility.
+
