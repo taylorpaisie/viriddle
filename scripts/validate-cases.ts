@@ -137,10 +137,12 @@ const {shareResult,deductionSteps}=await import('../src/resultTools.ts');
 const closedRun={started:true,selected:1,unlocked:['interviews','contacts'],result:{correct:true,score:78,date:'2026-10-30',evidenceTotal:6,elapsedSeconds:70}};
 const shareUrl='https://taylorpaisie.github.io/viriddle/';
 const shared=shareResult({run:closedRun,number:'029',streak:4,mode:'daily',url:shareUrl});
-assert.ok(shared.includes('Score: 78/100'));assert.ok(shared.includes('Evidence: 🔬 2/6'));assert.ok(shared.includes(shareUrl));assert.ok(shared.includes('Streak: 🔥 4 days'));
+assert.equal(shared,`Virriddle #029 🦠\n🟩 Solved · 78/100\n🔬 🟪🟪⬛⬛⬛⬛ 2/6\n⏱️ 01:10\n🔥 4 days streak\n\nCan you trace it?\n${shareUrl}`);
 for(const name of [...friendNames,...cases.flatMap(c=>c.patients.map(p=>p.name))])assert.ok(!new RegExp('\\b'+name+'\\b').test(shared),'Sharing excludes patient identities');
-const practiceText=shareResult({run:{...closedRun,relaxed:true},number:'LAB-01',streak:4,mode:'sample',url:shareUrl});assert.ok(practiceText.includes('Practice · no daily score changes'));assert.ok(!practiceText.includes('Streak:'));
-const expiredText=shareResult({run:{...closedRun,result:{...closedRun.result,correct:false,score:0,timedOut:true}},number:'029',streak:4,mode:'daily',url:shareUrl});assert.ok(expiredText.includes('Out of time'));assert.ok(expiredText.includes('Score: 0/100'));
+const practiceText=shareResult({run:{...closedRun,relaxed:true},number:'LAB-01',streak:4,mode:'sample',url:shareUrl});assert.ok(practiceText.includes('Practice · no daily score changes'));assert.ok(!practiceText.includes('streak'));assert.ok(practiceText.includes('⏱️ Untimed'));
+const expiredText=shareResult({run:{...closedRun,result:{...closedRun.result,correct:false,score:0,timedOut:true}},number:'029',streak:4,mode:'daily',url:shareUrl});assert.ok(expiredText.includes('Out of time'));assert.ok(expiredText.includes('· 0/100'));
+assert.ok(shareResult({run:{...closedRun,unlocked:[]},number:'029',streak:1,mode:'daily',url:shareUrl}).includes('🔬 ⬛⬛⬛⬛⬛⬛ 0/6\n⏱️ 01:10\n🔥 1 day streak'));
+assert.ok(shareResult({run:{...closedRun,result:{...closedRun.result,correct:false,score:0}},number:'029',streak:0,mode:'daily',url:shareUrl}).includes('🟥 Unsolved · 0/100'));
 assert.throws(()=>shareResult({run:{started:true,unlocked:[],selected:null},number:'029',streak:0,mode:'daily',url:shareUrl}));
 for(let i=0;i<cases.length;i++){const c=sampleCase(i),steps=deductionSteps(c,answerKeys[c.id]);assert.equal(steps.length,3);assert.ok(steps.every(s=>s.title&&s.text));}
 assert.ok(deductionSteps(hospital,answerKeys[hospital.id])[2].text.includes('unresolved'));

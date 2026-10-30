@@ -13,3 +13,6 @@
  .shared-result-page>header{height:68px}.shared-result-page>main{padding:16px 16px 28px}.shared-intro{margin:4px 0 18px}.shared-intro .eyebrow{font-size:10px;letter-spacing:1px}.shared-intro h1{font-size:28px;line-height:1.15;letter-spacing:-1px;margin:10px 0}.shared-intro p{font-size:14px}.shared-footnote{font-size:13px;margin:18px 0}.deduction-reveal{margin-top:18px}
 }
 @media(max-width:330px){.copy-result-actions{grid-template-columns:1fr}.ticket-stats b{font-size:18px}}
+/* Compact emoji scorecard, ready for a daily-game group chat. */
+.share-preview pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px;line-height:1.85;padding:16px 12px;background:var(--background);border:1px solid var(--border);border-radius:12px;text-align:left;margin:8px 0}.share-tile-key{font-size:11px;line-height:1.6;color:var(--text-secondary);margin:8px 0 0}.share-preview summary{font-size:14px;color:var(--secondary)}
+@media(max-width:700px){.share-main{gap:10px;font-size:16px!important}.share-preview pre{font-size:13px;padding:14px 10px;line-height:1.9}}

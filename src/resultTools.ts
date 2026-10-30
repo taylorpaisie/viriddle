@@ -3,7 +3,11 @@ import {formatCaseText,hypothesisLabel} from './publicCase.ts';
 import {clockText} from './gameRules.ts';
 export function shareResult({run,number,streak,mode,url}:{run:Run;number:string;streak:number;mode:string;url:string}){
  const r=run.result;if(!r)throw Error('Results are available only after a case closes.');
- return [`Virriddle #${number} 🦠${mode==='daily'?'':' · '+mode.toUpperCase()}`,'',`Verdict: ${r.timedOut?'⏱ Out of time':r.correct?'🟩 Case cracked':'🟥 Case unsolved'}`,`Score: ${r.score}/100`,`Evidence: 🔬 ${run.unlocked.length}/${r.evidenceTotal??3}`,r.elapsedSeconds!==undefined?`Time: ${clockText(r.elapsedSeconds*1000)}${r.timedOut?' · expired':''}`:run.relaxed?'Time: untimed practice':'',mode==='daily'?`Streak: 🔥 ${streak} days`:'Practice · no daily score changes','',`Your turn to investigate. 🧬`,url].filter((line,i,all)=>line!==''||all[i-1]!=='').join('\n');
+ const total=r.evidenceTotal??3,used=Math.min(run.unlocked.length,total);
+ const tiles='🟪'.repeat(used)+'⬛'.repeat(total-used);
+ const verdict=r.timedOut?'⏱️ Out of time':r.correct?'🟩 Solved':'🟥 Unsolved';
+ const time=run.relaxed?'Untimed':r.elapsedSeconds!==undefined?clockText(r.elapsedSeconds*1000):null;
+ return [`Virriddle #${number} 🦠${mode==='daily'?'':' · PRACTICE'}`,`${verdict} · ${r.score}/100`,`🔬 ${tiles} ${used}/${total}`,time?`⏱️ ${time}`:null,mode==='daily'?`🔥 ${streak} day${streak===1?'':'s'} streak`:'Practice · no daily score changes','','Can you trace it?',url].filter(line=>line!==null).join('\n');
 }
 export function deductionSteps(c:Case,solution:Solution):{title:string;text:string}[]{
  if(solution.reveal&&solution.reveal.length>=3)return [solution.reveal[0],solution.reveal[1],solution.reveal.at(-1)!].map(s=>({title:formatCaseText(c,s.title),text:formatCaseText(c,s.text)}));
