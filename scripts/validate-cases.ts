@@ -132,3 +132,16 @@ assert.ok(visibleClues(hospitalReports,['outside']).every(r=>r.category==='outsi
 assert.deepEqual(cleanNotebook({pinned:['outside:0','outside:0','bad'],marks:{0:'possible',6:'possible',1:'auto-answer'},note:'x'.repeat(650)}),{pinned:['outside:0'],marks:{0:'possible'},note:'x'.repeat(600)});
 assert.deepEqual(cleanNotebook(null),{pinned:[],marks:{},note:''});
 console.log('PASS: notebook validation, locked evidence isolation, contact gating, duplicate event merging, and distinct collection/report dates.');
+
+const {shareResult,deductionSteps}=await import('../src/resultTools.ts');
+const closedRun={started:true,selected:1,unlocked:['interviews','contacts'],result:{correct:true,score:78,date:'2026-10-30',evidenceTotal:6,elapsedSeconds:70}};
+const shareUrl='https://taylorpaisie.github.io/viriddle/';
+const shared=shareResult({run:closedRun,number:'029',streak:4,mode:'daily',url:shareUrl});
+assert.ok(shared.includes('Score: 78/100'));assert.ok(shared.includes('Evidence: 🔬 2/6'));assert.ok(shared.includes(shareUrl));assert.ok(shared.includes('Streak: 🔥 4 days'));
+for(const name of [...friendNames,...cases.flatMap(c=>c.patients.map(p=>p.name))])assert.ok(!new RegExp('\\b'+name+'\\b').test(shared),'Sharing excludes patient identities');
+const practiceText=shareResult({run:{...closedRun,relaxed:true},number:'LAB-01',streak:4,mode:'sample',url:shareUrl});assert.ok(practiceText.includes('Practice · no daily score changes'));assert.ok(!practiceText.includes('Streak:'));
+const expiredText=shareResult({run:{...closedRun,result:{...closedRun.result,correct:false,score:0,timedOut:true}},number:'029',streak:4,mode:'daily',url:shareUrl});assert.ok(expiredText.includes('Out of time'));assert.ok(expiredText.includes('Score: 0/100'));
+assert.throws(()=>shareResult({run:{started:true,unlocked:[],selected:null},number:'029',streak:0,mode:'daily',url:shareUrl}));
+for(let i=0;i<cases.length;i++){const c=sampleCase(i),steps=deductionSteps(c,answerKeys[c.id]);assert.equal(steps.length,3);assert.ok(steps.every(s=>s.title&&s.text));}
+assert.ok(deductionSteps(hospital,answerKeys[hospital.id])[2].text.includes('unresolved'));
+console.log('PASS: spoiler-free share text, game links, practice labels, zero/timeout scores, finalized-result guard, and three deductions for every case.');

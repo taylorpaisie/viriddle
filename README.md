@@ -117,3 +117,7 @@ Patients → Clues → Board → Solve provides one consistent working area on d
 ### Branding kit integration
 
 The supplied primary horizontal PNG is used in the desktop header; a responsive `<picture>` switches to the compact PNG on phones (700px and below). Original PNGs preserve the exact supplied wordmark without requiring an external font. CSS clips transparent padding; the original files are unchanged. Globe SVG/ICO favicons, Apple touch icon and social preview use the kit assets under `public/brand/`. Asset URLs respect the Vite base path; link-preview URLs target the corresponding Sites or GitHub Pages origin. Optional `VITE_PUBLIC_SITE_URL` overrides that origin for a future custom domain. Existing theme variables, accounts and gameplay rules are untouched.
+
+### Case-closed experience
+
+The results screen now leads with a verdict, the unchanged awarded score and a spoiler-free sharing card. Sharing includes the correct site URL, works through native sharing or clipboard, and offers selectable text if clipboard access is unavailable. Three guided deduction steps use only the completed case's returned solution; the full reconstruction and scientific caveats remain available in an accessible disclosure. The return panel shows the UTC countdown, current participation streak and practice navigation. Practice is clearly labeled. Existing scores, timers, evidence costs, authentication and daily selection are unchanged. No feedback/analytics collection was added.
