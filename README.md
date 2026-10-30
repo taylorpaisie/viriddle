@@ -99,3 +99,6 @@ Virriddle pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired
 The first demo turns the October Cluster into a chaotic cryptid-festival mystery, with a short briefing and no more than 550 words across story and optional evidence. Six first-person accounts, named room bookings, corroborated encounters, and a five-part post-answer debrief support a 3–4 minute session. The four-minute clock, evidence prices, patient rotation, source and transmission tree remain unchanged. Contact detail fields are stripped from connected public fixtures; the expanded reveal is part of the private solution. Existing published server fixtures are not overwritten.
 
 The Virriddle display-name update retains the existing repository and site URLs, database function names, and browser storage keys so saved progress and integrations continue to work.
+
+### Connected build configuration
+`config/public-services.ts` supplies the public Supabase URL and publishable key for both static deployments. Environment overrides must be supplied as a pair. Use `VITE_PLAY_MODE=local npm run dev` for the offline sample library. The connected build excludes offline case evidence and answer keys. Google activation is currently staged pending approval of the initial sample-case upload; see docs/ACCOUNTS_SETUP.md.
