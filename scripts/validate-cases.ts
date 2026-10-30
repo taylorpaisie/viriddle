@@ -192,3 +192,7 @@ assert.equal(simpleExamples.filter(c=>c.pathogen.includes('bacterium')).length,1
 assert.equal(simpleExamples.filter(c=>c.pathogen.includes('virus')).length,2);
 for(const c of simpleExamples){assert.ok(c.pathogen.includes('fictional'));assert.ok(c.interviewNote.includes('invented pathogen'));}
 console.log('PASS: easy cases include fictional viral and bacterial outbreaks, explicit teaching assumptions and consistent public catalog titles.');
+
+const legacyHospital=sampleCase(9);const priorDarren='Darren has proposed a hospital waiting-room board game called Name That Pathogen. The infection-prevention team has returned it with forty-seven corrections.';
+const revisedHospital=withDarrenStory({...legacyHospital,brief:legacyHospital.brief+' '+priorDarren});
+assert.ok(!revisedHospital.brief.includes(priorDarren));assert.equal((revisedHospital.brief.match(/Which version are we telling them/g)??[]).length,1);
