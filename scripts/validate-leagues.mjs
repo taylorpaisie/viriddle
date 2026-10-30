@@ -11,13 +11,17 @@ for(const name of (await fs.readdir(new URL('../supabase/migrations/',import.met
 const ids=Array.from({length:6},(_,i)=>'11111111-1111-4111-8111-'+String(i+1).padStart(12,'0'));
 const [owner,member,outsider,guest,emailOnly,second]=ids;
 for(const [i,id] of ids.entries()){
- await q('insert into auth.users(id,is_anonymous,email,raw_user_meta_data) values($1,$2,$3,$4)',[id,id===guest,'SECRET_EMAIL_'+i+'@example.com',JSON.stringify({provider:'google',full_name:'SECRET_GOOGLE_NAME_'+i})]);
- if(id!==guest&&id!==emailOnly)await q("insert into auth.identities values($1,'google')",[id]);
+ await q('insert into auth.users(id,is_anonymous,email,raw_user_meta_data) values($1,$2,$3,$4)',[id,(id===guest||id===member),'SECRET_EMAIL_'+i+'@example.com',JSON.stringify({provider:'google',full_name:'SECRET_GOOGLE_NAME_'+i})]);
+ if(id!==guest&&id!==member&&id!==emailOnly)await q("insert into auth.identities values($1,'google')",[id]);
 }
 const admin=()=>db.exec('reset role');
 const user=async(id)=>{await admin();await q("select set_config('request.jwt.claim.sub',$1,false)",[id]);await db.exec('set role authenticated');};
 const api=async(name,args=[])=>{const params=args.map((_,i)=>'$'+(i+1)).join(',');return (await q(`select public.${name}(${params}) as r`,args))[0].r;};
-for(const id of [guest,emailOnly]){await user(id);await assert.rejects(()=>api('outbreak_leagues'),/Google/);await assert.rejects(()=>api('outbreak_league_manage',['create',null,'Fake Google']));}
+// Both an anonymous browser identity and an email-only identity can use leagues without Google.
+for(const id of [guest,emailOnly]){await user(id);assert.deepEqual(await api('outbreak_leagues'),[]);const g=(await api('outbreak_league_manage',['create',null,'Guest crew'])).id;assert.ok(g);assert.equal((await api('outbreak_leagues'))[0].is_owner,true);await api('outbreak_league_manage',['delete',g]);}
+// An authenticated role without a real player session still has no access.
+await user('');await assert.rejects(()=>api('outbreak_leagues'),/Sign in|guest/);
+
 await user(owner);const group=(await api('outbreak_league_manage',['create',null,'Genome Gnomes'])).id;
 assert.ok(group);const list=await api('outbreak_leagues');assert.equal(list.length,1);assert.equal(list[0].is_owner,true);assert.equal(list[0].members,1);
 await assert.rejects(()=>api('outbreak_league_manage',['leave',group]),/Owners must delete/);
@@ -32,6 +36,8 @@ for(const table of ['friend_groups','friend_members','league_request_limits'])fo
 await assert.rejects(()=>q("insert into private.friend_members(group_id,player_id) values($1,$2)",[group,outsider]));
 await user(member);let joined=await api('outbreak_league_join',[invitation.token]);assert.equal(joined.ok,true);joined=await api('outbreak_league_join',[invitation.token]);assert.equal(joined.already_member,true);
 assert.equal((await api('outbreak_leagues'))[0].members,2);
+await api('outbreak_save_profile',['Guest Sleuth']);assert.equal((await api('outbreak_profile')).player.username,'Guest Sleuth');await assert.rejects(()=>api('outbreak_save_profile',['x']));await assert.rejects(()=>api('outbreak_save_profile',['<script>']));
+await admin();assert.equal((await q('select is_anonymous from auth.users where id=$1',[member]))[0].is_anonymous,true);await user(member);
 await assert.rejects(()=>api('outbreak_league_manage',['remove',group,null,owner]));await assert.rejects(()=>api('outbreak_league_manage',['delete',group]));await assert.rejects(()=>api('outbreak_league_invite',[group,'revoke']));
 await user(owner);const old=invitation.token;invitation=await api('outbreak_league_invite',[group]);assert.notEqual(old,invitation.token);assert.equal((await api('outbreak_league_preview',[old])).status,'unavailable');
 await user(outsider);assert.equal((await api('outbreak_league_join',[old])).ok,false);
@@ -61,6 +67,8 @@ await admin();await result(owner,today,70);await result(member,today,70);
 await user(member);board=await api('outbreak_league_standings',[group]);assert.equal(board.today_unlocked,true);assert.deepEqual(board.rows.map(r=>r.points),[70,70]);assert.deepEqual(board.rows.map(r=>r.rank),[1,1]);assert.equal(board.rows.filter(r=>r.is_me).length,1);
 weekly=await api('outbreak_league_standings',[group,'week']);assert.equal(weekly.rows.find(r=>r.player_id===owner).points,(earlier>=monday?25:0)+70);assert.equal(weekly.rows.find(r=>r.player_id===member).points,70);
 await api('outbreak_action',['begin',caseIds[today]]);assert.equal((await api('outbreak_daily')).attempt.id,firstAttempt);assert.equal((await api('outbreak_daily')).attempt.score,70);
+// Linking this same anonymous identity preserves memberships and its existing official result.
+await admin();await q('update auth.users set is_anonymous=false where id=$1',[member]);await q("insert into auth.identities values($1,'google')",[member]);await user(member);assert.equal((await api('outbreak_leagues'))[0].members,2);assert.equal((await api('outbreak_daily')).attempt.id,firstAttempt);assert.equal((await api('outbreak_daily')).attempt.score,70);
 // One official record contributes independently to multiple private leagues, even with public opt-in false.
 await user(second);const group2=(await api('outbreak_league_manage',['create',null,'Second league'])).id;const inv2=await api('outbreak_league_invite',[group2]);
 await user(member);await api('outbreak_league_join',[inv2.token]);const multi=await api('outbreak_league_standings',[group2]);assert.equal(multi.rows.find(r=>r.is_me).points,70);assert.equal((await api('outbreak_profile')).player.public_profile_enabled,false);
@@ -89,5 +97,6 @@ assert.equal(creationLimited,true);
 // Privileged wrappers have empty safe search paths; no anon access except minimal preview.
 await admin();const fns=await q("select proname,proconfig from pg_proc join pg_namespace on pg_namespace.oid=pronamespace where nspname='public' and proname like 'outbreak_league%' order by proname");assert.equal(fns.length,6);assert.ok(fns.every(f=>f.proconfig.includes('search_path=\"\"')));
 assert.ok((await q("select relrowsecurity from pg_class join pg_namespace n on n.oid=relnamespace where n.nspname='private' and relname in ('friend_groups','friend_members','league_request_limits')")).every(r=>r.relrowsecurity));
-console.log('PASS: isolated PostgreSQL league migration, verified Google identities, owner/member/nonmember ACLs, minimal previews, secure token hashing, expiry/revocation, idempotent joins, rate limits, join-date eligibility, UTC weeks, tied ranks, server-side spoiler gates, multiple leagues, leaving/removal/deletion, preserved unique daily attempts and no score copies.');
+console.log('PASS: isolated PostgreSQL league migration, anonymous/email/Google player identities, optional Google linking, owner/member/nonmember ACLs, minimal previews, secure token hashing, expiry/revocation, idempotent joins, rate limits, join-date eligibility, UTC weeks, tied ranks, server-side spoiler gates, multiple leagues, leaving/removal/deletion, preserved unique daily attempts and no score copies.');
 await db.close();
+

@@ -1,10 +1,22 @@
 # Private friend leagues v1
 
-Feature branch: `feature/private-friend-leagues`. Production deployment is intentionally separate.
+Initial league release merged in PR #2. The first production migration was applied on October 30, 2026.
+
+## Guest invitation update
+
+`20261030160736_guest_friend_leagues.sql` removes only the Google requirement from the private player guard. Any real Supabase player session, including an anonymous browser identity, can create/join/manage their own leagues. Unauthenticated API callers still have preview-only access. Existing owner/member checks, token expiry/revocation, rate limits, spoiler gates and official-attempt uniqueness are unchanged. No tables, memberships, results or daily rules are rewritten.
+
+Opening an invite does not create a session or membership. The user picks a validated display name and explicitly taps **Join league**; the client reuses the existing player session or starts an anonymous session, saves only that player’s display name (without changing public opt-in), then redeems the invitation. Existing CAPTCHA requirements apply to new anonymous sessions. First guest creation preserves the join form; account switches clear stale league state.
+
+Google is optional. Guest access lives in one browser and can be lost after clearing data, signing out or changing devices. Linking the same identity preserves its membership/results; existing different Google identities are not merged. Guest identity churn can create multiple accounts; league/account limits are per player rather than a guarantee of one human per membership. Owners can remove duplicates and rotate/revoke links.
+
+Production backend status: the guest guard migration was applied on October 30, 2026. A rollback-only SQL smoke test used two existing anonymous identities with no official attempts; creation, joining, duplicate joining, membership ACLs, hidden Today, weekly standings, leaving, owner-only revocation and deletion passed without changing official attempt counts. No test membership or profile changes were retained. Privileged-helper execution remains revoked from public/anon/authenticated roles; existing security-advisor findings were reviewed with no new categories. Phone fixture verified at 320px with no horizontal scrolling. Real fresh-browser Auth/CAPTCHA and Google linking still need a manual two-device smoke test.
+
+Release order for this update: apply only the new migration to the existing league-enabled database, verify anonymous-member ACLs and invitations, then publish the frontend. Do not rerun historical migrations. The expanded isolated PostgreSQL tests exercise all score/spoiler/UTC/owner rules with an anonymous member, plus guest league creation and same-ID Google linking. UI tests cover guest joining, names, CAPTCHA gating, failed session creation and optional Google return.
 
 ## What this adds
 
-- Friends entry on the home screen and navigation; Google-linked league creation, owner membership, member lists, leaving, owner removal and confirmed deletion.
+- Friends entry on the home screen and navigation; Player-session league creation, owner membership, member lists, leaving, owner removal and confirmed deletion.
 - Seven-day bearer invitations. Two random UUIDv4 values supply 244 random bits; only the SHA-256 token hash is stored. Generating a new invitation replaces the previous one. Revocation/deletion invalidates links. Keep invitation URLs private.
 - Public preview returns only availability and the league name. Explicit Join is required, including after Google sign-in. Joining the same league twice is idempotent.
 - `#friends`, `#league=<uuid>`, and `#league-invite=<token>` work under the actual deployment base path. Pending invitations live in same-tab session storage for up to one hour while Google redirects back to the existing base URL. An explicit shared-result or auth route wins over an older stored invitation. No auth tokens or callback query parameters are copied into invitation URLs.
@@ -21,14 +33,14 @@ It extends the existing `private.friend_groups` and `private.friend_members` tab
 
 | Function | Access |
 | --- | --- |
-| `outbreak_leagues()` | Verified Google-linked player’s own memberships |
+| `outbreak_leagues()` | Player’s own memberships, including browser guests |
 | `outbreak_league_manage(action, group, name, member)` | Create as self; leave as member; remove/delete as owner |
 | `outbreak_league_invite(group, action)` | Owner only; generate or revoke |
 | `outbreak_league_preview(token)` | Anonymous/authenticated; minimal bearer-link preview |
-| `outbreak_league_join(token)` | Verified Google-linked player; valid nonexpired token |
+| `outbreak_league_join(token)` | Player session; valid nonexpired token |
 | `outbreak_league_standings(group, scope)` | Current members only; server spoiler gates |
 
-All privileged functions use an empty search path and fully qualified application objects. Google linkage is checked in trusted `auth.identities` and `auth.users`, never client IDs or user-editable JWT metadata. Guards reuse the existing authenticated player/rate-limit pattern. Creation and joining serialize per player; membership mutations and token changes lock the group row. The existing composite membership primary key prevents duplicates.
+All privileged functions use an empty search path and fully qualified application objects. Player identity comes from `auth.uid()` through the existing guard, never client IDs or user-editable JWT metadata. Google is no longer a league authorization condition. Guards reuse the existing authenticated player/rate-limit pattern. Creation and joining serialize per player; membership mutations and token changes lock the group row. The existing composite membership primary key prevents duplicates.
 
 Limits: five owned leagues, twenty memberships per player, fifty members per league; five creations, twenty invitation operations and twenty redemption attempts per player/hour, plus the existing global authenticated request limit. Invalid redemption failures return structured errors so their rate counters commit. Unauthenticated preview reveals no identity, roster or standings; its protection is the unguessable token and Supabase’s API protections, not an application-level IP limit.
 
@@ -40,7 +52,7 @@ The standings endpoint may finalize the viewer’s already-expired official atte
 
 `npm test` runs the existing cases, timer/scoring and PostgreSQL security tests, plus:
 
-- `scripts/validate-leagues.mjs`: isolated PostgreSQL (PGlite), real migration/functions/roles, separate owner/member/nonmember/guest/email-only identities, trusted Google identity checks, denied direct table access, owner-only mutations, preview minimization, token hashing/rotation/expiry/revocation/deletion, duplicate joins, hourly limits, UTC join and week boundaries, tied ranks, spoof-resistant projections, hidden-result noninterference, multiple leagues, practice exclusion, timeout unlock, removal/leave and unique daily-attempt preservation.
+- `scripts/validate-leagues.mjs`: isolated PostgreSQL (PGlite), real migration/functions/roles, separate owner/member/nonmember/guest/email-only identities, guest identity checks and optional same-ID Google linking, denied direct table access, owner-only mutations, preview minimization, token hashing/rotation/expiry/revocation/deletion, duplicate joins, hourly limits, UTC join and week boundaries, tied ranks, spoof-resistant projections, hidden-result noninterference, multiple leagues, practice exclusion, timeout unlock, removal/leave and unique daily-attempt preservation.
 - `scripts/validate-league-ui.mjs`: React DOM integration tests with an injected RPC fixture, base-path URLs, pending-invitation restore across a simulated OAuth redirect/reload, explicit join before/after Google, owner/member confirmations, empty/loading/error/success/expired states and copy fallback. These do not authenticate real Google accounts or call a hosted backend.
 - `npm run test:connected`: sealed fixtures/answers excluded from the connected bundle.
 - `VITE_BASE_PATH=/viriddle/ npm run build`: production build under the Pages base path.
@@ -78,3 +90,4 @@ No production database migration or site deployment is part of this feature bran
 | Disconnected browser fixtures | `tests/league-preview.html`, `tests/league-preview.tsx`, `tests/league-phone-preview.html` |
 | CI, dependencies and checks | `.github/workflows/checks.yml`, `package.json`, `package-lock.json`, `tsconfig.json`, `.gitignore` |
 | Handoff | `README.md`, `docs/PRIVATE_LEAGUES.md` |
+
