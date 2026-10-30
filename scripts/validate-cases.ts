@@ -172,3 +172,16 @@ for(const base of cases)for(let offset=0;offset<friendNames.length;offset++){
  if(has)assert.ok(reports.interviews.rows.find((r:any)=>r.label==='Darren').text.includes('Personal aside (not exposure evidence):'));
 }
 console.log('PASS: ridiculous fictional Darren stories follow every name rotation, preserve dates/contacts, stay idempotent and respect locked interviews.');
+
+const {practiceFixtures}=await import('../src/practiceFixtures.ts');
+const {simpleExamples,simpleSolutions}=await import('../src/simpleExamples.ts');
+assert.equal(practiceFixtures.length,13);
+for(const c of practiceFixtures){assert.equal(c.patients.filter(p=>p.name==='Darren').length,1);assert.equal(new Set(c.patients.map(p=>p.name)).size,c.patients.length);}
+assert.equal(simpleExamples.length,3);assert.equal(new Set(simpleExamples.map(c=>simpleSolutions[c.id].source)).size,3);
+for(const c of simpleExamples){
+ assert.equal(c.patients.length,3);const key=simpleSolutions[c.id];assert.equal(key.tree.length,2);
+ for(const [a,b] of key.tree){const contact=c.contacts.find(([x,y])=>x===a&&y===b)!;assert.ok(contact);assert.ok(contact[2]>=c.patients[a].onset);assert.ok(c.patients[b].onset-contact[2]>=1&&c.patients[b].onset-contact[2]<=4);}
+ assert.ok(evidenceReports(c).outside.rows[key.source].text.includes('attendance confirmed'));
+ assert.ok(!c.brief.includes(key.explanation));
+}
+console.log('PASS: thirteen practice examples always include Darren; three simple three-patient mysteries have distinct source positions and valid transmission windows.');

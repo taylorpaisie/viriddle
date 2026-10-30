@@ -1,3 +1,4 @@
+import {simpleSolutions} from './simpleExamples.ts';
 import type {Solution} from './model';
 // PROTOTYPE ONLY. Production: move this module and validation to a server endpoint.
 // Public evidence stays in cases.ts; the browser necessarily contains these demo keys.
@@ -193,3 +194,5 @@ answerKeys['before-you-arrived']={source:5,tree:[],outcome:'unresolved',timeline
   {title:'Related sequences are not a confession',text:'All six sequences support one related cluster in this fictional dataset. Similarity cannot prove a direct donor or direction. The recorded casual encounters do not establish routes, and two occurred after both participants’ symptoms began.'},
   {title:'The supported conclusion has a boundary',text:'Choose the earlier hospital-associated outbreak with individual source unresolved. This fictional teaching case draws inspiration from the Libyan outbreak investigation; its invented records are not evidence about real people. The historical study found viral circulation predated the accused medical workers’ arrival.'}
  ]};
+
+Object.assign(answerKeys,simpleSolutions);

@@ -75,4 +75,17 @@ state=await call('outbreak_action',`'purchase','${h.id}','windows'`);assert.equa
 state=await call('outbreak_action',`'submit','${h.id}',null,5`);assert.equal(state.attempt.correct_solution,true);assert.ok(state.attempt.score>=90);assert.equal(state.solution.outcome,'unresolved');assert.deepEqual(state.solution.tree,[]);
 await user(v);await call('outbreak_action',`'begin','${h.id}'`);state=await call('outbreak_action',`'submit','${h.id}',null,0`);assert.equal(state.attempt.correct_solution,false);assert.equal(state.attempt.score,0);
 console.log('PASS: official hospital hypothesis selection, fixed evidence deduction, correct explanation scoring, incorrect explanation zero, and unresolved results.');
+await db.exec('reset role');
+await db.exec(await fs.readFile(new URL('../supabase/migrations/20261030121809_curated_practice_examples.sql',import.meta.url),'utf8'));
+const practiceSql=spawnSync(process.execPath,['--experimental-strip-types','scripts/generate-practice-sql.ts'],{encoding:'utf8'});assert.equal(practiceSql.status,0,practiceSql.stderr);await db.exec(practiceSql.stdout);
+const samples=await q('select slug,public_data,solution from private.practice_cases');assert.equal(samples.length,13);
+await user(u);const practiceTotal=(await call('outbreak_profile')).stats.total;
+for(const sample of samples){
+ state=await call('outbreak_practice',`'${sample.slug}'`);assert.equal(state.attempt,null);assert.equal(state.case.patients.filter(p=>p.name==='Darren').length,1);assert.ok(state.case.patients.every(p=>p.interview===''));assert.equal(state.case.contacts.length,0);assert.equal(state.case.genomics.length,0);assert.equal(state.case.nameMap,undefined);assert.equal(state.case.evidenceOverrides,undefined);assert.ok(state.solution);assert.equal(Object.keys(state.reports).length,6);
+}
+assert.equal((await call('outbreak_profile')).stats.total,practiceTotal);
+await assert.rejects(()=>q('select * from private.practice_cases'));
+await assert.rejects(()=>call('outbreak_practice',"'future'"));
+await db.exec('reset role');await db.exec('set role anon');await assert.rejects(()=>call('outbreak_practice',"'duck-press'"));
+console.log('PASS: thirteen curated examples isolated from daily scheduling, all with Darren, stripped public evidence, guarded RPC and no competitive score writes.');
 await db.close();

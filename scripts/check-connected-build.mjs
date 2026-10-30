@@ -15,6 +15,6 @@ try{
  assert.ok(!js.includes('Being first on this list does not tell you'),'Hospital interview leaked');
  assert.ok(!js.includes('They are twelve dollars each.'),'New sealed interview leaked');
  assert.ok(!js.includes('Office crisis meeting · 40 minutes together'),'New sealed encounter leaked');
- assert.ok(!js.includes('The Midnight Rehearsal'),'Offline case library leaked');
+ assert.ok(!js.includes('I felt ill May 4 after an outside conference May 1.'),'Simple sample interview leaked');
  console.log('PASS: connected production bundle excludes offline case library, sealed evidence, and all offline answer explanations.');
 }finally{await rm(dir,{recursive:true,force:true})}

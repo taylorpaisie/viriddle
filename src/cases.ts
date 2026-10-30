@@ -593,9 +593,10 @@ export const formatCaseText = (c:Case,text:string) => {
   const pattern=new RegExp('\\b('+Object.keys(c.nameMap).map(escapeName).join('|')+')\\b','g');
   return text.replace(pattern, name => c.nameMap![name]);
 };
-export const withFriendNames = (base:Case,offset:number):Case => {
+export const withFriendNames = (base:Case,offset:number,includeDarren=false):Case => {
   const start=((offset%friendNames.length)+friendNames.length)%friendNames.length;
   const nameMap=Object.fromEntries(base.patients.map((p,i)=>[p.name,friendNames[(start+i)%friendNames.length]]));
+  if(includeDarren&&!Object.values(nameMap).includes('Darren'))nameMap[base.patients[Math.abs(offset)%base.patients.length].name]='Darren';
   const c={...base,nameMap};
   return withDarrenStory({...c,brief:formatCaseText(c,base.brief),interviewNote:formatCaseText(c,base.interviewNote),
     evidenceOverrides:base.evidenceOverrides?JSON.parse(formatCaseText(c,JSON.stringify(base.evidenceOverrides))):undefined,
@@ -604,5 +605,5 @@ export const withFriendNames = (base:Case,offset:number):Case => {
     bookingDetails:base.bookingDetails?Object.fromEntries(Object.entries(base.bookingDetails).map(([day,text])=>[day,formatCaseText(c,text)])):undefined,
     genomics:base.genomics.map(g=>formatCaseText(c,g))});
 };
-export const sampleCase = (index:number) => withFriendNames(cases[index],index*2);
+export const sampleCase = (index:number) => withFriendNames(cases[index],index*2,true);
 export const caseFor = (date:string) => withFriendNames(scheduledCase(date),dayNumber(date));
