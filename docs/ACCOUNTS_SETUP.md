@@ -1,6 +1,6 @@
 # Virriddle accounts and daily play
 
-The deployed site intentionally remains in local mode until both public Supabase build variables are set. Google, cloud saves, and live leaderboards are **not configured or verified** by this code change. The UI states that clearly. No credentials have been created or supplied.
+Google sign-in, guest accounts, and server-backed game records are configured for the Virriddle project. The existing 15 sample cases for October 29–November 12, 2026 were uploaded with owner approval. Both deployments use the public connection defaults in `config/public-services.ts`; Google client secrets remain only in Supabase. The instructions below describe setup and maintenance for this or another environment.
 
 ## 1. Separate staging project
 
@@ -99,7 +99,7 @@ Both Supabase values must be present together. The publishable key is designed t
 
 **Sites:** the current site is a static Vite build. Supply the same public values to the build environment before packaging and deploying. Runtime-only environment variables do not rewrite a previously built static JS bundle. Do not change hosting audience or require a site-wide login; the game handles optional accounts internally.
 
-The build selects `connectedApp.tsx` only when both values exist. It excludes the local case library and answer keys. `main.tsx` retains the local prototype when they are absent. They are separate build graphs, not a client toggle that exposes both modes.
+The build selects `connectedApp.tsx` using the committed public defaults or paired environment overrides. It excludes the local case library and answer keys. `VITE_PLAY_MODE=local` selects `main.tsx` for offline sample play. They are separate build graphs, not a client toggle that exposes both modes.
 
 ## 8. Leaderboards, profiles, and privacy
 
@@ -157,4 +157,4 @@ Supabase project `jlvjascwjghyxnljwflx` in organization `cwqkboyjarrovwbnfjaw` h
 
 `config/public-services.ts` contains only the public project URL and publishable browser key. Both static deployments use this as their default at build time, so they do not depend on separately maintained GitHub Actions Variables. A paired VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY overrides it; VITE_PLAY_MODE=local explicitly selects the offline app. No Google secret or service-role key is committed.
 
-Activation is staged pending owner approval to upload the existing sample cases dated October 29–November 12, 2026 into this project. The database still has no cases; do not deploy the connected build while that is unresolved. The sample answers are already public, so this is prototype server-validated play rather than a cheat-resistant launch. Older browser-local scores remain on the device and are not imported into verified records.
+The owner approved and the backend verified all 15 daily sample cases dated October 29–November 12, 2026, each with sealed private evidence and answers. The connected build is active on Sites and GitHub Pages. Google sign-in, sign-out/re-entry, and guest server-scored completion/session restoration were verified. The sample answers are already public, so this is prototype server-validated play rather than a cheat-resistant launch. Older browser-local scores remain on the device and are not imported into verified records.

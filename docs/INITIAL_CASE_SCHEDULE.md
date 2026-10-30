@@ -2,7 +2,7 @@
 
 Destination: Supabase project `virriddle` (`jlvjascwjghyxnljwflx`), organization TKP Games.
 
-Pending owner approval: insert the following 15 date-specific fictional sample cases into `public.daily_cases`, with their evidence and answers in `private.case_secrets`. Existing dates will not be overwritten. This is the existing public prototype rotation, not fresh secret competitive puzzles. Future dates remain unreleased until 00:00 UTC on that date.
+Owner approved and uploaded the following 15 date-specific fictional sample cases into `public.daily_cases`, with their evidence and answers in `private.case_secrets`. Existing dates will not be overwritten. This is the existing public prototype rotation, not fresh secret competitive puzzles. Future dates remain unreleased until 00:00 UTC on that date.
 
 | UTC date | Case | Fictional patient names |
 | --- | --- | --- |
@@ -22,4 +22,4 @@ Pending owner approval: insert the following 15 date-specific fictional sample c
 | 2026-11-11 | Museum After Hours | Lucy, Brittany, Nídia, Luis, Selim, Nate |
 | 2026-11-12 | The Signal Station | Brittany, Nídia, Luis, Selim, Nate, Cherie |
 
-The four-minute timer, six evidence prices, source solutions, transmission relationships, and daily name rotation remain unchanged. Browser-local historic scores are not uploaded. After the seed is approved and verified, the connected build can be activated on the current Sites URL and GitHub Pages.
+The four-minute timer, six evidence prices, source solutions, transmission relationships, and daily name rotation remain unchanged. Browser-local historic scores are not uploaded. The upload was verified and the connected build is active on the current Sites URL and GitHub Pages.

@@ -8,7 +8,7 @@ A daily epidemiological detective game: investigate six fictional patients, purc
 
 ## Accounts & onboarding expansion
 
-The seven-step interactive training lab, score simulator, profile interface, ranks, leaderboard screen, optional account dialog, privacy page, and native-share fallback are included. The hosted site remains **local play** until Supabase/Google are configured. No cloud authentication, cross-device persistence, or live leaderboard is claimed to work before that setup.
+The seven-step interactive training lab, score simulator, profile interface, ranks, leaderboard screen, optional account dialog, privacy page, and native-share fallback are included. Both hosted versions use Supabase accounts and server-backed daily play. Google sign-in and guest play are enabled; public leaderboard participation remains opt-in. Earlier browser-local scores are not imported.
 
 [Exact Supabase, Google OAuth, redirects, database, and hosting setup](docs/ACCOUNTS_SETUP.md).
 
@@ -101,4 +101,4 @@ The first demo turns the October Cluster into a chaotic cryptid-festival mystery
 The Virriddle display-name update retains the existing repository and site URLs, database function names, and browser storage keys so saved progress and integrations continue to work.
 
 ### Connected build configuration
-`config/public-services.ts` supplies the public Supabase URL and publishable key for both static deployments. Environment overrides must be supplied as a pair. Use `VITE_PLAY_MODE=local npm run dev` for the offline sample library. The connected build excludes offline case evidence and answer keys. Google activation is currently staged pending approval of the initial sample-case upload; see docs/ACCOUNTS_SETUP.md.
+`config/public-services.ts` supplies the public Supabase URL and publishable key for both static deployments. Environment overrides must be supplied as a pair. Use `VITE_PLAY_MODE=local npm run dev` for the offline sample library. The connected build excludes offline case evidence and answer keys. Google sign-in is active. Fifteen approved sample cases are loaded through November 12, 2026; new case data must be published before that schedule ends. See docs/ACCOUNTS_SETUP.md.
