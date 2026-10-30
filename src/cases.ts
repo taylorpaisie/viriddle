@@ -1,3 +1,4 @@
+import {withDarrenStory} from './darrenStory.ts';
 import {hospitalCase} from './hospitalCase.ts';
 import {friendNames} from './catalog.ts';
 import type {Case} from './model';
@@ -596,12 +597,12 @@ export const withFriendNames = (base:Case,offset:number):Case => {
   const start=((offset%friendNames.length)+friendNames.length)%friendNames.length;
   const nameMap=Object.fromEntries(base.patients.map((p,i)=>[p.name,friendNames[(start+i)%friendNames.length]]));
   const c={...base,nameMap};
-  return {...c,brief:formatCaseText(c,base.brief),interviewNote:formatCaseText(c,base.interviewNote),
+  return withDarrenStory({...c,brief:formatCaseText(c,base.brief),interviewNote:formatCaseText(c,base.interviewNote),
     evidenceOverrides:base.evidenceOverrides?JSON.parse(formatCaseText(c,JSON.stringify(base.evidenceOverrides))):undefined,
     patients:base.patients.map(p=>({...p,name:nameMap[p.name],interview:formatCaseText(c,p.interview)})),
     contactDetails:base.contactDetails?.map(g=>formatCaseText(c,g)),
     bookingDetails:base.bookingDetails?Object.fromEntries(Object.entries(base.bookingDetails).map(([day,text])=>[day,formatCaseText(c,text)])):undefined,
-    genomics:base.genomics.map(g=>formatCaseText(c,g))};
+    genomics:base.genomics.map(g=>formatCaseText(c,g))});
 };
 export const sampleCase = (index:number) => withFriendNames(cases[index],index*2);
 export const caseFor = (date:string) => withFriendNames(scheduledCase(date),dayNumber(date));

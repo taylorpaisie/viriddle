@@ -1,3 +1,4 @@
+import {darrenReports} from './darrenStory.ts';
 import type {Case} from './model';
 import {roomBookings,exposureWindows,outsideExposureChecks} from './evidenceDetails.ts';
 // Offline fixture assembly only; connected play receives purchased reports from the server.
@@ -12,5 +13,5 @@ export function evidenceReports(c:Case){
  };
  if(c.evidenceOverrides)for(const [id,report] of Object.entries(c.evidenceOverrides))reports[id]={...reports[id],...report};
  if(c.incubationDays){reports.windows.rows=exposureWindows(c).map(r=>({label:r.name,text:`${r.start}–${r.end}`}));}
- return reports;
+ return darrenReports(c,reports);
 }

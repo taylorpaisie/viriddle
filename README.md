@@ -12,7 +12,7 @@ The seven-step interactive training lab, score simulator, profile interface, ran
 
 [Exact Supabase, Google OAuth, redirects, database, and hosting setup](docs/ACCOUNTS_SETUP.md).
 
-- Database schema and RLS: `supabase/migrations/202610290001_outbreak.sql`; four-minute upgrade: `supabase/migrations/202610290002_four_minute_window.sql`.
+- Database schema and RLS: `supabase/migrations/202610290001_outbreak.sql`; five-minute upgrade: `supabase/migrations/202610290002_four_minute_window.sql`.
 - Transactional server scoring and event ledger: the same migration’s restricted RPCs.
 - Stale-attempt cleanup job: `supabase/cron.sql`.
 - Public environment example: `.env.example`.
@@ -43,8 +43,8 @@ Vite prints the local development URL. The production output is `dist/`.
 - Fictional patient names rotate deterministically through Darren, Carla, Melanie, Andrea, Lucy, Brittany, Nídia, Luis, Selim, Nate, Cherie, Bob, Bret, Luke, Joicy, Ben, Anthony, and Hamilton. Six appear in each daily case; examples use different combinations.
 - Deterministic daily scheduling with midnight UTC reset; original case-to-date and name rotation rules are retained.
 - Interactive patient records, symptom timelines, SVG contact boards, and scientific evidence.
-- Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 4.8 seconds. Six evidence options: room booking logs (4), incubation analysis (6), interviews (10), contact tracing (12), outside-exposure checks (14), and sequencing (18). Costs stack and scores cannot fall below zero.
-- A 4-minute daily response window, yellow warning at one minute, and coral warning at 30 seconds.
+- Correct timed answers earn 50 base points + up to 50 speed points − evidence costs (maximum 100). One speed point drains every 6 seconds. Six evidence options: room booking logs (4), incubation analysis (6), interviews (10), contact tracing (12), outside-exposure checks (14), and sequencing (18). Costs stack and scores cannot fall below zero.
+- A 5-minute daily response window, yellow warning at one minute, and coral warning at 30 seconds.
 - Incorrect answers and expired windows earn zero. Untimed practice uses 100 base points minus evidence costs, without a speed bonus. Results and shared cards show the time and earned bonus. Completed historical scores are preserved.
 - The deadline persists across navigation and reloads. Demo and archive cases offer optional untimed practice.
 - Browser-local completion records, scores, streaks, statistics, and spoiler-free sharing.
@@ -85,7 +85,7 @@ The Sites deployment is separate and is updated through Sites, not by this GitHu
 
 ## NEON LAB theme
 
-The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. The NEON LAB redesign preserves the 240-second timer, evidence prices, and time-based scoring. The accounts expansion changes the shared reset to midnight UTC and adds optional server-validated play.
+The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. The NEON LAB redesign preserves the 300-second timer, evidence prices, and time-based scoring. The accounts expansion changes the shared reset to midnight UTC and adds optional server-validated play.
 
 ## Reading the evidence
 
@@ -93,10 +93,10 @@ A free, collapsible evidence field guide is available in the evidence room, tuto
 
 ## Refined Lab presentation
 
-Virriddle pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the four-minute timer, evidence prices, and the 18-name pool are unchanged.
+Virriddle pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the five-minute timer, evidence prices, and the 18-name pool are unchanged.
 
 ### Reference mystery: The Mothman Meltdown
-The first demo turns the October Cluster into a chaotic cryptid-festival mystery, with a short briefing and no more than 550 words across story and optional evidence. Six first-person accounts, named room bookings, corroborated encounters, and a five-part post-answer debrief support a 3–4 minute session. The four-minute clock, evidence prices, patient rotation, source and transmission tree remain unchanged. Contact detail fields are stripped from connected public fixtures; the expanded reveal is part of the private solution. Existing published server fixtures are not overwritten.
+The first demo turns the October Cluster into a chaotic cryptid-festival mystery, with a short briefing and no more than 550 words across story and optional evidence. Six first-person accounts, named room bookings, corroborated encounters, and a five-part post-answer debrief support a 3–4 minute session. The five-minute clock, evidence prices, patient rotation, source and transmission tree remain unchanged. Contact detail fields are stripped from connected public fixtures; the expanded reveal is part of the private solution. Existing published server fixtures are not overwritten.
 
 The Virriddle display-name update retains the existing repository and site URLs, database function names, and browser storage keys so saved progress and integrations continue to work.
 
@@ -106,7 +106,7 @@ The Virriddle display-name update retains the existing repository and site URLs,
 
 ### New case: Before You Arrived
 
-A fictional hospital investigation inspired by the Libyan outbreak’s scientific investigation. Available immediately in Case Archive → Investigate the hospital case, with a four-minute or untimed practice option; scheduled as a known sample daily on November 13, 2026 (UTC). Six explanations replace patient-name hypotheses, and the supported conclusion leaves the individual source unresolved. Results show an evidence timeline without speculative transmission arrows. The other nine cases retain their mechanics, scores and schedule.
+A fictional hospital investigation inspired by the Libyan outbreak’s scientific investigation. Available immediately in Case Archive → Investigate the hospital case, with a five-minute or untimed practice option; scheduled as a known sample daily on November 13, 2026 (UTC). Six explanations replace patient-name hypotheses, and the supported conclusion leaves the individual source unresolved. Results show an evidence timeline without speculative transmission arrows. The other nine cases retain their mechanics, scores and schedule.
 
 
 ### Investigation board and notebook
@@ -127,3 +127,5 @@ The results screen now leads with a verdict, the unchanged awarded score and a s
 “Copy result” copies the spoiler-free scorecard plus its link; “Copy result link” copies just the URL. Native sharing sends the message and URL separately. Links open a read-only, no-login shared-card landing page with a play button. The fragment contains only allowlisted score fields, case number/date, elapsed time and mode; no patient identities, answer key, account ID or notebook text. Shared cards are player-supplied previews, not server-verified records, and never write to official scores, streaks or leaderboards. Invalid links show a recoverable message. Existing Google callbacks and the normal game route remain intact.
 
 Mobile result sharing prioritizes the native share sheet, 52px primary actions and 48px copy targets. The large duplicate score is hidden on phones, while the scorecard and breakdown remain readable. Copy-result and copy-link actions stay side by side on common phone widths, with a stacked fallback on very narrow displays. Shared links use a compact mobile landing page and a clear play button; no login is needed to view a card.
+
+Darren is a recurring fictional comic character. `src/darrenStory.ts` adds setting-specific absurd side plots whenever the name rotation includes Darren; personal asides are explicitly separate from exposure evidence. Connected fixtures receive the same presentation without changing stored answers or health records. New attempts have five minutes; existing official attempts keep their original duration and recorded scores.

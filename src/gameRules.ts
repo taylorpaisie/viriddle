@@ -1,4 +1,4 @@
-export const CASE_TIME_MS = 240 * 1000;
+export const CASE_TIME_MS = 300 * 1000;
 export const remainingMs = (deadlineAt:number, now:number) => Math.max(0, deadlineAt-now);
 export const elapsedSeconds = (deadlineAt:number, now:number, durationMs=CASE_TIME_MS) => Math.max(0, Math.min(durationMs/1000, Math.ceil((now-(deadlineAt-durationMs))/1000)));
 export const clockText = (ms:number) => {
@@ -19,5 +19,5 @@ export const calculateScore = ({correct,evidenceCost,deadlineAt,now,relaxed=fals
   return {score:Math.max(0,basePoints+speedBonus-cost),basePoints,speedBonus,evidenceCost:cost,scoringVersion:2};
 };
 
-// Extend an unfinished local 2½-minute run once, from its original start; never revive an expired run.
+// Extend an unfinished shorter local run once, from its original start; never revive an expired run.
 export const upgradeDeadline=(deadlineAt:number,durationMs=150000,now:number)=>now<deadlineAt&&durationMs<CASE_TIME_MS?{deadlineAt:deadlineAt+CASE_TIME_MS-durationMs,durationMs:CASE_TIME_MS}:{deadlineAt,durationMs};
