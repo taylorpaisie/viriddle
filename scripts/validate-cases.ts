@@ -43,12 +43,12 @@ assert.notDeepEqual(caseFor('2026-10-30').patients.map(p=>p.name),caseFor('2026-
 assert.ok(Array.from({length:9},(_,i)=>sampleCase(i).patients).flat().some(p=>p.name==='Nídia'));
 console.log('PASS: rotating friend names, unique patient labels, consistent explanation names, and Unicode accent.');
 
-assert.equal(friendNames.length,19);
+assert.equal(friendNames.length,20);
 assert.ok(!friendNames.includes('Sergei'));
-for(const name of ['Lucy','Nate','Cherie','Bob','Nídia','Bret','Luke','Joicy','Ben','Anthony','Hamilton','Carolina'])assert.ok(friendNames.includes(name));
+for(const name of ['Lucy','Nate','Cherie','Bob','Nídia','Bret','Luke','Joicy','Ben','Anthony','Hamilton','Carolina','Anya'])assert.ok(friendNames.includes(name));
 const shown=new Set(Array.from({length:cases.length},(_,i)=>sampleCase(i).patients).flat().map(p=>p.name));
 for(const name of friendNames)assert.ok(shown.has(name),name+' appears in examples');
-console.log('PASS: 19-name roster, added friends, removed name, and complete example coverage.');
+console.log('PASS: 20-name roster, added friends, removed name, and complete example coverage.');
 
 const start=2000000, end=start+CASE_TIME_MS;
 const points=(seconds:number,cost=0,correct=true,relaxed=false)=>calculateScore({correct,evidenceCost:cost,deadlineAt:end,now:start+seconds*1000,relaxed});
