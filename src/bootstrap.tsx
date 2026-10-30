@@ -13,3 +13,5 @@ createRoot(document.getElementById('root')!).render(<PlayerProvider><SharedResul
 import './investigation-desk.css';
 
 import './case-closed.css';
+
+import './game-lobby.css';
