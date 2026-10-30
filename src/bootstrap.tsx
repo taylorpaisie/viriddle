@@ -20,3 +20,6 @@ import './friends.css';
 
 
 import './casefile.css';
+
+
+import './themes.css';

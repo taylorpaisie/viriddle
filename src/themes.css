@@ -1,0 +1,47 @@
+/* Light Lab uses darker ink versions of the neon accents for legible contrast. */
+:root {
+ --surface-raised:#172B3E;
+ --surface-folder:#162B3E;
+ --surface-feature:#18283B;
+ --depth:#030B13;
+ --card-depth:#040C16;
+ --ambient:#18264055;
+ --primary-ink:#09121F;
+ --button-depth:#981D65;
+ --art-node:#0C1927;
+ --art-node-border:#59849A;
+ --art-focus:#38233C;
+}
+:root[data-theme="light"] {
+ color-scheme:light;
+ --background:#F2F7FC;
+ --surface:#FFFFFF;
+ --primary:#BB126F;
+ --secondary:#007C94;
+ --text:#10283E;
+ --text-secondary:#4C6275;
+ --border:#B7CBDC;
+ --success:#087B58;
+ --warning:#8A5900;
+ --error:#C32544;
+ --shadow:#A7BDCF;
+ --surface-raised:#EAF3FB;
+ --surface-folder:#E4EFF8;
+ --surface-feature:#ECF2FC;
+ --depth:#CFDDE9;
+ --card-depth:#DCE7F0;
+ --ambient:#C5DFF044;
+ --primary-ink:#FFFFFF;
+ --button-depth:#830B4D;
+ --art-node:#FFFFFF;
+ --art-node-border:#6088A0;
+ --art-focus:#FBE5F2;
+}
+.primary,.primary:hover:not(:disabled){color:var(--primary-ink)}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;flex-shrink:0;border:1px solid var(--control-border);border-radius:12px;background:var(--surface);color:var(--secondary);touch-action:manipulation}
+.theme-toggle:hover{border-color:var(--secondary);background:var(--selection)}
+.theme-toggle:focus-visible{outline:2px solid var(--secondary);outline-offset:3px}
+.shared-result-page>header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+@media(min-width:1121px){.nav-wrap{gap:14px}header nav{gap:12px}header nav button{font-size:14px}}
+@media(max-width:700px){header .account-button{margin-left:auto}header .account-button span{display:none}header .account-button{width:44px;max-width:44px;padding:10px}header .theme-toggle{margin-left:0}.nav-wrap{gap:6px}}
+@media(max-width:370px){header .brand-logo{width:132px}.nav-wrap{gap:4px}}
