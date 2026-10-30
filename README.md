@@ -143,3 +143,7 @@ See [PRIVATE_LEAGUES.md](docs/PRIVATE_LEAGUES.md) for the league API/security de
 ### Guest friend leagues
 
 Friend leagues now accept browser-backed guest sessions. Open a valid invitation, pick a display name, and explicitly join; Google is optional to preserve identity across devices. Apply `supabase/migrations/20261030160736_guest_friend_leagues.sql` after the initial league migration before deploying this frontend. Guest scores remain excluded from public leaderboards unless a permanent identity is linked and public sharing is enabled. See `docs/PRIVATE_LEAGUES.md`.
+
+### Casefile layout
+
+The mobile-first Casefile entrance keeps the neon pink/cyan palette, adds a daily numbered dossier with one primary open action, and moves illustrative clues into an optional spoiler-free preview. The shared finish carries folder-style edges through briefings, patients, evidence and results. No timing, scoring, evidence prices, authentication or league rules change. Local phone QA is available at `tests/casefile-phone-preview.html` (run with `VITE_PLAY_MODE=local`; `?width=320` tests the narrow layout).
