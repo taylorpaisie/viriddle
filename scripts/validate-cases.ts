@@ -137,7 +137,7 @@ const {shareResult,deductionSteps}=await import('../src/resultTools.ts');
 const closedRun={started:true,selected:1,unlocked:['interviews','contacts'],result:{correct:true,score:78,date:'2026-10-30',evidenceTotal:6,elapsedSeconds:70}};
 const shareUrl='https://taylorpaisie.github.io/viriddle/';
 const shared=shareResult({run:closedRun,number:'029',streak:4,mode:'daily',url:shareUrl});
-assert.equal(shared,`Virriddle #029 🦠\n🟩 Solved · 78/100\n🔬 🟪🟪⬛⬛⬛⬛ 2/6\n⏱️ 01:10\n🔥 4 days streak\n\nCan you trace it?\n${shareUrl}`);
+assert.equal(shared,`Viriddle #029 🦠\n🟩 Solved · 78/100\n🔬 🟪🟪⬛⬛⬛⬛ 2/6\n⏱️ 01:10\n🔥 4 days streak\n\nCan you trace it?\n${shareUrl}`);
 for(const name of [...friendNames,...cases.flatMap(c=>c.patients.map(p=>p.name))])assert.ok(!new RegExp('\\b'+name+'\\b').test(shared),'Sharing excludes patient identities');
 const practiceText=shareResult({run:{...closedRun,relaxed:true},number:'LAB-01',streak:4,mode:'sample',url:shareUrl});assert.ok(practiceText.includes('Practice · no daily score changes'));assert.ok(!practiceText.includes('streak'));assert.ok(practiceText.includes('⏱️ Untimed'));
 const expiredText=shareResult({run:{...closedRun,result:{...closedRun.result,correct:false,score:0,timedOut:true}},number:'029',streak:4,mode:'daily',url:shareUrl});assert.ok(expiredText.includes('Out of time'));assert.ok(expiredText.includes('· 0/100'));
@@ -206,3 +206,7 @@ const legacyQuote='“The bacterium’s error bars are decorative. We have discl
 const legacyReports=darrenReports(oldGlasshouse,{interviews:{title:'Interviews',rows:[{label:'Darren',text:'My documented history. Personal aside (not exposure evidence): '+legacyQuote}],interviews:oldGlasshouse.patients.map(p=>p.name==='Darren'?'My documented history. Personal aside (not exposure evidence): '+legacyQuote:'Unchanged')}});
 assert.ok(!JSON.stringify(legacyReports).includes(legacyQuote));assert.ok(legacyReports.interviews.rows[0].text.startsWith('My documented history.'));
 console.log('PASS: grounded fictional comedy, legacy flavor replacement, idempotent previews and unchanged contact/genomic clues.');
+
+
+assert.ok(shared.startsWith('Viriddle #'));
+console.log('PASS: corrected Viriddle share branding; legacy storage and result payload formats unchanged.');
