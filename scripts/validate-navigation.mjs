@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {pathToFileURL} from 'node:url';
+import {build} from 'esbuild';
+import {JSDOM} from 'jsdom';
+import React,{act} from 'react';
+import {createRoot} from 'react-dom/client';
+const dir=await mkdtemp(process.cwd()+'/.navigation-test-');
+try{
+ await build({stdin:{contents:`export {ClueLab} from './src/ClueLab';export {InvestigationActionBar} from './src/InvestigationNavigation';export {AppNavigation,ResumeInvestigation} from './src/Navigation';export {PlayerProvider} from './src/player';`,resolveDir:process.cwd(),loader:'tsx'},outfile:dir+'/ui.mjs',bundle:true,platform:'node',format:'esm',packages:'external',define:{'import.meta.env':JSON.stringify({BASE_URL:'/viriddle/',VITE_SUPABASE_URL:'',VITE_SUPABASE_PUBLISHABLE_KEY:''})}});
+ const {ClueLab,InvestigationActionBar,AppNavigation,ResumeInvestigation,PlayerProvider}=await import(pathToFileURL(dir+'/ui.mjs'));
+ const dom=new JSDOM('<div id="app"></div>',{url:'https://example.test/viriddle/'});
+ for(const k of ['window','document','location','localStorage','sessionStorage','HTMLElement','Event','MouseEvent','KeyboardEvent'])globalThis[k]=dom.window[k];
+ Object.defineProperty(globalThis,'navigator',{value:dom.window.navigator,configurable:true});globalThis.IS_REACT_ACT_ENVIRONMENT=true;
+ globalThis.requestAnimationFrame=fn=>{fn();return 1};HTMLElement.prototype.scrollIntoView=function(){};window.matchMedia=()=>({matches:false,addEventListener(){},removeEventListener(){}});
+ const c={id:'test',title:'Fictional test',place:'TEST',month:'May',brief:'Fictional test case',pathogen:'Fictional virus',incubation:'1–4 days',patients:[{name:'Anya',onset:4,role:'Scientist',interview:''}],contacts:[],genomics:[],interviewNote:''};
+ let run={started:true,unlocked:[],selected:null,deadlineAt:Date.now()+300000,durationMs:300000};
+ const reports={interviews:{title:'Interview report',rows:[{label:'Anya',text:'VISIBLE_INTERVIEW'}]},contacts:{title:'Contacts',rows:[{label:'Locked',text:'NEVER_SHOW_LOCKED_CONTACTS'}]}};
+ let buys=[],pins=[],boardCalls=0;const notebook={data:{pinned:[],marks:{},note:''},warning:'',pin:id=>pins.push(id),mark(){},note(){}};
+ let root=createRoot(document.getElementById('app'));
+ const mount=async(node)=>act(async()=>root.render(node));const body=()=>document.body.textContent;
+ const button=label=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===label);
+ const click=async(label)=>{const b=button(label);assert.ok(b,'Button '+label);assert.ok(!b.disabled,'Enabled '+label);await act(async()=>b.click())};
+ const lab=()=>React.createElement(ClueLab,{c,run,reports,notebook,unlock:id=>buys.push(id),onBoard:()=>boardCalls++});
+ await mount(lab());assert.ok(!body().includes('VISIBLE_INTERVIEW'));assert.ok(!body().includes('NEVER_SHOW_LOCKED_CONTACTS'));
+ await click('My reports 0');assert.ok(body().includes('No reports yet'));await click('Browse clues');
+ const interview=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Patient Interviews')&&b.textContent.includes('−10'));
+ assert.ok(interview);await act(async()=>interview.click());assert.deepEqual(buys,['interviews']);assert.ok(!body().includes('VISIBLE_INTERVIEW'),'A click alone cannot reveal server evidence');
+ const originalDeadline=run.deadlineAt;run={...run,unlocked:['interviews']};await mount(lab());assert.ok(body().includes('VISIBLE_INTERVIEW'));assert.equal(button('My reports 1').getAttribute('aria-pressed'),'true');assert.ok(!body().includes('NEVER_SHOW_LOCKED_CONTACTS'));
+ await click('Pin clue');assert.deepEqual(pins,['interviews:0']);await click('Compare on the board');assert.equal(boardCalls,1);
+ await click('Clue shop');await click('My reports 1');assert.deepEqual(buys,['interviews'],'Reopening reports never purchases again');assert.equal(run.deadlineAt,originalDeadline);assert.equal(run.selected,null);
+ // Pending failure leaves evidence sealed and allows another purchase request.
+ await click('Clue shop');const contact=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Contact Tracing'));await act(async()=>contact.click());assert.ok(!body().includes('NEVER_SHOW_LOCKED_CONTACTS'));
+ await act(async()=>root.unmount());root=createRoot(document.getElementById('app'));
+ let steps=[],confirmations=0;
+ const bar=(selected=null,busy=false)=>React.createElement(InvestigationActionBar,{stage:'solve',clues:1,onStage:s=>steps.push(s),remaining:300000,score:90,selected,busy,onConfirm:()=>confirmations++});
+ await mount(bar());assert.equal(document.querySelector('[role=timer]').getAttribute('aria-label'),'05:00 remaining');assert.ok(button('Choose an answer above').disabled);
+ const stageButton=[...document.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')==='1. Patients');await act(async()=>stageButton.click());assert.deepEqual(steps,['patients']);assert.equal(confirmations,0,'Navigation cannot submit');
+ await mount(bar(0));await click('Review answer');assert.equal(confirmations,1);await mount(bar(0,true));assert.ok(button('Review answer').disabled);
+ await act(async()=>root.unmount());root=createRoot(document.getElementById('app'));
+ let routes=[];const nav=(investigating=false)=>React.createElement(PlayerProvider,null,React.createElement(AppNavigation,{page:'home',navigate:p=>routes.push(p),signin(){},investigating}));
+ await mount(nav());assert.ok(document.querySelector('.app-bottom-navigation'));await click('More');assert.ok(document.querySelector('[role=dialog]'));assert.equal(document.body.style.overflow,'hidden');
+ await act(async()=>document.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));assert.equal(document.querySelector('[role=dialog]'),null);assert.equal(document.body.style.overflow,'');
+ await click('More');const friendInMenu=document.querySelector('[role=dialog] .more-navigation button:nth-child(3)');await act(async()=>friendInMenu.click());assert.deepEqual(routes,['friends']);assert.equal(document.querySelector('[role=dialog]'),null);
+ await mount(nav(true));assert.equal(document.querySelector('.app-bottom-navigation'),null,'Game steps replace global phone navigation');
+ await act(async()=>root.unmount());root=createRoot(document.getElementById('app'));let resumes=0;await mount(React.createElement(ResumeInvestigation,{title:'Existing case',remaining:'00:00',onResume:()=>resumes++}));assert.ok(body().includes('Time window ended'));await click('Review');assert.equal(resumes,1);
+ await act(async()=>root.unmount());console.log('PASS: sealed evidence gating, confirmed-purchase report opening, free report reopening, pin/board routes, unchanged run state, review-before-submit, busy/empty states, phone destinations, menu Escape/focus lock, and expired-case return.');
+}finally{await rm(dir,{recursive:true,force:true})}
