@@ -138,3 +138,8 @@ Practice comedy stays rooted in microbiology: fictional respiratory viruses, a f
 ## Private friend leagues (feature branch)
 
 See [PRIVATE_LEAGUES.md](docs/PRIVATE_LEAGUES.md) for the league API/security design, isolated PostgreSQL and React tests, pending staging/production migration steps, and the two-account smoke-test checklist. This branch does not deploy or apply database changes automatically.
+
+
+### Guest friend leagues
+
+Friend leagues now accept browser-backed guest sessions. Open a valid invitation, pick a display name, and explicitly join; Google is optional to preserve identity across devices. Apply `supabase/migrations/20261030160736_guest_friend_leagues.sql` after the initial league migration before deploying this frontend. Guest scores remain excluded from public leaderboards unless a permanent identity is linked and public sharing is enabled. See `docs/PRIVATE_LEAGUES.md`.
