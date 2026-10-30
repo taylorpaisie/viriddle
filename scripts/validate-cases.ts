@@ -196,3 +196,13 @@ console.log('PASS: easy cases include fictional viral and bacterial outbreaks, e
 const legacyHospital=sampleCase(9);const priorDarren='Darren has proposed a hospital waiting-room board game called Name That Pathogen. The infection-prevention team has returned it with forty-seven corrections.';
 const revisedHospital=withDarrenStory({...legacyHospital,brief:legacyHospital.brief+' '+priorDarren});
 assert.ok(!revisedHospital.brief.includes(priorDarren));assert.equal((revisedHospital.brief.match(/Which version are we telling them/g)??[]).length,1);
+
+
+// Grounded comedy replaces old flavor without changing the epidemiological records.
+for(const c of practiceFixtures){const visible=JSON.stringify(c);assert.ok(!/plush|rubber duck|duck spokesperson|lunar hypothesis|cardboard bacteriophage|musical about viral|virus phoned/i.test(visible),c.id+' uses believable human comedy');assert.ok(withDarrenStory(c).brief===c.brief);}
+const oldGlasshouse={...sampleCase(2),brief:cases[2].brief+' Darren has entered a plush bacterium in the glasshouse science fair. It has won best poster despite containing no data and very little stuffing.'};
+const updatedGlasshouse=withDarrenStory(oldGlasshouse);assert.ok(!updatedGlasshouse.brief.includes('plush'));assert.deepEqual(updatedGlasshouse.contacts,oldGlasshouse.contacts);assert.deepEqual(updatedGlasshouse.genomics,oldGlasshouse.genomics);
+const legacyQuote='“The bacterium’s error bars are decorative. We have disclosed this in the methods.”';
+const legacyReports=darrenReports(oldGlasshouse,{interviews:{title:'Interviews',rows:[{label:'Darren',text:'My documented history. Personal aside (not exposure evidence): '+legacyQuote}],interviews:oldGlasshouse.patients.map(p=>p.name==='Darren'?'My documented history. Personal aside (not exposure evidence): '+legacyQuote:'Unchanged')}});
+assert.ok(!JSON.stringify(legacyReports).includes(legacyQuote));assert.ok(legacyReports.interviews.rows[0].text.startsWith('My documented history.'));
+console.log('PASS: grounded fictional comedy, legacy flavor replacement, idempotent previews and unchanged contact/genomic clues.');

@@ -1,9 +1,58 @@
 import type {Case,Solution} from './model';
 // Offline authoring fixtures only. Connected play receives these through curated practice RPCs.
+// Stable slugs retain existing practice links; titles and scenery are refreshed.
 const themes=[
- {id:'duck-press',title:'The Quackovirus Press Conference',place:'MICROBIOLOGY OUTREACH PRESS ROOM',pathogen:'Quackovirus · fictional respiratory virus',roles:['Virologist with a duck spokesperson','Microbiology outreach reporter','Capsid costume coordinator'],intro:'A fictional respiratory virus is circulating among three volunteers at a microbiology outreach event. Darren insists on holding a press conference with a rubber duck as the virus’s spokesperson. Carla asks about incubation. Lucy asks why the capsid costume has a tie. The duck offers no comment. Trace the human outbreak before Darren announces a rebrand.',source:0,encounters:['Darren and Carla rehearse the virus briefing together in the office.','Carla and Lucy edit the incubation-period poster together in the office.']},
- {id:'stapler-wedding',title:'The Bacterial Wedding',place:'MICROBE APPRECIATION DAY · EXHIBIT HALL',pathogen:'Staplococcus festivus · fictional respiratory bacterium',roles:['Microbiologist and bacterial wedding planner','Science-fair exhibit coordinator','Bacterial family-tree illustrator'],intro:'At Microbe Appreciation Day, Darren has arranged a wedding between two plush bacteria. The vows say “until binary fission do us part.” The seating plan doubles every time he prints it. Meanwhile, three human volunteers develop an illness caused by a fictional respiratory bacterium. Follow their encounters; the plush newlyweds are decorations, not infected patients.',source:1,encounters:['Carla and Darren prepare the bacterial display together at the craft table.','Darren and Lucy draw the binary-fission family tree together at the craft table.']},
- {id:'moon-lawsuit',title:'The PCR Machine Wants a Lawyer',place:'FICTIONAL VIROLOGY OPEN DAY · BRIEFING OFFICE',pathogen:'Lunavirus · fictional respiratory virus',roles:['Virologist with a lunar hypothesis','Laboratory open-day coordinator','Viral-genomics demonstrator'],intro:'Darren’s PCR machine has printed an error message during a virology open day. He blames the moon and demands a hearing. Carla demands controls. Lucy demands that he stop cross-examining the printer. Separately, a fictional respiratory virus has made three human volunteers ill. The machine error is background comedy: trace the human contacts, not a transmission route from space.',source:2,encounters:['Lucy and Carla prepare the viral-genomics exhibit together in the office.','Carla and Darren rehearse the virology demonstration together in the office.']}
+  {
+    "id": "duck-press",
+    "title": "The Emergency Press Briefing",
+    "place": "MICROBIOLOGY OUTREACH PRESS ROOM",
+    "pathogen": "Asterovirus · fictional respiratory virus",
+    "roles": [
+      "Outreach scientist and reluctant spokesperson",
+      "Public-health communications officer",
+      "Research assistant"
+    ],
+    "intro": "A fictional respiratory virus has made three outreach volunteers ill. Darren has scheduled a reassuring press briefing before anyone has agreed on what can be said. Carla has found an unsent correction in the draft. Lucy has found three contradictory versions of the same slide. Trace the human contacts before a confident announcement outruns the evidence.",
+    "source": 0,
+    "encounters": [
+      "Darren and Carla rehearse the health briefing together in the office.",
+      "Carla and Lucy edit the incubation-period poster together in the office."
+    ]
+  },
+  {
+    "id": "stapler-wedding",
+    "title": "The Conference Welcome-Pack Crisis",
+    "place": "MICROBIOLOGY CONFERENCE · PREPARATION ROOM",
+    "pathogen": "Cohortobacter respirans · fictional respiratory bacterium",
+    "roles": [
+      "Conference organizer and badge-printing enthusiast",
+      "Welcome-pack coordinator",
+      "Volunteer programme editor"
+    ],
+    "intro": "The microbiology conference opens tomorrow. Four hundred badges have the same name, the welcome bags contain last year’s programme, and three organizers are ill with a fictional respiratory bacterium. Darren has proposed fixing the badges with a marker and charging the sponsor for a live personalization experience. The printing disaster is background: use the dated respiratory contacts to trace the cluster.",
+    "source": 1,
+    "encounters": [
+      "Carla and Darren prepare conference packs together at the workroom table.",
+      "Darren and Lucy correct the conference programme together at the workroom table."
+    ]
+  },
+  {
+    "id": "moon-lawsuit",
+    "title": "The Forty-Seven-Slide Apology",
+    "place": "VIROLOGY OPEN DAY · BRIEFING OFFICE",
+    "pathogen": "Orlovirus · fictional respiratory virus",
+    "roles": [
+      "Open-day scientist with an overlong apology",
+      "Laboratory open-day coordinator",
+      "Viral-genomics demonstrator"
+    ],
+    "intro": "The virology open-day demonstration has failed in front of a donor. Darren has prepared an apology that requires a projector, an intermission and a glossary. Meanwhile, three volunteers develop illness from a fictional respiratory virus. The equipment error does not establish an exposure route. Follow their documented human encounters rather than the loudest explanation in the room.",
+    "source": 2,
+    "encounters": [
+      "Lucy and Carla prepare the viral-genomics exhibit together in the office.",
+      "Carla and Darren rehearse the virology demonstration together in the office."
+    ]
+  }
 ];
 export const simpleExamples:Case[]=themes.map(t=>{
  const order=t.source===0?[0,1,2]:t.source===1?[1,0,2]:[2,1,0];
@@ -14,5 +63,6 @@ export const simpleExamples:Case[]=themes.map(t=>{
 });
 export const simpleSolutions:Record<string,Solution>=Object.fromEntries(themes.map(t=>{
  const order=t.source===0?[0,1,2]:t.source===1?[1,0,2]:[2,1,0],names=['Darren','Carla','Lucy'];
- return [t.id,{source:t.source,tree:[[order[0],order[1]],[order[1],order[2]]],explanation:`${names[order[0]]} is the intended source. Symptoms begin May 4, before the May 5 encounter. ${names[order[1]]} becomes ill May 7 and meets ${names[order[2]]} May 8; that patient becomes ill May 10. Both two-day incubation intervals fit the fictional rules. The absurd event is scenery, not a transmission route.`,reveal:[{title:'Find the first plausible exposure',text:`${names[order[0]]} has an outside exposure May 1 and symptoms May 4. The May 5 encounter occurs after infectiousness begins.`},{title:'Check both gaps',text:'May 5 → May 7 and May 8 → May 10 each leave two days, within the 1–4 day incubation window.'},{title:'Close the tiny case',text:`The intended simulation is ${order.map(i=>names[i]).join(' → ')}. The duck, plush bacteria and PCR machine are not patients. Genetic similarity alone does not prove these arrows.`}]}];
+ return [t.id,{source:t.source,tree:[[order[0],order[1]],[order[1],order[2]]],explanation:`${names[order[0]]} is the intended source. Symptoms begin May 4, before the May 5 encounter. ${names[order[1]]} becomes ill May 7 and meets ${names[order[2]]} May 8; that patient becomes ill May 10. Both two-day incubation intervals fit the fictional rules. The administrative chaos is background, not transmission evidence.`,reveal:[{title:'Find the first plausible exposure',text:`${names[order[0]]} has an outside exposure May 1 and symptoms May 4. The May 5 encounter occurs after infectiousness begins.`},{title:'Check both gaps',text:'May 5 → May 7 and May 8 → May 10 each leave two days, within the 1–4 day incubation window.'},{title:'Close the tiny case',text:`The intended simulation is ${order.map(i=>names[i]).join(' → ')}. Use the human encounters, not the administrative mishap, to reconstruct the cluster. Genetic similarity alone does not prove these arrows.`}]}];
 }));
+
