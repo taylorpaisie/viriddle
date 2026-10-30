@@ -16,6 +16,7 @@ export function About({local=false,onPlay}:{local?:boolean;onPlay?:()=>void}){
    <p>I’m building Viriddle as I go. If a clue feels confusing, a button is hard to find, or something doesn’t hold up scientifically, I want to hear about it. I want this to be a game you look forward to playing and sending to your friends.</p>
    <p className="muted">— Taylor K. Paisie</p>
    <p><a className="creator-link" href="https://github.com/taylorpaisie" target="_blank" rel="noopener noreferrer">My GitHub profile <ArrowUpRight size={17}/></a></p>
+   <p><a className="creator-link" href="https://scholar.google.com/citations?user=jbnyoXAAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">My research on Google Scholar <ArrowUpRight size={17}/></a></p>
    <a className="creator-link" href="https://github.com/taylorpaisie/viriddle" target="_blank" rel="noopener noreferrer">Follow the project or leave feedback on GitHub <ArrowUpRight size={17}/></a>
   </section>
   <section className="about panel">
