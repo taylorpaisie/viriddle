@@ -1,6 +1,6 @@
 import React,{createContext,useContext,useEffect,useRef,useState} from 'react';
 import {createClient,type Session} from '@supabase/supabase-js';
-import type {Case,Solution} from './model';
+import type {Case,Solution,EvidenceReport} from './model';
 export const backendConfigured=!!(import.meta.env.VITE_SUPABASE_URL&&import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
 export const supabase=backendConfigured?createClient(import.meta.env.VITE_SUPABASE_URL,import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,{auth:{flowType:'pkce',detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}}):null;
 export type History={case_date:string;score:number;correct_solution:boolean;elapsed_seconds:number;evidence_used:string[];title?:string};
@@ -8,7 +8,7 @@ export type Stats={total:number;solved:number;points:number;average:number;best:
 export const blankStats:Stats={total:0,solved:0,points:0,average:0,best:0,average_time:0,best_time:null,success_rate:0,longest:0,current:0};
 export type Profile={player:{id:string;username:string;public_profile_enabled:boolean;tutorial_completed_at?:string};stats:Stats;history:History[]};
 export type DailyState={case_id:string;case_date:string;number:string;case:Case;server_now:string;attempt:null|{id:string;status:string;started_at:string;duration_seconds:number;elapsed_seconds:number;evidence_used:string[];evidence_cost:number;selected_patient:number|null;score:number;correct_solution:boolean;base_points:number;speed_bonus:number};reports:Record<string,Report>;solution?:Solution};
-export type Report={title:string;rows:{label:string;text:string}[];note?:string};
+export type Report=EvidenceReport;
 export async function rpc<T=any>(name:string,args:Record<string,unknown>={}):Promise<T>{if(!supabase)throw new Error('Online accounts are not configured yet. Local play is available.');const {data,error}=await supabase.rpc(name,args);if(error)throw new Error(error.message);return data as T;}
 let guestRequest:Promise<Session>|null=null;
 async function guestSession(captchaToken?:string){if(!supabase)throw new Error('Online accounts are not configured yet.');const {data}=await supabase.auth.getSession();if(data.session)return data.session;if(!guestRequest)guestRequest=(async()=>{try{const {data,error}=await supabase.auth.signInAnonymously(captchaToken?{options:{captchaToken}}:undefined);if(error)throw error;if(!data.session)throw new Error('Could not create a guest session.');return data.session}finally{guestRequest=null}})();return guestRequest;}

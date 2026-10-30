@@ -114,3 +114,21 @@ assert.equal(hypothesisLabel(hospital,5),hospital.hypotheses![5]);
 assert.equal(hypothesisLabel(october,1),october.patients[1].name);
 assert.ok(caseObjective(hospital).includes('explanation'));
 console.log(`PASS: hospital mystery, six explanation choices, 2–6 day windows, no invented transmission arrows, and ${hospitalWords} story/evidence words.`);
+
+// Working board must never expose purchased clues before purchase, even in a practice payload.
+const {boardEvents,visibleClues,cleanNotebook}=await import('../src/notebook.ts');
+const {evidenceReports}=await import('../src/evidenceReports.ts');
+const hospitalReports=evidenceReports(hospital);
+assert.equal(boardEvents(hospital,hospitalReports,[]).length,6);
+assert.deepEqual(visibleClues(hospitalReports,[]),[]);
+const recordEvents=boardEvents(hospital,hospitalReports,['outside']);
+assert.equal(recordEvents.filter(e=>e.kind==='sample').length,2);
+assert.equal(recordEvents.find(e=>e.kind==='sample')?.day,9);
+assert.equal(recordEvents.find(e=>e.kind==='report')?.day,18);
+assert.equal(boardEvents(hospital,hospitalReports,['outside','genomics']).filter(e=>e.kind==='sample').length,2,'One timeline entry per identical event');
+assert.equal(boardEvents(hospital,hospitalReports,['contacts']).filter(e=>e.kind==='contact').length,3);
+assert.ok(!recordEvents.some(e=>e.kind==='contact'));
+assert.ok(visibleClues(hospitalReports,['outside']).every(r=>r.category==='outside'));
+assert.deepEqual(cleanNotebook({pinned:['outside:0','outside:0','bad'],marks:{0:'possible',6:'possible',1:'auto-answer'},note:'x'.repeat(650)}),{pinned:['outside:0'],marks:{0:'possible'},note:'x'.repeat(600)});
+assert.deepEqual(cleanNotebook(null),{pinned:[],marks:{},note:''});
+console.log('PASS: notebook validation, locked evidence isolation, contact gating, duplicate event merging, and distinct collection/report dates.');

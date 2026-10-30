@@ -8,3 +8,5 @@ import './community.css';
 import './playful-lab.css';
 import './mobile.css';
 createRoot(document.getElementById('root')!).render(<PlayerProvider><App/></PlayerProvider>);
+
+import './investigation-desk.css';

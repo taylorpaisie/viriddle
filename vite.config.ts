@@ -9,5 +9,7 @@ export default defineConfig(({mode})=>{
  const key=local?'':env.VITE_SUPABASE_PUBLISHABLE_KEY||publicServices.supabasePublishableKey;
  if(!publicServices.supabasePublishableKey.startsWith('sb_publishable_'))throw new Error('The committed browser configuration must use a publishable key.');
  const online=!!(url&&key);
- return {base:env.VITE_BASE_PATH||'/',define:{'import.meta.env.VITE_SUPABASE_URL':JSON.stringify(url),'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY':JSON.stringify(key)},resolve:{alias:{'@game-app':new URL(online?'./src/connectedApp.tsx':'./src/main.tsx',import.meta.url).pathname}},plugins:[tailwindcss()],server:{allowedHosts:['terminal.local']},build:{rollupOptions:{output:{manualChunks:online?((id:string)=>id.includes('/node_modules/@supabase/')?'account-service':undefined):undefined}}}};
+ const publicSite=env.VITE_PUBLIC_SITE_URL||(env.VITE_BASE_PATH==='/viriddle/'?'https://taylorpaisie.github.io/viriddle/':'https://outbreak-daily-detective.tinylion32770.chatgpt.site/');
+ const socialImage=new URL('brand/virriddle-social-og-1200x630.png',publicSite).href;
+ return {base:env.VITE_BASE_PATH||'/',define:{'import.meta.env.VITE_SUPABASE_URL':JSON.stringify(url),'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY':JSON.stringify(key)},resolve:{alias:{'@game-app':new URL(online?'./src/connectedApp.tsx':'./src/main.tsx',import.meta.url).pathname}},plugins:[tailwindcss(),{name:'virriddle-brand-metadata',transformIndexHtml:(html:string)=>html.replaceAll('__VIRRIDDLE_OG_IMAGE__',socialImage)}],server:{allowedHosts:['terminal.local']},build:{rollupOptions:{output:{manualChunks:online?((id:string)=>id.includes('/node_modules/@supabase/')?'account-service':undefined):undefined}}}};
 });

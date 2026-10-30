@@ -107,3 +107,13 @@ The Virriddle display-name update retains the existing repository and site URLs,
 ### New case: Before You Arrived
 
 A fictional hospital investigation inspired by the Libyan outbreak’s scientific investigation. Available immediately in Case Archive → Investigate the hospital case, with a four-minute or untimed practice option; scheduled as a known sample daily on November 13, 2026 (UTC). Six explanations replace patient-name hypotheses, and the supported conclusion leaves the individual source unresolved. Results show an evidence timeline without speculative transmission arrows. The other nine cases retain their mechanics, scores and schedule.
+
+
+### Investigation board and notebook
+
+Patients → Clues → Board → Solve provides one consistent working area on desktop and mobile. The Board combines free symptom dates with purchased contacts and explicitly dated evidence; no answer-key data is used. Specimen collection and result entry have different labels and colors. Pin revealed report rows, mark a hypothesis Possible/Ruled out, and save up to 600 characters of reasoning. Marks never select, exclude, or submit an answer. Notes are browser-local and scoped to the signed-in player, case and practice/daily mode; they do not sync between devices or the two site origins. Hidden practice evidence remains excluded until purchased. Tab switches restore the previous scroll position during the investigation. Scoring, clocks and fixed evidence costs are unchanged.
+
+
+### Branding kit integration
+
+The supplied primary horizontal PNG is used in the desktop header; a responsive `<picture>` switches to the compact PNG on phones (700px and below). Original PNGs preserve the exact supplied wordmark without requiring an external font. CSS clips transparent padding; the original files are unchanged. Globe SVG/ICO favicons, Apple touch icon and social preview use the kit assets under `public/brand/`. Asset URLs respect the Vite base path; link-preview URLs target the corresponding Sites or GitHub Pages origin. Optional `VITE_PUBLIC_SITE_URL` overrides that origin for a future custom domain. Existing theme variables, accounts and gameplay rules are untouched.
