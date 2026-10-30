@@ -57,3 +57,6 @@
 @media(max-width:700px){.guided-action-row{grid-template-columns:66px 46px minmax(0,1fr);gap:8px}.guided-action-row .case-clock{padding:8px 2px}.guided-action-row .case-clock strong{font-size:20px;white-space:nowrap;letter-spacing:-.8px}.guided-score small{font-size:8px;letter-spacing:0}.guided-score strong>span{display:none}.guided-action-row .primary{font-size:13px}}
 @media(max-width:370px){.guided-action-row{grid-template-columns:66px 43px minmax(0,1fr);gap:7px}}
 .practice-library{margin-top:28px}.practice-library>.muted{margin-top:10px}.practice-library .section-title{margin-bottom:12px}.practice-page>.primary,.practice-page>.secondary{margin:0 10px 10px 0}
+
+.practice-page .practice-library{margin-top:12px}.practice-tutorial{min-height:44px;margin-bottom:6px}.practice-page .practice-level{margin-top:12px}@media(max-width:700px){.practice-page .page-head{margin-top:28px;margin-bottom:16px}.practice-page .page-head h1{font-size:33px;line-height:1.12}.practice-page .page-head p{font-size:15px;margin-top:14px}}
+@media(max-width:700px){.practice-page .page-head{padding:15px 0 12px;margin:16px 0 8px}}
