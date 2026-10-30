@@ -134,3 +134,7 @@ Darren is a recurring fictional comic character. `src/darrenStory.ts` adds setti
 Case Archive now offers thirteen noncompetitive examples, all with a fictional Darren. Three easy examples use three patients and two encounters: The Quackovirus Press Conference, The Bacterial Wedding, and The PCR Machine Wants a Lawyer. Standard demos keep their original indices and answers. `practiceFixtures.ts` assembles offline authoring content; only `practiceCatalog.ts` labels enter the connected bundle. `generate-practice-sql.ts` uploads stripped public records and sealed practice reports/solutions to `private.practice_cases`, independently of daily scheduling. The authenticated, rate-limited practice RPC does not create competitive attempts. Five-minute or untimed practice is available.
 
 Practice comedy stays rooted in microbiology: fictional respiratory viruses, a fictional respiratory bacterium, lab outreach, viral replication, and microbial exhibits. The stated incubation and infectiousness rules are invented teaching assumptions, not clinical claims about real pathogens. Props and laboratory mishaps are not additional transmission routes.
+
+## Private friend leagues (feature branch)
+
+See [PRIVATE_LEAGUES.md](docs/PRIVATE_LEAGUES.md) for the league API/security design, isolated PostgreSQL and React tests, pending staging/production migration steps, and the two-account smoke-test checklist. This branch does not deploy or apply database changes automatically.
