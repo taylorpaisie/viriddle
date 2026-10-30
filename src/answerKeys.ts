@@ -1,6 +1,7 @@
+import type {Solution} from './model';
 // PROTOTYPE ONLY. Production: move this module and validation to a server endpoint.
 // Public evidence stays in cases.ts; the browser necessarily contains these demo keys.
-export const answerKeys:Record<string,{source:number;tree:[number,number][];explanation:string;reveal?:{title:string;text:string}[]}>={
+export const answerKeys:Record<string,Solution>={
 october:{
   "source": 1,
   "tree": [
@@ -182,3 +183,13 @@ Object.assign(answerKeys, {
     "explanation": "Harper had an earlier outside-group exposure and the earliest symptom onset within the genetically related cluster. Harper met Cameron on April 20, 2 day(s) before Cameron’s onset. Harper met Jules on April 21, 2 day(s) before Jules’s onset. Cameron met Dana on April 23, 2 day(s) before Dana’s onset. Jules met Eden on April 24, 3 day(s) before Eden’s onset. Morgan has a genetically distinct infection and belongs to a separate introduction."
   }
 });
+
+answerKeys['before-you-arrived']={source:5,tree:[],outcome:'unresolved',timeline:[{day:9,label:'Archived positive specimen collected'},{day:11,label:'Second archived positive specimen collected'},{day:14,label:'Visiting team arrives · independently verified'},{day:18,label:'Earlier specimen results entered into the system'}],
+ explanation:'An earlier hospital-associated outbreak is the best-supported explanation. Symptoms and archived positive specimens precede the visiting team’s June 14 arrival. Shared treatment-suite records suggest a healthcare-associated route, but neither a specific contaminated item nor an individual source is established. No direct patient-to-patient arrows are justified by the supplied evidence.',
+ reveal:[
+  {title:'June 6–13 · the earlier record',text:'Four treatment dates and four symptom onsets precede the visiting team’s arrival. Every recorded procedure falls inside its patient’s fictional 2–6 day exposure window. That supports investigating treatment-associated exposure, without proving where each infection occurred.'},
+  {title:'June 9 and 11 · the archive breaks the accusation',text:'Verified specimen-collection dates place positive samples before June 14. The June 18 result-entry date is an administrative timestamp, not the date infection began. The visiting team cannot have introduced all six infections after arriving.'},
+  {title:'June 14–19 · continuation, not a new beginning',text:'Later treatments and illnesses are compatible with continuation of the earlier cluster. The shared trolley identifier and incomplete processing logs identify a system to investigate. They cannot identify a contaminated instrument, deliberate action or a responsible person.'},
+  {title:'Related sequences are not a confession',text:'All six sequences support one related cluster in this fictional dataset. Similarity cannot prove a direct donor or direction. The recorded casual encounters do not establish routes, and two occurred after both participants’ symptoms began.'},
+  {title:'The supported conclusion has a boundary',text:'Choose the earlier hospital-associated outbreak with individual source unresolved. This fictional teaching case draws inspiration from the Libyan outbreak investigation; its invented records are not evidence about real people. The historical study found viral circulation predated the accused medical workers’ arrival.'}
+ ]};

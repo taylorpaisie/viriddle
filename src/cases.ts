@@ -1,3 +1,4 @@
+import {hospitalCase} from './hospitalCase.ts';
 import {friendNames} from './catalog.ts';
 import type {Case} from './model';
 export type {Case,Patient} from './model';
@@ -563,6 +564,7 @@ cases.push(...[
     ]
   }
 ] as Case[]);
+cases.push(hospitalCase);
 export const evidence=[
  {id:'bookings',title:'Room Booking Logs',cost:4,description:'Check event dates and booking sizes.',icon:'records'},
  {id:'windows',title:'Incubation Analysis',cost:6,description:'Calculate each patient’s possible exposure window.',icon:'window'},
@@ -576,9 +578,10 @@ export const dayNumber=(date:string)=>Math.floor((Date.parse(date+'T12:00:00Z')-
 // Keep the original schedule through October 29 so existing results remain valid.
 export const EXPANDED_SCHEDULE_START = '2026-10-30';
 const scheduledCase=(date:string)=>{
+  if(date === '2026-11-13')return hospitalCase;
   if(date < EXPANDED_SCHEDULE_START) return cases[((dayNumber(date)%3)+3)%3];
   const days = dayNumber(date)-dayNumber(EXPANDED_SCHEDULE_START);
-  return cases[(days+3)%cases.length];
+  return cases[(days+3)%9];
 };
 
 // Fictional characters named as a friendly nod to the creator’s science circle.
@@ -594,6 +597,7 @@ export const withFriendNames = (base:Case,offset:number):Case => {
   const nameMap=Object.fromEntries(base.patients.map((p,i)=>[p.name,friendNames[(start+i)%friendNames.length]]));
   const c={...base,nameMap};
   return {...c,brief:formatCaseText(c,base.brief),interviewNote:formatCaseText(c,base.interviewNote),
+    evidenceOverrides:base.evidenceOverrides?JSON.parse(formatCaseText(c,JSON.stringify(base.evidenceOverrides))):undefined,
     patients:base.patients.map(p=>({...p,name:nameMap[p.name],interview:formatCaseText(c,p.interview)})),
     contactDetails:base.contactDetails?.map(g=>formatCaseText(c,g)),
     bookingDetails:base.bookingDetails?Object.fromEntries(Object.entries(base.bookingDetails).map(([day,text])=>[day,formatCaseText(c,text)])):undefined,

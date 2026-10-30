@@ -158,3 +158,10 @@ Supabase project `jlvjascwjghyxnljwflx` in organization `cwqkboyjarrovwbnfjaw` h
 `config/public-services.ts` contains only the public project URL and publishable browser key. Both static deployments use this as their default at build time, so they do not depend on separately maintained GitHub Actions Variables. A paired VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY overrides it; VITE_PLAY_MODE=local explicitly selects the offline app. No Google secret or service-role key is committed.
 
 The owner approved and the backend verified all 15 daily sample cases dated October 29–November 12, 2026, each with sealed private evidence and answers. The connected build is active on Sites and GitHub Pages. Google sign-in, sign-out/re-entry, and guest server-scored completion/session restoration were verified. The sample answers are already public, so this is prototype server-validated play rather than a cheat-resistant launch. Older browser-local scores remain on the device and are not imported into verified records.
+
+
+### Curated sample practice
+
+Apply `supabase/migrations/20261030012409_hospital_practice.sql` after the first two migrations. `outbreak_practice(p_slug)` follows the existing guarded RPC pattern, with empty `search_path`, a required `auth.uid()` via `private.guard()`, `PUBLIC`/`anon` execution revoked, and authenticated execution granted. It returns only explicitly previewable fictional fixtures; it does not expose arbitrary future cases or write `daily_attempts`. Signed-in anonymous guests are intentionally supported. The security advisor flags these authenticated `SECURITY DEFINER` RPCs; their access is intentional and tested, rather than broad table permissions. See [Supabase’s advisor explanation](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+
+`Before You Arrived` is available in the Case Archive as noncompetitive practice, and scheduled for November 13 UTC. Practice resets freely and never changes daily scores, streaks or leaderboards. The original scheduled cases remain intact.

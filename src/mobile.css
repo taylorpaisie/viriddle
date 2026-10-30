@@ -121,3 +121,6 @@ button, summary, [role="button"] { touch-action: manipulation; }
 .case-debrief h3 { font-size:17px; line-height:1.5; letter-spacing:0; margin-bottom:8px; }
 .case-debrief p { font-size:15px; line-height:1.8; color:var(--text-secondary); }
 @media(max-width:700px){ .case-debrief li { padding-left:25px; } .case-debrief h3 { font-size:17px; } .case-debrief p { font-size:16px; } }
+
+/* Explanation choices must remain readable and tappable on narrow screens. */
+.hypothesis-options{grid-template-columns:1fr!important}.hypothesis-options button{white-space:normal;text-align:left;min-height:56px;justify-content:space-between;line-height:1.5;overflow-wrap:anywhere}.confirmed-hypothesis{font-weight:650;color:var(--secondary);line-height:1.5}.featured-case{margin:24px 0;padding:clamp(20px,4vw,32px)}.featured-case p{max-width:65ch}.unresolved-timeline ol{list-style:none;padding:0;margin:24px 0}.unresolved-timeline li{display:flex;gap:18px;padding:14px 0;border-bottom:1px solid var(--border);line-height:1.5}.unresolved-timeline li strong{min-width:70px;color:var(--secondary)}.arrival-marker{padding:16px;border:1px solid var(--primary);border-radius:10px;color:var(--text);line-height:1.5}.reading-tool h3,.reading-tool>p{padding:0 16px}.explanation a{color:var(--secondary);text-decoration:underline}

@@ -50,4 +50,28 @@ assert.ok(narrative.reports.contacts.rows[0].text.includes('40 minutes'));
 assert.equal(narrative.solution.reveal.length,5);assert.ok(narrative.solution.reveal[1].title.includes(narrative.public_data.patients[1].name));
 assert.ok(!JSON.stringify(narrative.public_data).includes('They are twelve dollars each.'));
 console.log('PASS: generated narrative fixtures seal detailed encounters, interviews, and the name-mapped reconstruction.');
+// Curated practice may preview only explicitly marked samples, without daily writes.
+await db.exec(await fs.readFile(new URL('../supabase/migrations/20261030012409_hospital_practice.sql',import.meta.url),'utf8'));
+const hospitalFixture=spawnSync(process.execPath,['--experimental-strip-types','scripts/generate-case-sql.ts','2026-11-13','1'],{encoding:'utf8'});
+assert.equal(hospitalFixture.status,0,hospitalFixture.stderr);await db.exec(hospitalFixture.stdout);
+const h=(await q("select c.id,c.public_data,s.solution,s.reports from public.daily_cases c join private.case_secrets s on s.case_id=c.id where c.public_data->>'id'='before-you-arrived'"))[0];
+assert.ok(h);assert.equal(h.public_data.evidenceOverrides,undefined);assert.equal(h.public_data.hypotheses.length,6);
+assert.equal(h.solution.outcome,'unresolved');assert.deepEqual(h.solution.tree,[]);
+assert.ok(h.reports.windows.rows[0].text.includes('Jun 2–Jun 6'));assert.ok(h.reports.outside.rows[0].text.includes('June 14'));
+await user(u);const beforePractice=(await call('outbreak_profile')).stats.total;
+state=await call('outbreak_practice',"'before-you-arrived'");assert.equal(state.attempt,null);assert.equal(state.number,'LAB-01');assert.equal(state.solution.source,5);
+assert.equal((await call('outbreak_profile')).stats.total,beforePractice);
+await assert.rejects(()=>call('outbreak_practice',"'october'"));await assert.rejects(()=>call('outbreak_practice',"'future'"));
+await db.exec('reset role');await db.exec('set role anon');await assert.rejects(()=>call('outbreak_practice',"'before-you-arrived'"));
+console.log('PASS: marked sample access, unknown/unmarked case rejection, no competitive practice records, sealed public payload, and anonymous API restriction.');
+// The same six-index server contract also scores explanation hypotheses correctly.
+await db.exec('reset role');
+await q("update public.daily_cases set case_date='2021-01-01' where id=$1",[c]);
+await q("update public.daily_cases set case_date=(clock_timestamp() at time zone 'UTC')::date,published_at=clock_timestamp()-interval '1 day' where id=$1",[h.id]);
+await user(u);state=await call('outbreak_action',`'begin','${h.id}'`);assert.equal(state.solution,undefined);
+state=await call('outbreak_action',`'select','${h.id}',null,5`);assert.equal(state.attempt.selected_patient,5);
+state=await call('outbreak_action',`'purchase','${h.id}','windows'`);assert.equal(state.attempt.evidence_cost,6);assert.equal(state.solution,undefined);
+state=await call('outbreak_action',`'submit','${h.id}',null,5`);assert.equal(state.attempt.correct_solution,true);assert.ok(state.attempt.score>=90);assert.equal(state.solution.outcome,'unresolved');assert.deepEqual(state.solution.tree,[]);
+await user(v);await call('outbreak_action',`'begin','${h.id}'`);state=await call('outbreak_action',`'submit','${h.id}',null,0`);assert.equal(state.attempt.correct_solution,false);assert.equal(state.attempt.score,0);
+console.log('PASS: official hospital hypothesis selection, fixed evidence deduction, correct explanation scoring, incorrect explanation zero, and unresolved results.');
 await db.close();

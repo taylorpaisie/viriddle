@@ -14,7 +14,7 @@ const externalRecords:Record<string,Record<number,string>>={
 };
 const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
 export const dayLabel=(c:Case,day:number)=>new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(2026,months.indexOf(c.month),day)));
-export const exposureWindows=(c:Case)=>c.patients.map(p=>({name:p.name,start:dayLabel(c,p.onset-4),end:dayLabel(c,p.onset-1)}));
+export const exposureWindows=(c:Case)=>c.patients.map(p=>({name:p.name,start:dayLabel(c,p.onset-(c.incubationDays?.[1]??4)),end:dayLabel(c,p.onset-(c.incubationDays?.[0]??1))}));
 export const roomBookings=(c:Case)=>{
  const days=new Map<number,Set<number>>();
  for(const [a,b,day] of c.contacts){if(!days.has(day))days.set(day,new Set());days.get(day)!.add(a);days.get(day)!.add(b)}

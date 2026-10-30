@@ -23,3 +23,14 @@ Owner approved and uploaded the following 15 date-specific fictional sample case
 | 2026-11-12 | The Signal Station | Brittany, Nídia, Luis, Selim, Nate, Cherie |
 
 The four-minute timer, six evidence prices, source solutions, transmission relationships, and daily name rotation remain unchanged. Browser-local historic scores are not uploaded. The upload was verified and the connected build is active on the current Sites URL and GitHub Pages.
+
+
+## Added hospital mystery
+
+`2026-11-13` — **Before You Arrived**. A fictional hospital-associated cluster inspired by the scientific investigation of the Libyan outbreak. The original 15 dates and all existing attempts remain unchanged.
+
+This case is explicitly previewable as **sample practice** before its scheduled day. `outbreak_practice` returns only fixtures marked `practice_available: true`; it never creates a competitive attempt. The upcoming daily is therefore a known sample, not a fresh secret competitive puzzle.
+
+Six explanation choices replace patient-name choices for this case. The answer index still uses the existing six-choice API contract. The supported outcome is an earlier hospital-associated outbreak with the individual source unresolved. No direct transmission tree is invented. Biological rules are fictional and case-specific (2–6 days), not HIV rules.
+
+Historical source: [de Oliveira et al., Nature (2006), HIV-1 and HCV sequences from Libyan outbreak](https://doi.org/10.1038/444836a). No historical names, victim records, or allegations are reproduced in the playable scenario.

@@ -11,6 +11,8 @@ try{
  assert.ok(!js.includes('Returned from an outside-group gathering October 5.'),'Sealed offline interview leaked');
  assert.ok(!js.includes('Finley: lineage B'),'Sealed offline lab data leaked');
  for(const key of Object.values(answerKeys))for(const step of key.reveal??[])assert.ok(!js.includes(step.text),'Offline reconstruction leaked');
+ assert.ok(!js.includes('Original accession entries verify specimens'),'Hospital sealed records leaked');
+ assert.ok(!js.includes('Being first on this list does not tell you'),'Hospital interview leaked');
  assert.ok(!js.includes('They are twelve dollars each.'),'New sealed interview leaked');
  assert.ok(!js.includes('Office crisis meeting · 40 minutes together'),'New sealed encounter leaked');
  assert.ok(!js.includes('The Midnight Rehearsal'),'Offline case library leaked');

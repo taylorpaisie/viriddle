@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { cases, caseFor, nyDate, friendNames, sampleCase, formatCaseText, evidence } from '../src/cases.ts';
 import { answerKeys } from '../src/answerKeys.ts';
 import { CASE_TIME_MS, remainingMs, elapsedSeconds, clockText, calculateScore, upgradeDeadline } from '../src/gameRules.ts';
-assert.equal(cases.length,9);
+assert.equal(cases.length,10);
 assert.equal(new Set(cases.map(c=>c.id)).size,cases.length);
 for(const c of cases){
- const key=answerKeys[c.id];assert.ok(key,c.id+' answer key');assert.equal(c.patients.length,6);assert.equal(key.tree.length,4);
+ const key=answerKeys[c.id];assert.ok(key,c.id+' answer key');assert.equal(c.patients.length,6);if(c.hypotheses){assert.equal(c.hypotheses.length,6);assert.ok(c.hypotheses[key.source]);assert.equal(key.outcome,'unresolved');assert.deepEqual(key.tree,[]);continue;}assert.equal(key.tree.length,4);
  const group=new Set<number>();const indegree=new Map<number,number>();
  for(const [a,b] of key.tree){
   const contact=c.contacts.find(([x,y])=>(x===a&&y===b)||(x===b&&y===a));
@@ -67,6 +67,7 @@ assert.deepEqual(evidence.map(e=>e.cost),[4,6,10,12,14,18]);
 for(let i=0;i<cases.length;i++){
  const c=sampleCase(i),windows=exposureWindows(c),outside=outsideExposureChecks(c),rooms=roomBookings(c);
  assert.equal(windows.length,c.patients.length);assert.deepEqual(windows.map(w=>w.name),c.patients.map(p=>p.name));
+ if(c.hypotheses){assert.equal(windows[0].start,'Jun 2');assert.equal(windows[0].end,'Jun 6');assert.ok(c.evidenceOverrides?.outside);continue;}
  assert.equal(outside.filter(r=>r.confirmed).length,2,c.id+' two corroborating outside records');
  assert.ok(outside[answerKeys[c.id].source].confirmed,c.id+' simulated source has outside record');
  assert.ok(rooms.length>0);for(const r of rooms)assert.ok(r.bookedFor>=2&&r.bookedFor<=6);
@@ -99,3 +100,17 @@ assert.ok(reading<=550,'Story and evidence fit the 3–4 minute target');
 for(const step of answerKeys.october.reveal!){const text=formatCaseText(october,step.title+' '+step.text);for(const old of cases[0].patients.map(p=>p.name))assert.ok(!new RegExp('\\b'+old+'\\b').test(text),'Reveal uses rotated names');}
 assert.equal(CASE_TIME_MS,240000,'Four-minute cap retained');
 console.log(`PASS: reference mystery has ${reading} story/evidence words, dated encounters, rotated reveal names, and unchanged four-minute cap.`);
+
+const hospital=sampleCase(9),hospitalKey=answerKeys[hospital.id];
+assert.equal(caseFor('2026-11-13').id,hospital.id);
+assert.equal(caseFor('2026-11-12').id,'signal');
+assert.equal(hospitalKey.source,5);assert.equal(hospitalKey.outcome,'unresolved');assert.equal(hospitalKey.tree.length,0);
+assert.ok(hospital.hypotheses![5].includes('individual source unresolved'));
+assert.equal(hospital.patients.filter(p=>p.onset<14).length,4);
+const hospitalWords=[hospital.brief,hospital.interviewNote,...hospital.patients.map(p=>p.interview),...hospital.genomics,...Object.values(hospital.evidenceOverrides!).flatMap(r=>r.rows.map(row=>row.text))].join(' ').split(/\s+/).length;
+assert.ok(hospitalWords<680,'Hospital story fits a short investigation');
+const {hypothesisLabel,caseObjective}=await import('../src/publicCase.ts');
+assert.equal(hypothesisLabel(hospital,5),hospital.hypotheses![5]);
+assert.equal(hypothesisLabel(october,1),october.patients[1].name);
+assert.ok(caseObjective(hospital).includes('explanation'));
+console.log(`PASS: hospital mystery, six explanation choices, 2–6 day windows, no invented transmission arrows, and ${hospitalWords} story/evidence words.`);

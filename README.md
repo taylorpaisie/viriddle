@@ -102,3 +102,8 @@ The Virriddle display-name update retains the existing repository and site URLs,
 
 ### Connected build configuration
 `config/public-services.ts` supplies the public Supabase URL and publishable key for both static deployments. Environment overrides must be supplied as a pair. Use `VITE_PLAY_MODE=local npm run dev` for the offline sample library. The connected build excludes offline case evidence and answer keys. Google sign-in is active. Fifteen approved sample cases are loaded through November 12, 2026; new case data must be published before that schedule ends. See docs/ACCOUNTS_SETUP.md.
+
+
+### New case: Before You Arrived
+
+A fictional hospital investigation inspired by the Libyan outbreak’s scientific investigation. Available immediately in Case Archive → Investigate the hospital case, with a four-minute or untimed practice option; scheduled as a known sample daily on November 13, 2026 (UTC). Six explanations replace patient-name hypotheses, and the supported conclusion leaves the individual source unresolved. Results show an evidence timeline without speculative transmission arrows. The other nine cases retain their mechanics, scores and schedule.
