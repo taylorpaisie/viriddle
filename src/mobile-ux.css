@@ -1,0 +1,42 @@
+/* Final ergonomic overrides, after the shared theme and component styles. */
+.patient-record-navigation{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin:18px 0;border-block:1px solid var(--border);padding:8px 0}
+.patient-record-navigation button{min-height:44px;padding:8px;border-radius:8px;color:var(--secondary);font-size:14px}
+.patient-record-navigation button:first-child{text-align:left}.patient-record-navigation button:last-child{text-align:right}
+.patient-record-navigation button:not(:disabled):hover{background:var(--selection)}
+.patient-record-navigation [role=status]{font-size:13px;color:var(--text-secondary);white-space:nowrap}
+@media(max-width:700px){
+ /* Let the mystery and its primary action lead on a phone. */
+ .game-lobby{padding-top:20px;padding-bottom:22px}
+ .game-lobby h1{font-size:clamp(32px,8.5vw,46px);margin-top:10px;letter-spacing:-1.5px}
+ .lobby-hook{margin-top:10px;font-size:15px}.lobby-hook strong{white-space:normal}
+ .lobby-case-wrap{padding-top:16px}.lobby-case{padding:16px}
+ .lobby-case-art{margin:4px 0 10px;padding-bottom:0}
+ .lobby-case-art svg{height:64px}.lobby-specimen-ring{width:64px;height:64px;left:calc(50% - 32px)}
+ .lobby-art-caption{display:none}.lobby-case h2{font-size:22px;line-height:1.2}
+ .lobby-case-description{font-size:14px;line-height:1.5;margin-top:8px}
+ .lobby-rules{margin:10px 0;padding:10px 0;flex-wrap:wrap}
+ .lobby-play{min-height:52px}.lobby-subactions{margin-top:6px}.lobby-daily-note{margin-top:12px}
+ /* More of the patient cards fits above the fixed case controls. */
+ .active-investigation .game-top{margin-bottom:12px;padding-block:10px;flex-wrap:wrap;gap:6px 10px}
+ .active-investigation .investigation-title{margin-bottom:12px}
+ .active-investigation .investigation-title h1{font-size:25px;margin-top:8px}
+ .active-investigation .case-reference{margin-block:10px}
+ .active-investigation .investigation-hint{margin-top:14px}
+ .active-investigation .section-title.compact{gap:5px}
+ .active-investigation .section-title.compact>.small{flex-basis:100%}
+ .guided-action-bar nav button{min-height:48px}
+ .guided-action-row{padding-block:7px 9px}
+ .patient-record-navigation{gap:6px}.patient-record-navigation button{padding-inline:4px}
+ .modal .patient-onset{flex-wrap:wrap;gap:8px;line-height:1.5}
+ .report-picker button,.event-patient{min-height:44px}
+ /* Leave room to scroll focused fields clear of fixed navigation and keyboards. */
+ textarea,input,select{scroll-margin-block:24px 180px}
+ main.active-investigation{padding-bottom:calc(160px + env(safe-area-inset-bottom))}
+}
+/* Small landscape phones need reading space as well as reachable controls. */
+@media(max-width:700px) and (max-height:500px){
+ .guided-action-bar>nav{padding-block:2px}.guided-action-bar nav button{min-height:44px;flex-direction:row;gap:5px}
+ .guided-action-row{padding-block:4px}.guided-action-row .primary{min-height:44px}
+ .guided-action-row .case-clock{padding-block:3px}
+ .lobby-case-art{display:none}
+}
