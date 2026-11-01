@@ -7,8 +7,8 @@ import React,{act} from 'react';
 import {createRoot} from 'react-dom/client';
 const dir=await mkdtemp(process.cwd()+'/.navigation-test-');
 try{
- await build({stdin:{contents:`export {ClueLab} from './src/ClueLab';export {InvestigationActionBar} from './src/InvestigationNavigation';export {AppNavigation,ResumeInvestigation} from './src/Navigation';export {PlayerProvider} from './src/player';`,resolveDir:process.cwd(),loader:'tsx'},outfile:dir+'/ui.mjs',bundle:true,platform:'node',format:'esm',packages:'external',define:{'import.meta.env':JSON.stringify({BASE_URL:'/viriddle/',VITE_SUPABASE_URL:'',VITE_SUPABASE_PUBLISHABLE_KEY:''})}});
- const {ClueLab,InvestigationActionBar,AppNavigation,ResumeInvestigation,PlayerProvider}=await import(pathToFileURL(dir+'/ui.mjs'));
+ await build({stdin:{contents:`export {PatientRecordNavigation} from './src/gameComponents';export {ClueLab} from './src/ClueLab';export {InvestigationActionBar} from './src/InvestigationNavigation';export {AppNavigation,ResumeInvestigation} from './src/Navigation';export {PlayerProvider} from './src/player';`,resolveDir:process.cwd(),loader:'tsx'},outfile:dir+'/ui.mjs',bundle:true,platform:'node',format:'esm',packages:'external',define:{'import.meta.env':JSON.stringify({BASE_URL:'/viriddle/',VITE_SUPABASE_URL:'',VITE_SUPABASE_PUBLISHABLE_KEY:''})}});
+ const {PatientRecordNavigation,ClueLab,InvestigationActionBar,AppNavigation,ResumeInvestigation,PlayerProvider}=await import(pathToFileURL(dir+'/ui.mjs'));
  const dom=new JSDOM('<div id="app"></div>',{url:'https://example.test/viriddle/'});
  for(const k of ['window','document','location','localStorage','sessionStorage','HTMLElement','Event','MouseEvent','KeyboardEvent'])globalThis[k]=dom.window[k];
  Object.defineProperty(globalThis,'navigator',{value:dom.window.navigator,configurable:true});globalThis.IS_REACT_ACT_ENVIRONMENT=true;
@@ -32,6 +32,12 @@ try{
  // Pending failure leaves evidence sealed and allows another purchase request.
  await click('Clue shop');const contact=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Contact Tracing'));await act(async()=>contact.click());assert.ok(!body().includes('NEVER_SHOW_LOCKED_CONTACTS'));
  await act(async()=>root.unmount());root=createRoot(document.getElementById('app'));
+ // Record browsing must stay within bounds and must not choose an answer.
+ let inspected=[];
+ const pager=index=>React.createElement(PatientRecordNavigation,{index,total:3,onInspect:i=>inspected.push(i)});
+ await mount(pager(0));assert.ok(button('← Previous').disabled);await click('Next →');assert.deepEqual(inspected,[1]);
+ await mount(pager(1));await click('← Previous');await click('Next →');assert.deepEqual(inspected,[1,0,2]);
+ await mount(pager(2));assert.ok(button('Next →').disabled);assert.equal(document.querySelector('[role=status]').textContent,'3 of 3');
  let steps=[],confirmations=0;
  const bar=(selected=null,busy=false)=>React.createElement(InvestigationActionBar,{stage:'solve',clues:1,onStage:s=>steps.push(s),remaining:300000,score:90,selected,busy,onConfirm:()=>confirmations++});
  await mount(bar());assert.equal(document.querySelector('[role=timer]').getAttribute('aria-label'),'05:00 remaining');assert.ok(button('Choose an answer above').disabled);
