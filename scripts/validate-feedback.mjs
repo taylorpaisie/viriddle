@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {PGlite} from '@electric-sql/pglite';
+
+const db=new PGlite();
+try{
+ await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key,is_anonymous boolean default false);create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;grant usage on schema auth to authenticated,anon;grant execute on function auth.uid() to authenticated,anon;`);
+ for(const name of ['202610290001_outbreak.sql','202610290002_four_minute_window.sql','20261030121235_five_minute_window.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
+ const u='40000000-0000-4000-8000-000000000001',v='40000000-0000-4000-8000-000000000002',c='40000000-0000-4000-8000-000000000003';
+ const complete='40000000-0000-4000-8000-000000000004',active='40000000-0000-4000-8000-000000000005',timed='40000000-0000-4000-8000-000000000006';
+ await db.query('insert into auth.users(id,is_anonymous) values($1,true),($2,false)',[u,v]);
+ await db.query("insert into public.players(id,username) values($1,'FeedbackGuest'),($2,'FeedbackOther')",[u,v]);
+ await db.query("insert into public.daily_cases(id,case_date,published_at,public_data) values($1,'2020-01-01','2020-01-01','{}'),(gen_random_uuid(),'2020-01-02','2020-01-02','{}')",[c]);
+ await db.query("insert into public.daily_attempts(id,player_id,case_id,completed_at,elapsed_seconds,score,correct_solution,status) values($1,$2,$3,now(),60,88,true,'completed'),($4,$5,$3,now(),300,0,false,'timed_out')",[complete,u,c,timed,v]);
+ await db.query("insert into public.daily_attempts(id,player_id,case_id) select $1,$2,id from public.daily_cases where case_date='2020-01-02'",[active,u]);
+ const attemptsBefore=(await db.query('select * from public.daily_attempts order by id')).rows;
+ const eventsBefore=(await db.query('select * from public.attempt_events order by id')).rows;
+ await db.exec(readFileSync(new URL('../supabase/migrations/20261101180357_case_feedback.sql',import.meta.url),'utf8'));
+ const user=async id=>{await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[id]);await db.exec('set role authenticated')};
+ const call=async(attempt,rating=null)=>(await db.query('select public.outbreak_case_feedback($1,$2) as data',[attempt,rating])).rows[0].data;
+ await user(u);assert.deepEqual(await call(complete),{rating:null});
+ assert.deepEqual(await call(complete,'satisfying'),{rating:'satisfying'});
+ const original=(await db.query('select * from public.case_feedback')).rows[0];
+ assert.deepEqual(await call(complete,'confusing'),{rating:'confusing'});
+ assert.deepEqual(await call(complete,'confusing'),{rating:'confusing'});
+ let rows=(await db.query('select * from public.case_feedback')).rows;assert.equal(rows.length,1);assert.deepEqual(rows[0].created_at,original.created_at);assert.ok(rows[0].updated_at>=original.updated_at);
+ await assert.rejects(()=>call(complete,'arbitrary_text'),/valid case rating/);
+ await assert.rejects(()=>call(active,'too_easy'),/row-level security/);
+ await assert.rejects(()=>call(timed,'too_hard'),/row-level security/);
+ await assert.rejects(()=>db.query("insert into public.case_feedback(attempt_id,rating,created_at) values($1,'satisfying',now())",[active]),/permission denied/);
+ await assert.rejects(()=>db.query('update public.case_feedback set attempt_id=$1 where attempt_id=$2',[active,complete]),/permission denied/);
+ await assert.rejects(()=>db.query('delete from public.case_feedback'),/permission denied/);
+ await user(v);assert.deepEqual(await call(complete),{rating:null});assert.equal((await db.query('select * from public.case_feedback')).rows.length,0);
+ await assert.rejects(()=>call(complete,'too_hard'),/row-level security/);
+ await db.query("update public.case_feedback set rating='too_hard' where attempt_id=$1",[complete]);
+ assert.deepEqual(await call(timed,'too_hard'),{rating:'too_hard'},'Timeouts can rate their own case');
+ await db.exec('reset role');
+ assert.deepEqual((await db.query('select * from public.daily_attempts order by id')).rows,attemptsBefore);
+ assert.deepEqual((await db.query('select * from public.attempt_events order by id')).rows,eventsBefore);
+ assert.equal((await db.query('select count(*)::int as n from public.case_feedback')).rows[0].n,2);
+ const permission=(await db.query("select prosecdef from pg_proc where oid='public.outbreak_case_feedback(uuid,text)'::regprocedure")).rows[0];assert.equal(permission.prosecdef,false);
+ await db.exec('set role anon');await assert.rejects(()=>call(complete),/permission denied/);await assert.rejects(()=>db.query('select * from public.case_feedback'),/permission denied/);
+ await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub','',false)");await db.exec('set role authenticated');await assert.rejects(()=>call(complete),/Continue as guest/);
+ await db.exec('reset role');await db.query('delete from public.players where id=$1',[u]);assert.equal((await db.query('select count(*)::int as n from public.case_feedback')).rows[0].n,1);
+ console.log('PASS: guest and permanent-account feedback, final-attempt ownership, one mutable response, column privileges, anonymous denial, invoker RPC, timestamps, deletion cascade, and unchanged attempts/events.');
+}finally{await db.close()}
