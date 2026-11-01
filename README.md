@@ -83,6 +83,10 @@ The Sites deployment is separate and is updated through Sites, not by this GitHu
 - Configure and test the included Supabase/Google integration in staging, then enable production.
 - Choose a permanent domain and consolidate production hosting.
 
+### Optional case feedback
+
+Official daily results include an optional Satisfying / Confusing / Too easy / Too hard rating after the explanation. Guests and signed-in players can revise their own response without changing scores. Apply the included migration before deploying the frontend; [CASE_FEEDBACK.md](docs/CASE_FEEDBACK.md) explains rollout, privacy, owner-only summaries and the isolated test suite.
+
 ### Private daily authoring
 
 Owner-only case-pack validation and SQL generation are described in [PRIVATE_CASE_PACKS.md](docs/PRIVATE_CASE_PACKS.md). Upcoming evidence and answers remain outside the public repository. The synthetic CI suite tests scheduling, gated evidence, scoring, conflict rollback and release privacy without deploying any content.
