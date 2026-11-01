@@ -1,3 +1,4 @@
+import {SupportLab} from './SupportLab';
 import React from 'react';
 import {ArrowRight,ArrowUpRight} from 'lucide-react';
 
@@ -19,6 +20,7 @@ export function About({local=false,onPlay}:{local?:boolean;onPlay?:()=>void}){
    <p><a className="creator-link" href="https://scholar.google.com/citations?user=jbnyoXAAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">My research on Google Scholar <ArrowUpRight size={17}/></a></p>
    <a className="creator-link" href="https://github.com/taylorpaisie/viriddle" target="_blank" rel="noopener noreferrer">Follow the project or leave feedback on GitHub <ArrowUpRight size={17}/></a>
   </section>
+  <SupportLab/>
   <section className="about panel">
    <div className="eyebrow">REAL SCIENCE. INVENTED CHAOS.</div>
    <h2>A small note from the scientist in me.</h2>
