@@ -5,6 +5,8 @@ dist/
 !.env.example
 *.log
 *.private.sql
+*.private.json
+private-case-packs/
 .DS_Store
 
 # Supabase CLI local cache
