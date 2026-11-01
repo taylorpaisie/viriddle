@@ -1,0 +1,74 @@
+// Offline design model. This module does not change gameplay or database rules.
+export const proposedPrices = Object.freeze({bookings:3,windows:4,interviews:6,contacts:8,outside:9,genomics:10});
+export function models(catalog){
+ return [
+  {id:'current',label:'Current',base:50,speed:50,prices:Object.fromEntries(catalog.map(e=>[e.id,e.cost]))},
+  {id:'proposed',label:'Proposed',base:70,speed:30,prices:proposedPrices}
+ ];
+}
+export function score(model,ids,seconds,{correct=true,relaxed=false}={}){
+ if(!Number.isFinite(seconds)||seconds<0)throw Error('Elapsed seconds must be finite and nonnegative');
+ if(new Set(ids).size!==ids.length||ids.some(id=>!Object.hasOwn(model.prices,id)))throw Error('Unknown or duplicate evidence');
+ const cost=ids.reduce((total,id)=>total+model.prices[id],0);
+ if(!correct||(!relaxed&&seconds>=300))return {score:0,base:0,speed:0,cost};
+ const base=relaxed?100:model.base;
+ const speed=relaxed?0:Math.ceil((300-seconds)*model.speed/300);
+ return {score:Math.max(0,base+speed-cost),base,speed,cost};
+}
+export function combinations(ids){
+ return Array.from({length:2**ids.length},(_,mask)=>ids.filter((_,i)=>mask&(2**i)));
+}
+export function distribution(model,seconds){
+ const scores=combinations(Object.keys(model.prices)).map(ids=>score(model,ids,seconds).score).sort((a,b)=>a-b);
+ const bins=Object.fromEntries(['0','1–20','21–40','41–60','61–80','81–100'].map(k=>[k,0]));
+ for(const value of scores)bins[value===0?'0':value<=20?'1–20':value<=40?'21–40':value<=60?'41–60':value<=80?'61–80':'81–100']++;
+ return {min:scores[0],max:scores.at(-1),median:(scores[31]+scores[32])/2,zeros:bins['0'],bins};
+}
+export function markdown(catalog){
+ const [current,proposed]=models(catalog),all=catalog.map(e=>e.id);
+ const lines=[
+  '# Evidence and score balance study','',
+  'Design proposal only. Official gameplay, database rules, ongoing attempts and historical scores are unchanged. Regenerate with `npm run --silent scores:balance`.','',
+  '## Proposed allocation','',
+  'Move from 50 correctness + 50 speed to **70 correctness + 30 speed**. Keep the five-minute deadline, one official submission, zero for wrong answers/timeouts and one purchase per report. Prices remain fixed across cases.','',
+  '| Component | Current | Proposed |','| --- | ---: | ---: |',
+  '| Correct timed answer | 50 | 70 |','| Maximum speed bonus | 50 | 30 |',
+  ...catalog.map(e=>`| ${e.title} | −${current.prices[e.id]} | −${proposed.prices[e.id]} |`),
+  `| All six reports | −${all.reduce((n,id)=>n+current.prices[id],0)} | −${all.reduce((n,id)=>n+proposed.prices[id],0)} |`,'',
+  'Lower prices keep corroborating evidence affordable. Bookings and computed windows remain the least expensive; interviews and contacts cost more; outside checks and sequencing retain the largest deductions. This ordering is a design hypothesis, not a measured ranking of information value. No category proves a source by itself.','',
+  '## Correct solve after buying all reports','',
+  '| Submission time | Current score | Proposed score |','| --- | ---: | ---: |',
+  ...[0,60,120,150,180,216,240,299,300].map(t=>`| ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}${t===300?' (timeout)':''} | ${score(current,all,t).score} | ${score(proposed,all,t).score} |`),'',
+  'The current all-report score reaches zero at 3:36, even for a correct answer. The proposal keeps it at 31 or more before the deadline; at exactly 5:00 every timed attempt earns zero. Speed uses the existing ceiling convention, with one point lost every 10 seconds instead of every 6 seconds.','',
+  '## Evidence strategies at 2:30','',
+  'Illustrative purchases, not claims that these reports suffice to solve every case.','',
+  '| Reports | Current cost | Current score | Proposed cost | Proposed score |','| --- | ---: | ---: | ---: | ---: |',
+  ...[
+   ['Free symptom dates only',[]],
+   ['Interviews + contacts',['interviews','contacts']],
+   ['Windows + contacts + sequencing',['windows','contacts','genomics']],
+   ['Interviews + contacts + outside checks',['interviews','contacts','outside']],
+   ['All six',all]
+  ].map(([label,ids])=>{const a=score(current,ids,150),b=score(proposed,ids,150);return `| ${label} | ${a.cost} | ${a.score} | ${b.cost} | ${b.score} |`;}),'',
+  '## Distribution across all 64 evidence combinations','',
+  'Each subset is counted once, assuming a correct answer at the stated time. These are mathematical possibilities, **not observed players or predicted frequencies**. The median is an unweighted subset median.','',
+  '| Time | Model | Minimum | Median | Maximum | Zero-score combinations |','| --- | --- | ---: | ---: | ---: | ---: |',
+  ...[60,150,240,299].flatMap(t=>[current,proposed].map(model=>{const d=distribution(model,t);return `| ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')} | ${model.label} | ${d.min} | ${d.median} | ${d.max} | ${d.zeros}/64 |`;})),'',
+  '### Score bands at 4:00','',
+  '| Model | 0 | 1–20 | 21–40 | 41–60 | 61–80 | 81–100 |','| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+  ...[current,proposed].map(model=>`| ${model.label} | ${Object.values(distribution(model,240).bins).join(' | ')} |`),'',
+  '## Incentives and limits','',
+  `At 0:00 a uniform blind guess among six choices has an expected score of 100/6, about 16.7, in either model. This assumes exactly one correct choice and no prior information; it is not an estimate of player behavior. A certain correct all-report solve at 4:00 earns ${score(current,all,240).score} currently and ${score(proposed,all,240).score} in the proposal. Expected-score comparisons do not capture confidence, enjoyment, or ranking goals.`,'',
+  'The proposal still rewards buying less and solving faster. Buying all reports costs 40 rather than 64 points, and a 10-second improvement is worth one point rather than about 1.67 points. Some players may buy everything routinely, compressing strategy differences; sequencing may become a default purchase. Human playtesting must establish whether the remaining tradeoff is useful.','',
+  'Untimed practice stays 100 minus purchases: buying all reports would earn 60 instead of 36. This is noncompetitive and should be labeled separately from timed distributions.','',
+  '## Playtest before rollout','',
+  '- Use easy, standard and challenging cases. Ask testers to explain which uncertainty motivated each purchase; do not infer usefulness from price alone.',
+  '- Compare completion time, correct/incorrect/timeout rates, report purchase rates, evidence spend, and score bands separately by case. Exclude internal testing identities from production summaries.',
+  '- Inspect whether outside checks or sequencing become automatic purchases, and whether players feel pressured to guess rather than corroborate.',
+  '- Treat small samples and voluntary case ratings cautiously. Do not tune prices toward a target histogram without checking the reasoning experience.','',
+  '## Requirements for an eventual rules change','',
+  'Version the rules by daily case with a future UTC activation date, so all official players on a date share the same scoring model. Keep earlier cases and attempts on their original prices and formula, including unfinished attempts and late resumes. Do not recompute historical results. Return the applicable rule version and evidence prices from the server; the client must display and simulate those same rules, with legacy fallback during rollout.','',
+  'Update transactional server purchase/submission logic, local/practice scoring, the clue shop, field guide, tutorial, confirmation preview, score breakdown and explanatory copy together. Test all 64 purchase subsets, timer boundaries, idempotent purchases, failed submissions, authorization, client/server parity and old/new rule coexistence before applying a migration or deploying.',''
+ ];
+ return lines.join('\n');
+}

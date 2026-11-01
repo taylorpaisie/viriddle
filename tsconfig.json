@@ -24,6 +24,8 @@
     "src",
     "scripts/validate-cases.ts",
     "scripts/generate-case-sql.ts",
+    "scripts/analyze-score-balance.ts",
+    "scripts/validate-score-balance.ts",
     "tests"
   ]
 }

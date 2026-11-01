@@ -105,6 +105,8 @@ The sun/moon button in the header switches the entire site, including investigat
 
 A free, collapsible evidence field guide is available in the evidence room, tutorial, and Rules & Scoring. It explains every tool, SNP distances, incubation-window checks, separate introductions, and the limits of contact and genomic evidence, using a generic worked example without daily spoilers. Opening the guide does not purchase evidence or change the score.
 
+An offline [evidence and scoring balance study](docs/SCORE_BALANCE.md) compares current rules with a proposed 70/30 correctness/speed split and 40-point total evidence budget. Run `npm run --silent scores:balance` to reproduce the strategy tables and distributions across all 64 evidence combinations. These are design scenarios, not player analytics; official scoring is unchanged.
+
 ## Refined Lab presentation
 
 Viriddle pairs the NEON LAB pink/cyan palette with abstract microscopy-inspired cells and undirected contact motifs. The original SVG art has no faces, character poses, question-mark props, or case clues. Soft card corners and friendly copy keep the daily puzzle approachable; typography, button depth, and decorative effects are restrained. `src/PlayfulLab.tsx` contains the artwork and network/cell wordmark; presentation overrides live in `src/playful-lab.css`. Gameplay, the five-minute timer, evidence prices, and the 18-name pool are unchanged.
