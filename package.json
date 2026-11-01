@@ -5,7 +5,9 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite --host 0.0.0.0",
-    "test": "npm run typecheck && npm run test:theme && npm run test:cases && npm run test:backend && npm run test:leagues && npm run test:league-ui && npm run test:usage && npm run test:navigation && npm run test:private-packs && npm run test:feedback",
+    "test": "npm run typecheck && npm run test:theme && npm run test:cases && npm run test:backend && npm run test:leagues && npm run test:league-ui && npm run test:usage && npm run test:navigation && npm run test:private-packs && npm run test:feedback && npm run test:schedule",
+    "cases:schedule": "node scripts/schedule-health.mjs",
+    "test:schedule": "node scripts/validate-schedule-health.mjs",
     "test:backend": "node scripts/validate-backend.mjs",
     "cases:sql": "node --experimental-strip-types scripts/generate-case-sql.ts",
     "typecheck": "tsc --noEmit",

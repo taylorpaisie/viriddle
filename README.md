@@ -91,6 +91,8 @@ Official daily results include an optional Satisfying / Confusing / Too easy / T
 
 Owner-only case-pack validation and SQL generation are described in [PRIVATE_CASE_PACKS.md](docs/PRIVATE_CASE_PACKS.md). Upcoming evidence and answers remain outside the public repository. The synthetic CI suite tests scheduling, gated evidence, scoring, conflict rollback and release privacy without deploying any content.
 
+Check remaining daily coverage with `npm run --silent cases:schedule -- sql`, then inspect the owner-query JSON using `npm run --silent cases:schedule -- check schedule.private.json`. The [schedule health guide](docs/SCHEDULE_HEALTH.md) covers gaps, incomplete sealed content, UTC release timing and exit codes. No case content is returned.
+
 ## NEON LAB theme
 
 The palette and visual states are centralized in `src/neon-lab.css`. Existing layout rules in `src/style.css` and the SVG board use those semantic variables. Selected nodes pulse gently, newly revealed contacts illuminate once, and results fade in; reduced-motion preferences disable these effects. The NEON LAB redesign preserves the 300-second timer, evidence prices, and time-based scoring. The accounts expansion changes the shared reset to midnight UTC and adds optional server-validated play.
