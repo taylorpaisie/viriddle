@@ -8,3 +8,10 @@
 .support-lab small{display:block;color:var(--text-secondary);font-size:12px;line-height:1.6;margin-top:12px}
 @media(max-width:700px){.support-lab{padding:20px;gap:12px}.support-lab-icon{width:22px}.support-lab h2{font-size:21px}.support-lab-link{width:100%;font-size:14px;padding-inline:10px}}
 @media(max-width:360px){.support-lab{display:block}.support-lab-icon{margin-bottom:10px}}
+
+.support-lab-qr{margin-top:16px;border-top:1px solid var(--border);padding-top:4px}
+.support-lab-qr summary{cursor:pointer;color:var(--secondary);font-size:14px;line-height:1.5;min-height:48px;padding:13px 0}
+.support-lab-qr summary:focus-visible{outline:2px solid var(--secondary);outline-offset:3px;border-radius:6px}
+.support-lab-qr figure{margin:8px 0 0;max-width:240px}
+.support-lab-qr img{display:block;width:100%;height:auto;padding:14px;background:#fff;border-radius:12px}
+.support-lab-qr figcaption{color:var(--text-secondary);font-size:12px;line-height:1.6;margin-top:10px}

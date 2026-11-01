@@ -13,6 +13,13 @@ export function SupportLab(){
    <p>I’m building Viriddle one mystery at a time. Buying the lab a coffee helps cover hosting and supports new cases and improvements.</p>
    <a className="support-lab-link" href={supportUrl} target="_blank" rel="noopener noreferrer">Buy the lab a coffee <ArrowUpRight size={18} aria-hidden="true"/></a>
    <small>Optional support · opens Buy Me a Coffee in a new tab. The daily mystery stays free.</small>
+   <details className="support-lab-qr">
+    <summary>Prefer to scan? Show QR code</summary>
+    <figure>
+     <img src={import.meta.env.BASE_URL+'brand/buy-me-a-coffee-qr.png'} alt="QR code for Taylor’s Buy Me a Coffee page" width={700} height={700} loading="lazy"/>
+     <figcaption>Scan with another device to buy the lab a coffee.</figcaption>
+    </figure>
+   </details>
   </div>
  </section>;
 }
