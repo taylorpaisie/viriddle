@@ -7,13 +7,21 @@ import React,{act} from 'react';
 import {createRoot} from 'react-dom/client';
 const dir=await mkdtemp(process.cwd()+'/.navigation-test-');
 try{
- await build({stdin:{contents:`export {PatientRecordNavigation} from './src/gameComponents';export {ClueLab} from './src/ClueLab';export {InvestigationActionBar} from './src/InvestigationNavigation';export {AppNavigation,ResumeInvestigation} from './src/Navigation';export {PlayerProvider} from './src/player';`,resolveDir:process.cwd(),loader:'tsx'},outfile:dir+'/ui.mjs',bundle:true,platform:'node',format:'esm',packages:'external',define:{'import.meta.env':JSON.stringify({BASE_URL:'/viriddle/',VITE_SUPABASE_URL:'',VITE_SUPABASE_PUBLISHABLE_KEY:''})}});
- const {PatientRecordNavigation,ClueLab,InvestigationActionBar,AppNavigation,ResumeInvestigation,PlayerProvider}=await import(pathToFileURL(dir+'/ui.mjs'));
+ await build({stdin:{contents:`export {PatientRecordNavigation} from './src/gameComponents';export {ClueLab} from './src/ClueLab';export {InvestigationActionBar} from './src/InvestigationNavigation';export {AppNavigation,ResumeInvestigation} from './src/Navigation';export {PlayerProvider} from './src/player';export {InvestigationReports} from './src/InvestigationDesk';export {lineageEvidence} from './src/phylogeny';export {practiceFixtures} from './src/practiceFixtures';export {evidenceReports} from './src/evidenceReports';`,resolveDir:process.cwd(),loader:'tsx'},outfile:dir+'/ui.mjs',bundle:true,platform:'node',format:'esm',packages:'external',define:{'import.meta.env':JSON.stringify({BASE_URL:'/viriddle/',VITE_SUPABASE_URL:'',VITE_SUPABASE_PUBLISHABLE_KEY:''})}});
+ const {PatientRecordNavigation,ClueLab,InvestigationActionBar,AppNavigation,ResumeInvestigation,PlayerProvider,InvestigationReports,lineageEvidence,practiceFixtures,evidenceReports}=await import(pathToFileURL(dir+'/ui.mjs'));
  const dom=new JSDOM('<div id="app"></div>',{url:'https://example.test/viriddle/'});
  for(const k of ['window','document','location','localStorage','sessionStorage','HTMLElement','Event','MouseEvent','KeyboardEvent'])globalThis[k]=dom.window[k];
  Object.defineProperty(globalThis,'navigator',{value:dom.window.navigator,configurable:true});globalThis.IS_REACT_ACT_ENVIRONMENT=true;
  globalThis.requestAnimationFrame=fn=>{fn();return 1};HTMLElement.prototype.scrollIntoView=function(){};window.matchMedia=()=>({matches:false,addEventListener(){},removeEventListener(){}});
  const c={id:'test',title:'Fictional test',place:'TEST',month:'May',brief:'Fictional test case',pathogen:'Fictional virus',incubation:'1–4 days',patients:[{name:'Anya',onset:4,role:'Scientist',interview:''}],contacts:[],genomics:[],interviewNote:''};
+ // All existing renamed fixtures must draw from report text, without answer-key topology.
+ for(const fixture of practiceFixtures){
+  const names=fixture.patients.map(p=>p.name),report=evidenceReports(fixture).genomics;
+  const groups=lineageEvidence(report.rows,names);
+  assert.deepEqual(groups.flatMap(g=>g.samples).sort(),[...names].sort(),fixture.id+' sequence labels');
+ }
+ assert.deepEqual(lineageEvidence([{label:'Lab',text:'Sequences are similar.'}],['Anya']),[]);
+
  let run={started:true,unlocked:[],selected:null,deadlineAt:Date.now()+300000,durationMs:300000};
  const reports={interviews:{title:'Interview report',rows:[{label:'Anya',text:'VISIBLE_INTERVIEW'}]},contacts:{title:'Contacts',rows:[{label:'Locked',text:'NEVER_SHOW_LOCKED_CONTACTS'}]}};
  let buys=[],pins=[],boardCalls=0;const notebook={data:{pinned:[],marks:{},note:''},warning:'',pin:id=>pins.push(id),mark(){},note(){}};
@@ -31,6 +39,17 @@ try{
  await click('Clue shop');await click('My reports 1');assert.deepEqual(buys,['interviews'],'Reopening reports never purchases again');assert.equal(run.deadlineAt,originalDeadline);assert.equal(run.selected,null);
  // Pending failure leaves evidence sealed and allows another purchase request.
  await click('Clue shop');const contact=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Contact Tracing'));await act(async()=>contact.click());assert.ok(!body().includes('NEVER_SHOW_LOCKED_CONTACTS'));
+ // Supplying a report cannot reveal its tree until genomics is unlocked.
+ const fixture=practiceFixtures.find(c=>c.id==='stapler-wedding');
+ const sequenceReport=evidenceReports(fixture).genomics;
+ const sequenceProps={patients:fixture.patients.map(p=>p.name),reports:{genomics:sequenceReport},notebook};
+ await mount(React.createElement(InvestigationReports,{...sequenceProps,unlocked:[]}));
+ assert.equal(document.querySelector('.phylo-tree'),null);
+ await mount(React.createElement(InvestigationReports,{...sequenceProps,unlocked:['genomics']}));
+ assert.ok(document.querySelector('.phylo-tree svg'));
+ assert.deepEqual([...document.querySelectorAll('.phylo-tree svg text:not(.phylo-lineage-label)')].map(t=>t.textContent).sort(),fixture.patients.map(p=>p.name).sort());
+ assert.ok(body().includes('No transmission arrows are implied'));
+ assert.equal(document.querySelector('.phylo-tree marker'),null,'No donor-direction arrows');
  await act(async()=>root.unmount());root=createRoot(document.getElementById('app'));
  // Record browsing must stay within bounds and must not choose an answer.
  let inspected=[];

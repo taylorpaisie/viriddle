@@ -25,7 +25,7 @@ for(const c of practiceFixtures){
  const notebook={data:{pinned:[],marks:{},note:''},pin(){}};
  const render=unlocked=>renderToStaticMarkup(React.createElement(InvestigationReports,{reports,unlocked,patients:names,notebook}));
  assert.ok(!render([]).includes('<svg'),'locked reports stay sealed');
- assert.ok(!render(['genomics']).includes('Sample phylogenetic tree'),'sequencing does not include the paid tree');
+ assert.ok(render(['genomics']).includes('Sample phylogenetic tree'),'purchased sequencing includes its lineage tree');
  const tree=render(['phylogeny']);
  assert.ok(tree.includes('<svg')&&tree.includes('Sample phylogenetic tree'),'tree works without buying sequencing');
  assert.ok(!tree.includes('Sequence comparison · SNP distance'),'sequencing report stays separate');
@@ -36,4 +36,4 @@ const run={started:true,unlocked:['phylogeny'],selected:0,result:{correct:true,s
 const score=sharedScore(run,'032',1,'daily');
 const link=resultLink('https://example.test/',score);
 assert.equal(readResultLink(new URL(link).hash).total,7);
-console.log('PASS: all 13 sample trees, exact sample membership, locked-report isolation, independent tree unlock, sequencing separation, Unicode names and seven-clue result links.');
+console.log('PASS: all 13 sample trees, exact sample membership, locked-report isolation, independent tree unlock, sequencing tree access, Unicode names and seven-clue result links.');
