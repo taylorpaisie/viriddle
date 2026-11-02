@@ -1,3 +1,4 @@
+import {nameError} from './leaderboardNames';
 import {leagueSessionStorage,parseLeagueHash,rememberLeagueInvite} from './leagueRoutes';
 import React,{createContext,useContext,useEffect,useRef,useState} from 'react';
 import {createClient,type Session} from '@supabase/supabase-js';
@@ -7,7 +8,7 @@ export const supabase=backendConfigured?createClient(import.meta.env.VITE_SUPABA
 export type History={case_date:string;score:number;correct_solution:boolean;elapsed_seconds:number;evidence_used:string[];title?:string};
 export type Stats={total:number;solved:number;points:number;average:number;best:number;average_time:number;best_time:number|null;success_rate:number;longest:number;current:number};
 export const blankStats:Stats={total:0,solved:0,points:0,average:0,best:0,average_time:0,best_time:null,success_rate:0,longest:0,current:0};
-export type Profile={player:{id:string;username:string;public_profile_enabled:boolean;tutorial_completed_at?:string};stats:Stats;history:History[]};
+export type Profile={player:{id:string;username:string;username_chosen?:boolean;public_profile_enabled:boolean;tutorial_completed_at?:string};stats:Stats;history:History[]};
 export type DailyState={case_id:string;case_date:string;number:string;case:Case;server_now:string;attempt:null|{id:string;status:string;started_at:string;duration_seconds:number;elapsed_seconds:number;evidence_used:string[];evidence_cost:number;selected_patient:number|null;score:number;correct_solution:boolean;base_points:number;speed_bonus:number};reports:Record<string,Report>;solution?:Solution};
 export type Report=EvidenceReport;
 export async function rpc<T=any>(name:string,args:Record<string,unknown>={}):Promise<T>{if(!supabase)throw new Error('Online accounts are not configured yet. Local play is available.');const {data,error}=await supabase.rpc(name,args);if(error)throw new Error(error.message);return data as T;}
@@ -24,7 +25,7 @@ export function PlayerProvider({children}:{children:React.ReactNode}){
  useEffect(()=>{if(!session)return;const expected=sessionStorage.getItem('outbreak-link-player');if(expected&&!session.user.is_anonymous){if(expected!==session.user.id){setError('This Google account belongs to a different player. Records were not merged. Your previous guest player ID is retained for support.');}else sessionStorage.removeItem('outbreak-link-player');}refresh().catch(e=>setError(e.message));},[session?.user.id,session?.user.is_anonymous]);
  async function ensureGuest(captchaToken?:string){const s=await guestSession(captchaToken);latest.current=s.user.id;setSession(s);return s;}
  async function google(){const invitation=parseLeagueHash(location.hash)?.invite;if(invitation)rememberLeagueInvite(leagueSessionStorage(),invitation);if(!supabase)throw new Error('Google sign-in is coming after the site’s account service is configured. You can play locally now.');setBusy(true);setError('');try{const redirectTo=new URL(import.meta.env.BASE_URL,location.origin).href;const {data}=await supabase.auth.getSession();if(data.session?.user.is_anonymous){sessionStorage.setItem('outbreak-link-player',data.session.user.id);const {error}=await supabase.auth.linkIdentity({provider:'google',options:{redirectTo}});if(error)throw error;}else {const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo}});if(error)throw error;}}catch(e){setBusy(false);throw new Error('Google sign-in could not start. No records were merged. '+(e as Error).message);}}
- async function save(name:string,pub:boolean){await rpc('outbreak_save_profile',{p_username:name,p_public:pub});await refresh();}
+ async function save(name:string,pub:boolean){const error=nameError(name);if(error)throw new Error(error);await rpc('outbreak_save_profile',{p_username:name,p_public:pub});await refresh();}
  async function completeTutorial(){try{localStorage.setItem('outbreak-tutorial-v1','done')}catch{}if(session){await rpc('outbreak_save_profile',{p_tutorial:true});await refresh();}}
  async function signOut(){if(!supabase)return;const {error}=await supabase.auth.signOut();if(error)throw error;setProfile(null);setSession(null);}
  return <Context.Provider value={{session,profile,busy,error,setError,ensureGuest,google,refresh,save,completeTutorial,signOut}}>{children}</Context.Provider>;
