@@ -21,19 +21,19 @@ const themes=[
   },
   {
     "id": "stapler-wedding",
-    "title": "The Conference Welcome-Pack Crisis",
-    "place": "MICROBIOLOGY CONFERENCE · PREPARATION ROOM",
+    "title": "The Bacterial Wedding",
+    "place": "THE CRIMSON HALL · WEDDING FEAST",
     "pathogen": "Cohortobacter respirans · fictional respiratory bacterium",
     "roles": [
-      "Conference organizer and badge-printing enthusiast",
-      "Welcome-pack coordinator",
-      "Volunteer programme editor"
+      "Wedding host and keeper of the seating plan",
+      "Wedding coordinator from the rival laboratory",
+      "Wedding musician and laboratory volunteer"
     ],
-    "intro": "The microbiology conference opens tomorrow. Four hundred badges have the same name, the welcome bags contain last year’s programme, and three organizers are ill with a fictional respiratory bacterium. Darren has proposed fixing the badges with a marker and charging the sponsor for a live personalization experience. The printing disaster is background: use the dated respiratory contacts to trace the cluster.",
+    "intro": "Two feuding microbiology laboratories have agreed to a wedding truce. Beneath crimson banners, the host promises bread, salt and absolutely no speeches about stolen research. Then the musicians change tune, the doors close for a supposedly private toast, and Darren unveils his betrayal: every guest has been seated beside their most bitter reviewer. By morning, the alliance is in ruins. Over the following days, three people report illness from a fictional respiratory bacterium. Was this cluster already unfolding before the feast? Follow the dated human encounters. The food, closed doors and seating scandal are atmosphere, not evidence of poisoning or deliberate infection.",
     "source": 1,
     "encounters": [
-      "Carla and Darren prepare conference packs together at the workroom table.",
-      "Darren and Lucy correct the conference programme together at the workroom table."
+      "Carla and Darren prepare the wedding seating plan together in the hall.",
+      "Darren and Lucy rehearse the wedding music together in the hall."
     ]
   },
   {
@@ -65,7 +65,7 @@ export const simpleExamples:Case[]=themes.map(t=>{
 });
 export const simpleSolutions:Record<string,Solution>=Object.fromEntries(themes.map(t=>{
  const order=t.source===0?[0,1,2]:t.source===1?[1,0,2]:[2,1,0],names=namesFor(t.id);
- return [t.id,{source:t.source,tree:[[order[0],order[1]],[order[1],order[2]]],explanation:`${names[order[0]]} is the intended source. Symptoms begin May 4, before the May 5 encounter. ${names[order[1]]} becomes ill May 7 and meets ${names[order[2]]} May 8; that patient becomes ill May 10. Both two-day incubation intervals fit the fictional rules. The administrative chaos is background, not transmission evidence.`,reveal:[{title:'Find the first plausible exposure',text:`${names[order[0]]} has an outside exposure May 1 and symptoms May 4. The May 5 encounter occurs after infectiousness begins.`},{title:'Check both gaps',text:'May 5 → May 7 and May 8 → May 10 each leave two days, within the 1–4 day incubation window.'},{title:'Close the tiny case',text:`The intended simulation is ${order.map(i=>names[i]).join(' → ')}. Use the human encounters, not the administrative mishap, to reconstruct the cluster. Genetic similarity alone does not prove these arrows.`}]}];
+ return [t.id,{source:t.source,tree:[[order[0],order[1]],[order[1],order[2]]],explanation:`${names[order[0]]} is the intended source. Symptoms begin May 4, before the May 5 encounter. ${names[order[1]]} becomes ill May 7 and meets ${names[order[2]]} May 8; that patient becomes ill May 10. Both two-day incubation intervals fit the fictional rules. ${t.id==='stapler-wedding'?'The wedding’s betrayal was the seating plan; the illness follows the dated respiratory contacts, not poisoned food or a deliberate attack.':'The administrative chaos is background, not transmission evidence.'}`,reveal:[{title:'Find the first plausible exposure',text:`${names[order[0]]} has an outside exposure May 1 and symptoms May 4. The May 5 encounter occurs after infectiousness begins.`},{title:'Check both gaps',text:'May 5 → May 7 and May 8 → May 10 each leave two days, within the 1–4 day incubation window.'},{title:'Close the tiny case',text:`The intended simulation is ${order.map(i=>names[i]).join(' → ')}. Use the human encounters, not ${t.id==='stapler-wedding'?'the ominous wedding theatrics':'the administrative mishap'}, to reconstruct the cluster. Genetic similarity alone does not prove these arrows.`}]}];
 }));
 
 

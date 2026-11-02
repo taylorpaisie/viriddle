@@ -11,7 +11,7 @@ Stable internal slugs keep practice links working. Each case still has three pat
 | Stable slug | New title | Story |
 | --- | --- | --- |
 | `duck-press` | The Emergency Press Briefing | Darren has drafted answers before the team has agreed on the evidence. A missing attachment and contradictory slides derail the announcement. |
-| `stapler-wedding` | The Conference Welcome-Pack Crisis | Four hundred badges show Darren’s name. Three organizers have a fictional respiratory bacterial illness; the relevant evidence is their dated human contacts. |
+| `stapler-wedding` | The Bacterial Wedding | Rival laboratories meet under a wedding truce; a treacherous seating plan ruins the feast. Three guests have a fictional respiratory bacterial illness. Ominous hospitality is scenery; dated human contacts remain the evidence. |
 | `moon-lawsuit` | The Forty-Seven-Slide Apology | A virology demonstration fails. Darren’s apology requires a projector and an intermission while three volunteers report a fictional respiratory viral illness. |
 
 Nine respiratory full cases receive richer briefings. The hospital case retains its evidence-based, individual-source-unresolved conclusion and its anti-scapegoating framing; Darren’s sinister communications draft is background, never evidence of guilt. Darren appears in every example, with human-scale comic asides clearly labeled as non-evidence. No epidemiological dates, contact indices, SNP distances or official solutions change.

@@ -62,8 +62,8 @@ const stories:Record<string,[string,string]>={
     "“We should avoid speculation. I have prepared a slide listing several preferred possibilities.”"
   ],
   "stapler-wedding": [
-    "Darren approved four hundred conference badges containing his own name. He has proposed calling them commemorative editions rather than paying for a reprint.",
-    "“Delegates can write their own names underneath. Networking benefits from a conversation starter.”"
+    "Darren insists the closed doors were only to keep his wedding toast private. The venue manager points out that the guests had already been trapped by its seventeen appendices.",
+    "“Nobody leaves until the acknowledgements. The acknowledgements have subcommittees.”"
   ],
   "moon-lawsuit": [
     "Darren’s apology for the failed open-day demonstration has forty-seven slides. Slide forty-six is titled In the Interest of Brevity. The department has requested a one-sentence email.",

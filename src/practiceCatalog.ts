@@ -1,7 +1,7 @@
 // Public labels only; no case evidence or solutions in this module.
 export const practiceCatalog=[
  {id:'duck-press',title:'The Emergency Press Briefing',description:'Darren has drafted the press statement. The evidence has not approved it.',easy:true},
- {id:'stapler-wedding',title:'The Conference Welcome-Pack Crisis',description:'Four hundred identical badges. Three sick organizers. One terrible explanation.',easy:true},
+ {id:'stapler-wedding',title:'The Bacterial Wedding',description:'A wedding truce. A treacherous seating plan. Three sick guests.',easy:true},
  {id:'moon-lawsuit',title:'The Forty-Seven-Slide Apology',description:'A failed demonstration, three sick volunteers, and an apology with an intermission.',easy:true},
  {id:'october',title:'The Mothman Meltdown',description:'A cryptid festival, a fictional virus, and Darren’s terrible pathogen branding.'},
  {id:'harbor',title:'The Harbor Gathering',description:'A field-station reunion, rival agendas, and six reports of illness.'},
