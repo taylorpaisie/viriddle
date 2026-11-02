@@ -15,8 +15,9 @@ Move from 50 correctness + 50 speed to **70 correctness + 30 speed**. Keep the f
 | Patient Interviews | −10 | −6 |
 | Contact Tracing | −12 | −8 |
 | Outside Exposure Check | −14 | −9 |
+| Phylogenetic Tree | −16 | −8 |
 | Genomic Sequencing | −18 | −10 |
-| All six reports | −64 | −40 |
+| All reports | −80 | −48 |
 
 Lower prices keep corroborating evidence affordable. Bookings and computed windows remain the least expensive; interviews and contacts cost more; outside checks and sequencing retain the largest deductions. This ordering is a design hypothesis, not a measured ranking of information value. No category proves a source by itself.
 
@@ -24,14 +25,14 @@ Lower prices keep corroborating evidence affordable. Bookings and computed windo
 
 | Submission time | Current score | Proposed score |
 | --- | ---: | ---: |
-| 0:00 | 36 | 60 |
-| 1:00 | 26 | 54 |
-| 2:00 | 16 | 48 |
-| 2:30 | 11 | 45 |
-| 3:00 | 6 | 42 |
-| 3:36 | 0 | 39 |
-| 4:00 | 0 | 36 |
-| 4:59 | 0 | 31 |
+| 0:00 | 20 | 52 |
+| 1:00 | 10 | 46 |
+| 2:00 | 0 | 40 |
+| 2:30 | 0 | 37 |
+| 3:00 | 0 | 34 |
+| 3:36 | 0 | 31 |
+| 4:00 | 0 | 28 |
+| 4:59 | 0 | 23 |
 | 5:00 (timeout) | 0 | 0 |
 
 The current all-report score reaches zero at 3:36, even for a correct answer. The proposal keeps it at 31 or more before the deadline; at exactly 5:00 every timed attempt earns zero. Speed uses the existing ceiling convention, with one point lost every 10 seconds instead of every 6 seconds.
@@ -46,7 +47,7 @@ Illustrative purchases, not claims that these reports suffice to solve every cas
 | Interviews + contacts | 22 | 53 | 14 | 71 |
 | Windows + contacts + sequencing | 36 | 39 | 22 | 63 |
 | Interviews + contacts + outside checks | 36 | 39 | 23 | 62 |
-| All six | 64 | 11 | 40 | 45 |
+| All reports | 80 | 0 | 48 | 37 |
 
 ## Distribution across all 64 evidence combinations
 
@@ -54,25 +55,25 @@ Each subset is counted once, assuming a correct answer at the stated time. These
 
 | Time | Model | Minimum | Median | Maximum | Zero-score combinations |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 1:00 | Current | 26 | 58 | 90 | 0/64 |
-| 1:00 | Proposed | 54 | 74 | 94 | 0/64 |
-| 2:30 | Current | 11 | 43 | 75 | 0/64 |
-| 2:30 | Proposed | 45 | 65 | 85 | 0/64 |
-| 4:00 | Current | 0 | 28 | 60 | 2/64 |
-| 4:00 | Proposed | 36 | 56 | 76 | 0/64 |
-| 4:59 | Current | 0 | 19 | 51 | 6/64 |
-| 4:59 | Proposed | 31 | 51 | 71 | 0/64 |
+| 1:00 | Current | 10 | 50 | 90 | 0/64 |
+| 1:00 | Proposed | 46 | 70 | 94 | 0/64 |
+| 2:30 | Current | 0 | 35 | 75 | 2/64 |
+| 2:30 | Proposed | 37 | 61 | 85 | 0/64 |
+| 4:00 | Current | 0 | 20 | 60 | 17/64 |
+| 4:00 | Proposed | 28 | 52 | 76 | 0/64 |
+| 4:59 | Current | 0 | 11 | 51 | 33/64 |
+| 4:59 | Proposed | 23 | 47 | 71 | 0/64 |
 
 ### Score bands at 4:00
 
 | Model | 0 | 1–20 | 21–40 | 41–60 | 61–80 | 81–100 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Current | 2 | 19 | 30 | 13 | 0 | 0 |
-| Proposed | 0 | 0 | 3 | 41 | 20 | 0 |
+| Current | 17 | 50 | 47 | 14 | 0 | 0 |
+| Proposed | 0 | 0 | 16 | 87 | 25 | 0 |
 
 ## Incentives and limits
 
-At 0:00 a uniform blind guess among six choices has an expected score of 100/6, about 16.7, in either model. This assumes exactly one correct choice and no prior information; it is not an estimate of player behavior. A certain correct all-report solve at 4:00 earns 0 currently and 36 in the proposal. Expected-score comparisons do not capture confidence, enjoyment, or ranking goals.
+At 0:00 a uniform blind guess among six choices has an expected score of 100/6, about 16.7, in either model. This assumes exactly one correct choice and no prior information; it is not an estimate of player behavior. A certain correct all-report solve at 4:00 earns 0 currently and 28 in the proposal. Expected-score comparisons do not capture confidence, enjoyment, or ranking goals.
 
 The proposal still rewards buying less and solving faster. Buying all reports costs 40 rather than 64 points, and a 10-second improvement is worth one point rather than about 1.67 points. Some players may buy everything routinely, compressing strategy differences; sequencing may become a default purchase. Human playtesting must establish whether the remaining tradeoff is useful.
 
@@ -90,4 +91,3 @@ Untimed practice stays 100 minus purchases: buying all reports would earn 60 ins
 Version the rules by daily case with a future UTC activation date, so all official players on a date share the same scoring model. Keep earlier cases and attempts on their original prices and formula, including unfinished attempts and late resumes. Do not recompute historical results. Return the applicable rule version and evidence prices from the server; the client must display and simulate those same rules, with legacy fallback during rollout.
 
 Update transactional server purchase/submission logic, local/practice scoring, the clue shop, field guide, tutorial, confirmation preview, score breakdown and explanatory copy together. Test all 64 purchase subsets, timer boundaries, idempotent purchases, failed submissions, authorization, client/server parity and old/new rule coexistence before applying a migration or deploying.
-

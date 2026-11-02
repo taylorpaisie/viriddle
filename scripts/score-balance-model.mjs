@@ -1,5 +1,5 @@
 // Offline design model. This module does not change gameplay or database rules.
-export const proposedPrices = Object.freeze({bookings:3,windows:4,interviews:6,contacts:8,outside:9,genomics:10});
+export const proposedPrices = Object.freeze({bookings:3,windows:4,interviews:6,contacts:8,outside:9,genomics:10,phylogeny:8});
 export function models(catalog){
  return [
   {id:'current',label:'Current',base:50,speed:50,prices:Object.fromEntries(catalog.map(e=>[e.id,e.cost]))},
@@ -22,7 +22,7 @@ export function distribution(model,seconds){
  const scores=combinations(Object.keys(model.prices)).map(ids=>score(model,ids,seconds).score).sort((a,b)=>a-b);
  const bins=Object.fromEntries(['0','1–20','21–40','41–60','61–80','81–100'].map(k=>[k,0]));
  for(const value of scores)bins[value===0?'0':value<=20?'1–20':value<=40?'21–40':value<=60?'41–60':value<=80?'61–80':'81–100']++;
- return {min:scores[0],max:scores.at(-1),median:(scores[31]+scores[32])/2,zeros:bins['0'],bins};
+ return {min:scores[0],max:scores.at(-1),median:(scores[scores.length/2-1]+scores[scores.length/2])/2,zeros:bins['0'],bins};
 }
 export function markdown(catalog){
  const [current,proposed]=models(catalog),all=catalog.map(e=>e.id);
@@ -34,7 +34,7 @@ export function markdown(catalog){
   '| Component | Current | Proposed |','| --- | ---: | ---: |',
   '| Correct timed answer | 50 | 70 |','| Maximum speed bonus | 50 | 30 |',
   ...catalog.map(e=>`| ${e.title} | −${current.prices[e.id]} | −${proposed.prices[e.id]} |`),
-  `| All six reports | −${all.reduce((n,id)=>n+current.prices[id],0)} | −${all.reduce((n,id)=>n+proposed.prices[id],0)} |`,'',
+  `| All reports | −${all.reduce((n,id)=>n+current.prices[id],0)} | −${all.reduce((n,id)=>n+proposed.prices[id],0)} |`,'',
   'Lower prices keep corroborating evidence affordable. Bookings and computed windows remain the least expensive; interviews and contacts cost more; outside checks and sequencing retain the largest deductions. This ordering is a design hypothesis, not a measured ranking of information value. No category proves a source by itself.','',
   '## Correct solve after buying all reports','',
   '| Submission time | Current score | Proposed score |','| --- | ---: | ---: |',
@@ -48,7 +48,7 @@ export function markdown(catalog){
    ['Interviews + contacts',['interviews','contacts']],
    ['Windows + contacts + sequencing',['windows','contacts','genomics']],
    ['Interviews + contacts + outside checks',['interviews','contacts','outside']],
-   ['All six',all]
+   ['All reports',all]
   ].map(([label,ids])=>{const a=score(current,ids,150),b=score(proposed,ids,150);return `| ${label} | ${a.cost} | ${a.score} | ${b.cost} | ${b.score} |`;}),'',
   '## Distribution across all 64 evidence combinations','',
   'Each subset is counted once, assuming a correct answer at the stated time. These are mathematical possibilities, **not observed players or predicted frequencies**. The median is an unweighted subset median.','',

@@ -26,7 +26,7 @@ bad(p=>p.cases[0].case.practice_available=true);
 const db=new PGlite();
 try{
  await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key,is_anonymous boolean default false);create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;grant usage on schema auth to authenticated,anon;grant execute on function auth.uid() to authenticated,anon;`);
- for(const file of ['202610290001_outbreak.sql','202610290002_four_minute_window.sql','20261030121235_five_minute_window.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+ for(const file of ['202610290001_outbreak.sql','202610290002_four_minute_window.sql','20261030121235_five_minute_window.sql','20261030121809_curated_practice_examples.sql','20261102135440_phylogenetic_evidence.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
  const pack=process.argv[2]?JSON.parse(readFileSync(process.argv[2],'utf8')):synthetic();
  const summary=validatePack(pack),sql=privateSQL(pack);
  await db.exec(sql);await db.exec(sql);
@@ -45,7 +45,7 @@ try{
  await assert.rejects(()=>db.query('select * from private.case_secrets'));
  await assert.rejects(()=>db.query('select public.outbreak_daily($1)',[records[0].id]));
  await db.exec('reset role');
- const purchase=['bookings','windows','interviews','contacts','outside','genomics'];
+ const purchase=['bookings','windows','interviews','contacts','outside','genomics','phylogeny'];
  for(let n=0;n<records.length;n++){
   const record=records[n];
   // Simulate release in the isolated DB only. Production keeps original future release times.
@@ -56,8 +56,8 @@ try{
   assert.ok(state.case.patients.every(p=>p.interview===''));
   let count=0;
   for(const category of purchase){state=await action('purchase',category);assert.deepEqual(state.reports[category],record.reports[category]);assert.equal(Object.keys(state.reports).length,++count);assert.equal(state.solution,undefined);}
-  assert.equal(state.attempt.evidence_cost,64);
-  state=await action('submit',null,record.solution.source);assert.equal(state.attempt.correct_solution,true);assert.deepEqual(state.solution,record.solution);assert.ok(state.attempt.score>0&&state.attempt.score<=36);
+  assert.equal(state.attempt.evidence_cost,80);
+  state=await action('submit',null,record.solution.source);assert.equal(state.attempt.correct_solution,true);assert.deepEqual(state.solution,record.solution);assert.ok(state.attempt.score>0&&state.attempt.score<=20);
   const score=state.attempt.score;state=await action('submit',null,(record.solution.source+1)%6);assert.equal(state.attempt.score,score);
   await db.query("select set_config('request.jwt.claim.sub',$1,false)",[wrongUser]);await action('begin');
   state=await action('submit',null,(record.solution.source+1)%6);assert.equal(state.attempt.correct_solution,false);assert.equal(state.attempt.score,0);
@@ -73,5 +73,5 @@ try{
  await assert.rejects(()=>db.exec(privateSQL(atomic)),/Conflicting case/);await db.exec('rollback');
  assert.equal((await db.query('select * from public.daily_cases where case_date=$1',[earlier])).rows.length,0);
  const past=synthetic();past.cases[0].date='2020-11-01';await assert.rejects(()=>db.exec(privateSQL(past)),/Only future/);await db.exec('rollback');
- console.log(JSON.stringify({validatedCases:summary.length,readingWords:summary.map(s=>s.words),checks:'source uniqueness, contact timing, SNP consistency, sealed future cases, six gated reports, five-minute scoring, idempotency, conflicts, atomic rollback, quote escaping, existing attempts preserved'},null,2));
+ console.log(JSON.stringify({validatedCases:summary.length,readingWords:summary.map(s=>s.words),checks:'source uniqueness, contact timing, SNP consistency, sealed future cases, seven gated reports, five-minute scoring, idempotency, conflicts, atomic rollback, quote escaping, existing attempts preserved'},null,2));
 }finally{await db.close();}

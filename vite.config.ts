@@ -1,3 +1,4 @@
+import {fileURLToPath} from 'node:url';
 import {defineConfig,loadEnv} from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import {publicServices} from './config/public-services';
@@ -11,6 +12,6 @@ export default defineConfig(({mode})=>{
  const online=!!(url&&key);
  const publicSite=env.VITE_PUBLIC_SITE_URL||(env.VITE_BASE_PATH==='/viriddle/'?'https://taylorpaisie.github.io/viriddle/':'https://outbreak-daily-detective.tinylion32770.chatgpt.site/');
  const socialImage=new URL('brand/viriddle-social-og-1200x630.png',publicSite).href;
- return {base:env.VITE_BASE_PATH||'/',define:{'import.meta.env.VITE_SUPABASE_URL':JSON.stringify(url),'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY':JSON.stringify(key)},resolve:{alias:{'@game-app':new URL(online?'./src/connectedApp.tsx':'./src/main.tsx',import.meta.url).pathname}},plugins:[tailwindcss(),{name:'virriddle-brand-metadata',transformIndexHtml:(html:string)=>html.replaceAll('__VIRRIDDLE_OG_IMAGE__',socialImage)}],server:{allowedHosts:['terminal.local']},build:{rollupOptions:{output:{manualChunks:online?((id:string)=>id.includes('/node_modules/@supabase/')?'account-service':undefined):undefined}}}};
+ return {base:env.VITE_BASE_PATH||'/',define:{'import.meta.env.VITE_SUPABASE_URL':JSON.stringify(url),'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY':JSON.stringify(key)},resolve:{alias:{'@game-app':fileURLToPath(new URL(online?'./src/connectedApp.tsx':'./src/main.tsx',import.meta.url))}},plugins:[tailwindcss(),{name:'virriddle-brand-metadata',transformIndexHtml:(html:string)=>html.replaceAll('__VIRRIDDLE_OG_IMAGE__',socialImage)}],server:{allowedHosts:['terminal.local']},build:{rollupOptions:{output:{manualChunks:online?((id:string)=>id.includes('/node_modules/@supabase/')?'account-service':undefined):undefined}}}};
 });
 

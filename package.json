@@ -5,7 +5,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite --host 0.0.0.0",
-    "test": "npm run typecheck && npm run test:theme && npm run test:cases && npm run test:backend && npm run test:leagues && npm run test:league-ui && npm run test:usage && npm run test:navigation && npm run test:private-packs && npm run test:feedback && npm run test:schedule && npm run test:score-balance",
+    "test": "npm run typecheck && npm run test:theme && npm run test:cases && npm run test:backend && npm run test:leagues && npm run test:league-ui && npm run test:usage && npm run test:navigation && npm run test:private-packs && npm run test:feedback && npm run test:schedule && npm run test:phylogeny && npm run test:score-balance",
     "scores:balance": "node --experimental-strip-types scripts/analyze-score-balance.ts",
     "test:score-balance": "node --experimental-strip-types scripts/validate-score-balance.ts",
     "cases:schedule": "node scripts/schedule-health.mjs",
@@ -22,7 +22,8 @@
     "test:navigation": "node scripts/validate-navigation.mjs",
     "test:private-packs": "node scripts/validate-private-packs.mjs",
     "cases:private": "node scripts/private-case-pack.mjs",
-    "test:feedback": "node scripts/validate-feedback.mjs && node scripts/validate-feedback-ui.mjs"
+    "test:feedback": "node scripts/validate-feedback.mjs && node scripts/validate-feedback-ui.mjs",
+    "test:phylogeny": "node scripts/validate-phylogeny.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0",

@@ -21,7 +21,8 @@ export function validatePack(pack){
   assert.deepEqual(c.contacts,[]);assert.deepEqual(c.genomics,[]);
   const publicKeys=['id','title','place','month','brief','pathogen','incubation','incubationDays','infectiousness','patients','contacts','genomics','interviewNote','practice_available'];
   assert.ok(Object.keys(c).every(k=>publicKeys.includes(k)),'Public case contains an unapproved field');
-  assert.deepEqual(Object.keys(r).sort(),[...categories].sort());
+  assert.deepEqual(Object.keys(r).filter(key=>key!=='phylogeny').sort(),[...categories].sort());
+  if(r.phylogeny)assert.ok(text(r.phylogeny.title)&&Array.isArray(r.phylogeny.rows)&&r.phylogeny.rows.length>0&&r.phylogeny.rows.every(row=>text(row.label)&&text(row.text)));
   for(const category of categories){assert.ok(text(r[category].title));assert.ok(r[category].rows.length>0);assert.ok(r[category].rows.every(row=>text(row.label)&&text(row.text)));}
   assert.equal(r.interviews.interviews.length,6);assert.equal(r.interviews.rows.length,6);
   for(let i=0;i<6;i++){assert.equal(r.interviews.rows[i].label,c.patients[i].name);assert.equal(r.interviews.rows[i].text,r.interviews.interviews[i]);}
@@ -71,6 +72,8 @@ export function validatePack(pack){
  return summaries;
 }
 
+export const withPhylogeny=reports=>({...reports,phylogeny:reports.phylogeny??{title:'Phylogenetic tree · reported sample lineages',rows:reports.genomics.rows,note:'Unresolved lineage grouping; branches do not establish direct transmission or its direction.'}});
+
 const literal=x=>"'"+JSON.stringify(x).replaceAll("'","''")+"'::jsonb";
 export function privateSQL(pack){
  validatePack(pack);
@@ -83,11 +86,11 @@ export function privateSQL(pack){
    `select * into existing from public.daily_cases where case_date='${date}' for update;\n`+
    `if existing.id is not null then\n`+
    `select * into sealed from private.case_secrets where case_id=existing.id;\n`+
-   `if existing.public_data is distinct from ${literal(c)} or sealed.solution is distinct from ${literal(solution)} or sealed.reports is distinct from ${literal(reports)} or existing.published_at is distinct from '${date}T00:00:00Z'::timestamptz then raise exception 'Conflicting case at ${date}; no existing data was overwritten.'; end if;\n`+
+   `if existing.public_data is distinct from ${literal(c)} or sealed.solution is distinct from ${literal(solution)} or sealed.reports is distinct from ${literal(withPhylogeny(reports))} or existing.published_at is distinct from '${date}T00:00:00Z'::timestamptz then raise exception 'Conflicting case at ${date}; no existing data was overwritten.'; end if;\n`+
    `else\n`+
    `if '${date}'::date <= (clock_timestamp() at time zone 'UTC')::date then raise exception 'Only future new cases may be scheduled.'; end if;\n`+
    `insert into public.daily_cases(case_date,published_at,public_data) values('${date}','${date}T00:00:00Z',${literal(c)}) returning id into new_id;\n`+
-   `insert into private.case_secrets(case_id,solution,reports) values(new_id,${literal(solution)},${literal(reports)});\n`+
+   `insert into private.case_secrets(case_id,solution,reports) values(new_id,${literal(solution)},${literal(withPhylogeny(reports))});\n`+
    `end if;\nend ${tag};`).join('\n')+'\ncommit;\n';
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){

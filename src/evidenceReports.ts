@@ -13,5 +13,6 @@ export function evidenceReports(c:Case){
  };
  if(c.evidenceOverrides)for(const [id,report] of Object.entries(c.evidenceOverrides))reports[id]={...reports[id],...report};
  if(c.incubationDays){reports.windows.rows=exposureWindows(c).map(r=>({label:r.name,text:`${r.start}–${r.end}`}));}
+ if(!reports.phylogeny)reports.phylogeny={title:'Phylogenetic tree · reported sample lineages',rows:reports.genomics.rows.map((row:{label:string;text:string})=>({...row})),note:'Unresolved lineage grouping; branches do not establish direct transmission or its direction.'};
  return darrenReports(c,reports);
 }

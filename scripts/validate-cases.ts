@@ -62,8 +62,8 @@ const breakdown=points(30,22);assert.equal(breakdown.basePoints+breakdown.speedB
 assert.equal(calculateScore({correct:true,evidenceCost:0,now:start}).score,0);
 console.log('PASS: faster correct answers earn more, evidence costs stay fixed, exact time boundaries, zero for failures, untimed practice, and score breakdown.');
 
-assert.equal(evidence.length,6);assert.equal(new Set(evidence.map(e=>e.id)).size,6);
-assert.deepEqual(evidence.map(e=>e.cost),[4,6,10,12,14,18]);
+assert.equal(evidence.length,7);assert.equal(new Set(evidence.map(e=>e.id)).size,7);
+assert.deepEqual(evidence.map(e=>e.cost),[4,6,10,12,14,16,18]);
 for(let i=0;i<cases.length;i++){
  const c=sampleCase(i),windows=exposureWindows(c),outside=outsideExposureChecks(c),rooms=roomBookings(c);
  assert.equal(windows.length,c.patients.length);assert.deepEqual(windows.map(w=>w.name),c.patients.map(p=>p.name));
@@ -75,7 +75,7 @@ for(let i=0;i<cases.length;i++){
 const early=exposureWindows(sampleCase(1)).find(w=>w.name===sampleCase(1).patients[5].name)!;
 assert.equal(early.start,'Sep 28');assert.equal(early.end,'Oct 1');
 assert.equal(calculateScore({correct:true,evidenceCost:64,deadlineAt:200000,now:170000}).score,0);
-console.log('PASS: six uniquely priced evidence tools, public clue records, renamed patients, cross-month windows, and nonnegative exhausted scores.');
+console.log('PASS: seven uniquely priced evidence tools, public clue records, renamed patients, cross-month windows, and nonnegative exhausted scores.');
 
 const {utcDate}=await import('../src/publicCase.ts');
 assert.equal(utcDate(new Date('2026-10-30T00:00:00Z')),'2026-10-30');

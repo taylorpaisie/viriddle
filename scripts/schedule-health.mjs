@@ -16,8 +16,8 @@ with calendar as (
  select day,
  c.id is not null as scheduled,
  coalesce(c.published_at <= (day::timestamp at time zone 'UTC'), false) as releases_on_time,
- coalesce(s.reports ?& array['bookings','windows','interviews','contacts','outside','genomics']
- and not exists (select 1 from unnest(array['bookings','windows','interviews','contacts','outside','genomics']) k
+ coalesce(s.reports ?& array['bookings','windows','interviews','contacts','outside','genomics','phylogeny']
+ and not exists (select 1 from unnest(array['bookings','windows','interviews','contacts','outside','genomics','phylogeny']) k
  where jsonb_typeof(s.reports->k) is distinct from 'object' or s.reports->k = '{}'::jsonb), false) as reports_present,
  coalesce(jsonb_typeof(s.solution) = 'object' and s.solution <> '{}'::jsonb, false) as solution_present
  from calendar left join public.daily_cases c on c.case_date = day

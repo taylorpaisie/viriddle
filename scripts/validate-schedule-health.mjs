@@ -10,7 +10,7 @@ try{
  create table public.daily_cases(id int primary key,case_date date unique,published_at timestamptz,public_data jsonb);
  create table private.case_secrets(case_id int primary key,reports jsonb,solution jsonb);
  create role anon; create role authenticated;`);
- const reports=Object.fromEntries(['bookings','windows','interviews','contacts','outside','genomics'].map(k=>[k,{title:'SECRET_SENTINEL'}]));
+ const reports=Object.fromEntries(['bookings','windows','interviews','contacts','outside','genomics','phylogeny'].map(k=>[k,{title:'SECRET_SENTINEL'}]));
  for(const [id,day,published] of [[1,'2026-12-30','2026-12-30T00:00:00Z'],[2,'2026-12-31','2026-12-31T00:00:00Z'],[3,'2027-01-02','2027-01-02T00:01:00Z'],[4,'2027-01-03','2027-01-03T00:00:00Z']]){
   await db.query('insert into public.daily_cases values ($1,$2,$3,$4)',[id,day,published,{title:'SECRET_SENTINEL'}]);
  }

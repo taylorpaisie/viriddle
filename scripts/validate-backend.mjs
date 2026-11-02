@@ -94,11 +94,30 @@ const practiceSql=spawnSync(process.execPath,['--experimental-strip-types','scri
 const samples=await q('select slug,public_data,solution from private.practice_cases');assert.equal(samples.length,13);
 await user(u);const practiceTotal=(await call('outbreak_profile')).stats.total;
 for(const sample of samples){
- state=await call('outbreak_practice',`'${sample.slug}'`);assert.equal(state.attempt,null);assert.equal(state.case.patients.filter(p=>p.name==='Darren').length,1);assert.ok(state.case.patients.every(p=>p.interview===''));assert.equal(state.case.contacts.length,0);assert.equal(state.case.genomics.length,0);assert.equal(state.case.nameMap,undefined);assert.equal(state.case.evidenceOverrides,undefined);assert.ok(state.solution);assert.equal(Object.keys(state.reports).length,6);
+ state=await call('outbreak_practice',`'${sample.slug}'`);assert.equal(state.attempt,null);assert.equal(state.case.patients.filter(p=>p.name==='Darren').length,1);assert.ok(state.case.patients.every(p=>p.interview===''));assert.equal(state.case.contacts.length,0);assert.equal(state.case.genomics.length,0);assert.equal(state.case.nameMap,undefined);assert.equal(state.case.evidenceOverrides,undefined);assert.ok(state.solution);assert.equal(Object.keys(state.reports).length,7);
 }
 assert.equal((await call('outbreak_profile')).stats.total,practiceTotal);
 await assert.rejects(()=>q('select * from private.practice_cases'));
 await assert.rejects(()=>call('outbreak_practice',"'future'"));
 await db.exec('reset role');await db.exec('set role anon');await assert.rejects(()=>call('outbreak_practice',"'duck-press'"));
 console.log('PASS: thirteen curated examples isolated from daily scheduling, all with Darren, stripped public evidence, guarded RPC and no competitive score writes.');
+// Tree reports are migrated independently and charged exactly once.
+await db.exec('reset role');
+await q("delete from private.case_secrets where case_id=$1",[c]);
+await q("insert into private.case_secrets values($1,$2,$3)",[c,{source:1,tree:[],explanation:'Test'},{genomics:{title:'SNP distances',rows:[{label:'Laboratory',text:'Test samples: lineage A.'}]}}]);
+await q("update private.practice_cases set reports=reports-'phylogeny'");
+const beforeTreeMigration=await q('select id,score,evidence_cost,status from public.daily_attempts order by id');
+const migration=await fs.readFile(new URL('../supabase/migrations/20261102135440_phylogenetic_evidence.sql',import.meta.url),'utf8');
+await db.exec(migration);await db.exec(migration);
+assert.deepEqual(await q('select id,score,evidence_cost,status from public.daily_attempts order by id'),beforeTreeMigration);
+assert.ok((await q("select reports->'phylogeny' as report from private.practice_cases limit 1"))[0].report);
+await q("update public.daily_cases set case_date='2018-01-01' where id=$1",[h.id]);
+await q("update public.daily_cases set case_date=(clock_timestamp() at time zone 'UTC')::date where id=$1",[c]);
+await q('delete from public.daily_attempts where player_id=$1 and case_id=$2',[v,c]);
+await user(v);state=await call('outbreak_action',`'begin','${c}'`);assert.deepEqual(state.reports,{});
+state=await call('outbreak_action',`'purchase','${c}','phylogeny'`);
+assert.equal(state.attempt.evidence_cost,16);assert.ok(state.reports.phylogeny);assert.equal(state.reports.genomics,undefined);assert.equal(state.solution,undefined);
+state=await call('outbreak_action',`'purchase','${c}','phylogeny'`);assert.equal(state.attempt.evidence_cost,16);
+state=await call('outbreak_action',`'purchase','${c}','genomics'`);assert.equal(state.attempt.evidence_cost,34);assert.ok(state.reports.genomics);
+console.log('PASS: tree backfill, repeat-safe migration, unchanged historical scores, independent sealed purchase, exact 16-point charge and no duplicate charge.');
 await db.close();

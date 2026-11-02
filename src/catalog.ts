@@ -4,7 +4,8 @@ export const evidence=[
  {id:'interviews',title:'Patient Interviews',cost:10,description:'Follow the stories behind the symptoms.',icon:'interview'},
  {id:'contacts',title:'Contact Tracing',cost:12,description:'Connect people, places and dates.',icon:'network'},
  {id:'outside',title:'Outside Exposure Check',cost:14,description:'Corroborate possible introductions from outside the group.',icon:'outside'},
- {id:'genomics',title:'Genomic Sequencing',cost:18,description:'Compare sequence differences and phylogenetic lineages.',icon:'dna'}
+ {id:'phylogeny',title:'Phylogenetic Tree',cost:16,description:'Group patient samples by their evolutionary lineage.',icon:'tree'},
+ {id:'genomics',title:'Genomic Sequencing',cost:18,description:'Compare the pathogen’s sequence differences (SNPs).',icon:'dna'}
 ] as const;
 
 export const friendNames=['Darren','Carla','Melanie','Andrea','Lucy','Brittany','Nídia','Luis','Selim','Nate','Cherie','Bob','Bret','Luke','Joicy','Ben','Anthony','Hamilton','Carolina','Anya'];
