@@ -28,6 +28,7 @@ await call('outbreak_action',`'begin','${c}'`);await db.exec('reset role');await
 await user(u);await call('outbreak_action',`'purchase','${c}','interviews'`);await db.exec('reset role');await q(`update public.daily_attempts set started_at=clock_timestamp()-interval '30 seconds' where player_id=$1`,[u]);await user(u);state=await call('outbreak_action',`'submit','${c}',null,1`);assert.equal(state.attempt.correct_solution,true);assert.equal(state.attempt.evidence_cost,22);assert.ok(state.attempt.score>=72&&state.attempt.score<=73);assert.ok(state.solution);const finalScore=state.attempt.score;
 state=await call('outbreak_action',`'submit','${c}',null,0`);assert.equal(state.attempt.score,finalScore);assert.equal(state.attempt.selected_patient,1);
 await call('outbreak_save_profile',`'Detective_One',true,true`);const profile=await call('outbreak_profile');assert.equal(profile.stats.total,1);assert.equal(profile.player.tutorial_completed_at!==null,true);
+await db.exec('reset role');await db.exec(await fs.readFile(new URL('../supabase/migrations/202611020001_weekly_leaderboard.sql',import.meta.url),'utf8'));await user(u);
 let board=await call('outbreak_leaderboard');assert.equal(board.rows.length,1);assert.equal(board.mine.username,'Detective_One');assert.equal(board.rows[0].email,undefined);
 await user(v);board=await call('outbreak_leaderboard');assert.equal(board.rows.length,1);assert.equal(board.mine,null);
 await db.exec('reset role');await q('update auth.users set is_anonymous=true where id=$1',[u]);await user(v);assert.equal((await call('outbreak_leaderboard')).rows.length,0);
@@ -37,6 +38,18 @@ await db.exec('reset role');await q(`delete from public.daily_attempts where pla
 await db.exec('reset role');await q('update auth.users set is_anonymous=false where id=$1',[u]);
 await db.exec(`insert into auth.users(id) select ('10000000-0000-4000-8000-'||lpad(g::text,12,'0'))::uuid from generate_series(1,30) g;insert into public.players(id,username,public_profile_enabled) select id,'Board-'||right(id::text,12),true from auth.users where id::text like '10000000%';insert into public.daily_attempts(player_id,case_id,completed_at,elapsed_seconds,score,correct_solution,status) select id,'${c}',now(),10,99,true,'completed' from public.players where id::text like '10000000%';`);
 await user(u);board=await call('outbreak_leaderboard');assert.equal(board.rows.length,25);assert.equal(board.mine.position,31);board=await call('outbreak_leaderboard',"'all',25");assert.equal(board.rows.length,6);
+// Weekly standings use UTC case dates; equal points share rank across page boundaries.
+board=await call('outbreak_leaderboard',"'week'");assert.equal(board.total,31);assert.ok(board.rows.every(r=>r.position===1));assert.equal(board.mine.position,31);
+const secondPage=await call('outbreak_leaderboard',"'week',25");assert.equal(secondPage.rows.length,6);assert.equal(secondPage.rows.filter(r=>r.position===1).length,5);
+assert.equal(new Set([...board.rows,...secondPage.rows].map(r=>r.username)).size,31);
+await assert.rejects(()=>call('outbreak_leaderboard',"'month'"));
+await db.exec('reset role');
+await db.exec(`insert into public.daily_cases(id,case_date,published_at,public_data) values ('30000000-0000-4000-8000-000000000001',date_trunc('week',now() at time zone 'UTC')::date-1,now()-interval '8 days','{}');
+insert into public.daily_attempts(player_id,case_id,completed_at,elapsed_seconds,score,correct_solution,status) values ('${u}','30000000-0000-4000-8000-000000000001',now(),1,100,true,'completed'),('${u}','${future}',now(),1,100,true,'completed');`);
+await user(u);const weekly=(await call('outbreak_leaderboard',"'week'")).mine;assert.equal(weekly.score,finalScore);assert.equal(weekly.completed,1);
+await db.exec("set timezone='Pacific/Honolulu'");assert.equal((await call('outbreak_leaderboard',"'week'")).mine.score,weekly.score);await db.exec("set timezone='UTC'");
+assert.equal((await call('outbreak_leaderboard',"'all'")).mine.score,finalScore+100);
+console.log('PASS: weekly UTC boundaries, previous-week and future exclusions, score-only tied ranks, stable pagination and own rank outside top 25.');
 await db.exec('reset role');await db.exec('set role anon');await assert.rejects(()=>call('outbreak_daily'));await assert.rejects(()=>q('select private.expire_attempts()'));
 console.log('PASS: real PostgreSQL migration, RLS isolation, sealed evidence/solutions, unique starts, idempotent purchases/submissions, timeouts, wrong answers, profiles, tutorial persistence, opt-in leaderboards, and anonymous exclusion.');
 // Generated story fixtures must keep purchased evidence and the expanded reveal private.
