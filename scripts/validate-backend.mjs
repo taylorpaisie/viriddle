@@ -54,7 +54,9 @@ await db.exec('reset role');await db.exec('set role anon');await assert.rejects(
 console.log('PASS: real PostgreSQL migration, RLS isolation, sealed evidence/solutions, unique starts, idempotent purchases/submissions, timeouts, wrong answers, profiles, tutorial persistence, opt-in leaderboards, and anonymous exclusion.');
 // Generated story fixtures must keep purchased evidence and the expanded reveal private.
 await db.exec('reset role');
-const fixture=spawnSync(process.execPath,['--experimental-strip-types','scripts/generate-case-sql.ts','2026-10-20','9'],{encoding:'utf8'});
+const repetitive=spawnSync(process.execPath,['--experimental-strip-types','scripts/generate-case-sql.ts','2026-10-20','9'],{encoding:'utf8'});
+assert.notEqual(repetitive.status,0);assert.equal(repetitive.stdout,'');assert.match(repetitive.stderr,/Answer variety/);
+const fixture=spawnSync(process.execPath,['--experimental-strip-types','scripts/generate-case-sql.ts','2026-10-20','3'],{encoding:'utf8'});
 assert.equal(fixture.status,0,fixture.stderr);await db.exec(fixture.stdout);
 const narrative=(await q("select c.public_data,s.reports,s.solution from public.daily_cases c join private.case_secrets s on s.case_id=c.id where c.public_data->>'id'='october' limit 1"))[0];
 assert.ok(narrative);assert.equal(narrative.public_data.contactDetails,undefined);assert.equal(narrative.public_data.bookingDetails,undefined);
