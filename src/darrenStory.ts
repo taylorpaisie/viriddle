@@ -16,7 +16,7 @@ const legacyStories:Record<string,[string,string]>={
  'stapler-wedding':['Darren has written a bacterial wedding programme with an empty family tree. He is adding branches faster than the guests can read them.','“The bacteria have asked for a bigger family photo. They have already doubled the seating plan.”'],
  'moon-lawsuit':['Darren has called the PCR machine as a witness. Its only statement is an error message, which he has submitted as an expert opinion.','“The controls are valid. My lunar hypothesis is not. Please put that in a very small font.”']
 };
-const stories:Record<string,[string,string]>={
+const previousStories:Record<string,[string,string]>={
   "october": [
     "Darren has drafted a statement describing the outbreak as “an unexpected engagement opportunity.” The committee has asked him to stop helping. He has requested that the request be put in writing.",
     "“I did not call it a successful event. I said the attendance figures were difficult to ignore.”"
@@ -70,8 +70,19 @@ const stories:Record<string,[string,string]>={
     "“The sentence contains several semicolons. Nobody specified a punctuation limit.”"
   ]
 };
+const stories:Record<string,[string,string]>={...previousStories,
+ "october": ["Darren has printed a reward poster for the trophy. The reward is a signed photograph of Darren. Someone has returned the poster with a counteroffer.", "“They asked for an unsigned photograph. I am choosing to interpret that as a privacy concern.”"],
+ "harbor": ["Darren has brought his old field notebook to settle a reunion argument. Its most detailed entry concerns a sandwich he believes someone still owes him.", "“Twenty years is a long time to carry a grievance. It was a very good sandwich.”"],
+ "glasshouse": ["Darren has promised to sketch the orchid when it opens. His practice drawings have gradually become less botanical and more like portraits of an annoyed relative.", "“I am drawing what I see. Apparently what I see is my aunt judging the curtains.”"],
+ "rehearsal": ["Darren has been cast as a silent guard. He has developed a backstory, a family crest and an objection to the word silent.", "“The guard has motivations. The director says one of them should be keeping quiet.”"],
+ "market": ["Darren has entered the public vote for best handmade object. His entry is a knitted scarf with one end noticeably wider than the other. He calls it perspective.", "“The goose is ahead by thirty votes. I respect the electorate, but I have questions about its taste.”"],
+ "lodge": ["Darren is trying to solve the lodge’s communal jigsaw without looking at the box. He has confidently assembled two skies and what he calls a transitional horse.", "“It could be a bridge. I would prefer nobody turn the box over until I have committed.”"],
+ "museum": ["Darren has spent his break drawing the skeleton’s shadow in his notebook. He wants to show his niece why he likes working here. The tail keeps escaping the page.", "“She asked whether I work with dinosaurs. I said adjacent to them, which is technically excellent career progress.”"],
+ "signal": ["Darren has found a recording of his first radio appearance. He is pleased with his younger voice until he hears himself confidently mispronounce the station’s name.", "“Keep the tape. Somebody else deserves to have a better first broadcast.”"],
+ "riverside": ["Darren is restoring a battered stool inherited from his grandfather. Under the paint he has found another layer of paint, and under that, a color he refuses to defend.", "“I loved him very much. That does not oblige me to preserve the orange.”"]
+};
 export function darrenStory(c:Case){return stories[c.id]??['Darren has circulated a statement marked FOR INTERNAL USE, then complained that nobody is sharing it. He is preparing a statement about the statement.','“The communications plan is complete. We are still establishing who was supposed to read it.”'];}
-const cleanFlavor=(text:string)=>{for(const [setup,quote] of Object.values(legacyStories)){text=text.replaceAll('Personal aside (not exposure evidence): '+quote,'').replaceAll(setup,'');}return text.replaceAll('Darren has proposed a hospital waiting-room board game called Name That Pathogen. The infection-prevention team has returned it with forty-seven corrections.','').replace(/\s{2,}/g,' ').trim();};
+const cleanFlavor=(text:string)=>{for(const [setup,quote] of [...Object.values(legacyStories),...Object.values(previousStories)]){text=text.replaceAll('Personal aside (not exposure evidence): '+quote,'').replaceAll(setup,'');}return text.replaceAll('Darren has proposed a hospital waiting-room board game called Name That Pathogen. The infection-prevention team has returned it with forty-seven corrections.','').replace(/\s{2,}/g,' ').trim();};
 
 const append=(text:string,extra:string)=>text.includes(extra)?text:text+' '+extra;
 export function withDarrenStory(c:Case):Case{

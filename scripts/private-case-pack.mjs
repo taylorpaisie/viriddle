@@ -1,5 +1,6 @@
 // Owner-only tooling. Never import private packs into src/, public/, or a Vite build.
 import assert from 'node:assert/strict';
+import {assertAnswerVariety,answerVarietySQL} from './answer-variety.mjs';
 import {readFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
 
@@ -69,6 +70,7 @@ export function validatePack(pack){
   assert.ok(words<=650,'Evidence reading load exceeds pilot limit');
   summaries.push({date,title:c.title,difficulty:a.difficulty,words,validSourceCount:roots.length});
  }
+ assertAnswerVariety(pack.cases);
  return summaries;
 }
 
@@ -79,7 +81,7 @@ export function privateSQL(pack){
  validatePack(pack);
  // One transaction, deterministic order, no existing-row updates, and exact-match idempotency.
  let tag='$pack$';while(JSON.stringify(pack).includes(tag))tag=tag.slice(0,-1)+'_$';
- return '-- PRIVATE: contains unreleased evidence and solutions. Never commit or serve this file.\nbegin;\nset local standard_conforming_strings=on;\n'+
+ return '-- PRIVATE: contains unreleased evidence and solutions. Never commit or serve this file.\nbegin;\nset local standard_conforming_strings=on;\nselect pg_advisory_xact_lock(hashtextextended(\'viriddle-answer-variety\',0));\n'+
   [...pack.cases].sort((a,b)=>a.date.localeCompare(b.date)).map(({date,case:c,reports,solution})=>`do ${tag}\n`+
    `declare existing public.daily_cases; sealed private.case_secrets; new_id uuid;\nbegin\n`+
    `perform pg_advisory_xact_lock(hashtextextended('viriddle-daily:${date}',0));\n`+
@@ -91,7 +93,7 @@ export function privateSQL(pack){
    `if '${date}'::date <= (clock_timestamp() at time zone 'UTC')::date then raise exception 'Only future new cases may be scheduled.'; end if;\n`+
    `insert into public.daily_cases(case_date,published_at,public_data) values('${date}','${date}T00:00:00Z',${literal(c)}) returning id into new_id;\n`+
    `insert into private.case_secrets(case_id,solution,reports) values(new_id,${literal(solution)},${literal(withPhylogeny(reports))});\n`+
-   `end if;\nend ${tag};`).join('\n')+'\ncommit;\n';
+   `end if;\nend ${tag};`).join('\n')+'\n'+answerVarietySQL()+'commit;\n';
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  const [command,path]=process.argv.slice(2);
