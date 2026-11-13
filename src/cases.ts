@@ -599,4 +599,6 @@ export const withFriendNames = (base:Case,offset:number,includeDarren=false):Cas
     genomics:base.genomics.map(g=>formatCaseText(c,g))});
 };
 export const sampleCase = (index:number) => withFriendNames(cases[index],index*2,true);
-export const caseFor = (date:string) => withFriendNames(scheduledCase(date),dayNumber(date));
+// Preserve historical rosters; Darren joins every newly authored daily from this date.
+export const DAILY_DARREN_START='2026-11-14';
+export const caseFor = (date:string) => withFriendNames(scheduledCase(date),dayNumber(date),date>=DAILY_DARREN_START);

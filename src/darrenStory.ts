@@ -81,8 +81,20 @@ const stories:Record<string,[string,string]>={...previousStories,
  "signal": ["Darren has found a recording of his first radio appearance. He is pleased with his younger voice until he hears himself confidently mispronounce the station’s name.", "“Keep the tape. Somebody else deserves to have a better first broadcast.”"],
  "riverside": ["Darren is restoring a battered stool inherited from his grandfather. Under the paint he has found another layer of paint, and under that, a color he refuses to defend.", "“I loved him very much. That does not oblige me to preserve the orange.”"]
 };
-export function darrenStory(c:Case){return stories[c.id]??['Darren has circulated a statement marked FOR INTERNAL USE, then complained that nobody is sharing it. He is preparing a statement about the statement.','“The communications plan is complete. We are still establishing who was supposed to read it.”'];}
-const cleanFlavor=(text:string)=>{for(const [setup,quote] of [...Object.values(legacyStories),...Object.values(previousStories)]){text=text.replaceAll('Personal aside (not exposure evidence): '+quote,'').replaceAll(setup,'');}return text.replaceAll('Darren has proposed a hospital waiting-room board game called Name That Pathogen. The infection-prevention team has returned it with forty-seven corrections.','').replace(/\s{2,}/g,' ').trim();};
+const retiredDefault:[string,string]=['Darren has circulated a statement marked FOR INTERNAL USE, then complained that nobody is sharing it. He is preparing a statement about the statement.','“The communications plan is complete. We are still establishing who was supposed to read it.”'];
+// Character moments only: no encounters, dates, exposure claims or answer hints.
+const dailyBits:[string,string][]=[
+ ['Darren has bought a notebook for his best ideas. So far it contains a shopping list and an increasingly elaborate drawing of a sandwich.','“The notebook is working. I have remembered lunch.”'],
+ ['Darren is attempting the crossword in pen. He has decided that an unfamiliar word is probably a printing error.','“I am leaving it in. The dictionary deserves an opportunity to catch up.”'],
+ ['Darren has kept a terrible drawing his niece made of him. He objects to the ears but carries it in his wallet anyway.','“The resemblance is unfair. The artistic judgment is excellent.”'],
+ ['Darren has repaired the zip on his favorite coat. He now gives unsolicited advice about zips with the confidence of a senior engineer.','“It closes in both directions. I think that qualifies as a portfolio.”'],
+ ['Darren has started learning to draw birds. Every attempt looks mildly disappointed, which he considers an accurate observation of nature.','“That is a robin. The expression is a separate artistic decision.”']
+];
+export function darrenStory(c:Case){
+ let hash=2166136261;for(const char of c.id)hash=Math.imul(hash^char.charCodeAt(0),16777619)>>>0;
+ return stories[c.id]??dailyBits[hash%dailyBits.length];
+}
+const cleanFlavor=(text:string)=>{for(const [setup,quote] of [...Object.values(legacyStories),...Object.values(previousStories),retiredDefault]){text=text.replaceAll('Personal aside (not exposure evidence): '+quote,'').replaceAll(setup,'');}return text.replaceAll('Darren has proposed a hospital waiting-room board game called Name That Pathogen. The infection-prevention team has returned it with forty-seven corrections.','').replace(/\s{2,}/g,' ').trim();};
 
 const append=(text:string,extra:string)=>text.includes(extra)?text:text+' '+extra;
 export function withDarrenStory(c:Case):Case{

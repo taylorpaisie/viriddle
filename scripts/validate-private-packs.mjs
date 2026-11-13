@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {ensureDarren} from './ensure-darren.mjs';
 import {incubationWindow} from './case-dates.mjs';
 import {readFileSync} from 'node:fs';
 import {PGlite} from '@electric-sql/pglite';
@@ -6,7 +7,7 @@ import {validatePack,privateSQL} from './private-case-pack.mjs';
 
 // Public synthetic test data only. Real upcoming puzzles never belong in this repository.
 function synthetic(clusterSize=5,month='November'){
- const names=['Alpha','Bravo','Charlie','Delta','Echo','Foxtrot'],onsets=[5,7,9,11,13,3];
+ const names=['Darren','Bravo','Charlie','Delta','Echo','Foxtrot'],onsets=[5,7,9,11,13,3];
  if(clusterSize===6)onsets[5]=15;
  const contacts=[...Array.from({length:clusterSize-1},(_,i)=>[i,i+1,5+i*2]),[5,2,7]];
  const rows=names.map(label=>({label,text:'Synthetic checked record.'}));
@@ -92,3 +93,6 @@ try{
  const past=synthetic();past.cases[0].date='2020-11-01';await assert.rejects(()=>db.exec(privateSQL(past)),/Only future/);await db.exec('rollback');
  console.log(JSON.stringify({validatedCases:summary.length,readingWords:summary.map(s=>s.words),checks:'source uniqueness, contact timing, SNP consistency, sealed future cases, seven gated reports, five-minute scoring, idempotency, conflicts, atomic rollback, quote escaping, existing attempts preserved'},null,2));
 }finally{await db.close();}
+
+const naming={case:{patients:[{name:'Ann'},{name:'Anna'},{name:'Nídia'}],brief:'Ann and Anna spoke to Nídia.'},reports:{interviews:{rows:[{label:'Ann',text:'Anna was here.'}]}},solution:{source:1,tree:[[1,0]]}};
+const renamed=ensureDarren(naming,0);assert.equal(renamed.case.brief,'Darren and Anna spoke to Nídia.');assert.equal(renamed.reports.interviews.rows[0].label,'Darren');assert.deepEqual(renamed.solution,naming.solution);assert.equal(naming.case.patients[0].name,'Ann');assert.deepEqual(ensureDarren(renamed,2),renamed);assert.equal(ensureDarren(naming,2).case.brief,'Ann and Anna spoke to Darren.');

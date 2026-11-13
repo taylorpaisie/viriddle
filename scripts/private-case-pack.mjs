@@ -19,6 +19,7 @@ export function validatePack(pack){
   const monthDays=storyMonthDays(c.month);
   assert.deepEqual(c.incubationDays,[1,4]);assert.equal(c.practice_available,false,'Fresh daily cases cannot be practice previews');
   assert.equal(c.patients.length,6);assert.equal(new Set(c.patients.map(p=>p.name)).size,6);
+  if(date>='2026-11-14')assert.equal(c.patients.filter(p=>p.name==='Darren').length,1,'New daily cases must include Darren exactly once');
   assert.ok(c.patients.every(p=>text(p.name)&&text(p.role)&&Number.isInteger(p.onset)&&p.onset>=1&&p.onset<=monthDays&&p.interview===''&&Object.keys(p).every(k=>['name','role','onset','interview'].includes(k))));
   assert.deepEqual(c.contacts,[]);assert.deepEqual(c.genomics,[]);
   const publicKeys=['id','title','place','month','brief','pathogen','incubation','incubationDays','infectiousness','patients','contacts','genomics','interviewNote','objective','practice_available'];
