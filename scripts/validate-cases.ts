@@ -215,3 +215,19 @@ console.log('PASS: grounded fictional comedy, legacy flavor replacement, idempot
 assert.ok(shared.startsWith('Viriddle #'));
 console.log('PASS: corrected Viriddle share branding; legacy storage and result payload formats unchanged.');
 
+
+// Daily-name policy starts with future cases; past published identities remain stable.
+assert.ok(!caseFor('2026-11-13').patients.some(p=>p.name==='Darren'));
+for(let i=0;i<60;i++){
+ const date=new Date(Date.parse('2026-11-14T00:00:00Z')+i*86400000).toISOString().slice(0,10);
+ assert.equal(caseFor(date).patients.filter(p=>p.name==='Darren').length,1);
+}
+console.log('PASS: Darren appears once in future daily fixtures, with historical rosters preserved.');
+
+const dailyCameos=new Set<string>();
+for(let i=0;i<20;i++){
+ const base={...sampleCase(0),id:'new-daily-'+i,brief:'Fictional daily.',patients:sampleCase(0).patients.map(p=>({...p,interview:''}))};
+ const decorated=withDarrenStory(base);dailyCameos.add(darrenStory(base)[0]);
+ assert.deepEqual(withDarrenStory(decorated),decorated);assert.ok(decorated.patients.every(p=>p.interview===''));assert.deepEqual(decorated.contacts,base.contacts);
+}
+assert.ok(dailyCameos.size>=3);console.log('PASS: varied daily Darren cameos are deterministic and keep locked interviews sealed.');

@@ -52,6 +52,10 @@ assert.equal((await call('outbreak_leaderboard',"'all'")).mine.score,finalScore+
 console.log('PASS: weekly UTC boundaries, previous-week and future exclusions, score-only tied ranks, stable pagination and own rank outside top 25.');
 await db.exec('reset role');await db.exec('set role anon');await assert.rejects(()=>call('outbreak_daily'));await assert.rejects(()=>q('select private.expire_attempts()'));
 console.log('PASS: real PostgreSQL migration, RLS isolation, sealed evidence/solutions, unique starts, idempotent purchases/submissions, timeouts, wrong answers, profiles, tutorial persistence, opt-in leaderboards, and anonymous exclusion.');
+// Free dates used by historical fixtures; tests must not collide with the real UTC day.
+await db.exec('reset role');
+await q("update public.daily_cases set case_date='2001-01-01' where id=$1",[c]);
+await q("update public.daily_cases set case_date='2098-01-01' where id=$1",[future]);
 // Generated story fixtures must keep purchased evidence and the expanded reveal private.
 await db.exec('reset role');
 const repetitive=spawnSync(process.execPath,['--experimental-strip-types','scripts/generate-case-sql.ts','2026-10-20','9'],{encoding:'utf8'});
