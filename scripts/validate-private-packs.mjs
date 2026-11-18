@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {randomizeRoster} from './randomize-roster.mjs';
 import {ensureDarren} from './ensure-darren.mjs';
 import {incubationWindow} from './case-dates.mjs';
 import {readFileSync} from 'node:fs';
@@ -96,3 +97,14 @@ try{
 
 const naming={case:{patients:[{name:'Ann'},{name:'Anna'},{name:'Nídia'}],brief:'Ann and Anna spoke to Nídia.'},reports:{interviews:{rows:[{label:'Ann',text:'Anna was here.'}]}},solution:{source:1,tree:[[1,0]]}};
 const renamed=ensureDarren(naming,0);assert.equal(renamed.case.brief,'Darren and Anna spoke to Nídia.');assert.equal(renamed.reports.interviews.rows[0].label,'Darren');assert.deepEqual(renamed.solution,naming.solution);assert.equal(naming.case.patients[0].name,'Ann');assert.deepEqual(ensureDarren(renamed,2),renamed);assert.equal(ensureDarren(naming,2).case.brief,'Ann and Anna spoke to Darren.');
+
+for(const size of [3,4,5,6])for(let offset=0;offset<6;offset++){
+ const original=synthetic(size),entry=original.cases[0],order=Array.from({length:6},(_,i)=>(i+offset)%6).reverse();
+ const shuffled=randomizeRoster(entry,order);validatePack({version:1,cases:[shuffled]});
+ assert.equal(shuffled.case.patients[shuffled.solution.source].name,entry.case.patients[entry.solution.source].name);
+ const namedContacts=e=>e.reports.contacts.contacts.map(([a,b,d])=>[e.case.patients[a].name,e.case.patients[b].name,d]);
+ assert.deepEqual(namedContacts(shuffled),namedContacts(entry));assert.equal(entry.case.patients[0].name,'Darren');
+}
+assert.throws(()=>randomizeRoster(synthetic().cases[0],[0,0,1,2,3,4]));
+assert.throws(()=>randomizeRoster({...synthetic().cases[0],solution:{outcome:'unresolved'}},[0,1,2,3,4,5]));
+console.log('PASS: sealed roster shuffles preserve named sources, contacts, patient reports and SNP matrices for all supported cluster sizes.');
